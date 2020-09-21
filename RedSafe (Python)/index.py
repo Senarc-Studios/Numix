@@ -4,28 +4,23 @@ from discord.ext import commands
 import time
 import json
 
-
-
-
 redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
 client = discord.Client()
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.FSmA_URgc0pT71aGfLPtOaoaSXM"
-client = commands.Bot(command_prefix = '.')
+
+with open("prefixes.json") as f:
+    prefixes = json.load(f)
+
+default_prefix = "."
+
+def prefix(bot, message):
+    id = message.guild.id
+    return prefixes.get(id, default_prefix)
+
+client = commands.Bot(command_prefix=prefix)
 client.remove_command('help')
 
-prefixes = ['.','!','s.','k!']
-ser_pref={'server id':['.',',']}
-def get_prefix(bot, msg):
-    if msg.server.id in ser_pref:
-        return commands.when_mentioned_or(*ser_pref['server id'])
-
-
-    return commands.when_mentioned_or(*prefixes)(bot, msg)
-
-client = commands.Bot(command_prefix=get_prefix)
-
 status4 = 'You type ".help"'
-status1 = 'You type ".help"'
 status2 = 'Discord API'
 status3 = 'RedSafe Premium'
 status1 = f"{len(client.guilds)} Servers"
@@ -63,7 +58,7 @@ async def on_ready():
 @client.group()
 async def help(ctx):
     if ctx.invoked_subcommand is None:
-        embed = discord.Embed(title="> Command Categories", description='`.config` - Config Commands \n `moderation` - Moderation Commands \n `general` - General commands anyone can use. \n `staff` - Commands that will help the staff members. \n `music` - Music Commands! \n `premium` - **Premium** Commands that will only work if you get **premium**. \n \n *You can do ".help <category>" to view the commands.*', color=0xadd8e6)
+        embed = discord.Embed(title="> Command Categories", description='`config` - Config Commands \n `moderation` - Moderation Commands \n `general` - General commands anyone can use. \n `staff` - Commands that will help the staff members. \n `music` - Music Commands! \n `premium` - **Premium** Commands that will only work if you get **premium**. \n \n *You can do ".help <category>" to view the commands.*', color=0xadd8e6)
         embed.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
