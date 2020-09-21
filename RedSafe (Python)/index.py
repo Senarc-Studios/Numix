@@ -2,6 +2,10 @@ import discord
 import asyncio
 from discord.ext import commands
 import time
+import json
+
+
+
 
 redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
 client = discord.Client()
