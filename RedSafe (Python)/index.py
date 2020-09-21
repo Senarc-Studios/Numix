@@ -1,17 +1,34 @@
 import discord
 import asyncio
-from discord.ext import commands, has_permissions
+from discord.ext import commands
 import time
+import json
 
 
+
+
+redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
 client = discord.Client()
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.FSmA_URgc0pT71aGfLPtOaoaSXM"
 client = commands.Bot(command_prefix = '.')
 client.remove_command('help')
 
+prefixes = ['.','!','s.','k!']
+ser_pref={'server id':['.',',']}
+def get_prefix(bot, msg):
+    if msg.server.id in ser_pref:
+        return commands.when_mentioned_or(*ser_pref['server id'])
+
+
+    return commands.when_mentioned_or(*prefixes)(bot, msg)
+
+client = commands.Bot(command_prefix=get_prefix)
+
+status4 = 'You type ".help"'
 status1 = 'You type ".help"'
 status2 = 'Discord API'
 status3 = 'RedSafe Premium'
+status1 = f"{len(client.guilds)} Servers"
 
 async def status_task():
     while True:
@@ -22,6 +39,7 @@ async def status_task():
         await asyncio.sleep(10)
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status3))
         await asyncio.sleep(10)
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status4))
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{count} Servers"))
         await asyncio.sleep(10)
 
@@ -29,6 +47,7 @@ async def status_task():
 
 @client.event
 async def on_ready():
+    client.loop.create_task(status_task())
     global count
     print('Bot ready')
 
@@ -44,39 +63,44 @@ async def on_ready():
 @client.group()
 async def help(ctx):
     if ctx.invoked_subcommand is None:
-        embed = discord.Embed(title="> Command Categories", description="`.config` - Config Commands \n `moderation` - Moderation Commands \n `general` - General commands anyone can use. \n `staff-help` - Commands that will help the staff members. \n `music` - Music Commands! \n `premium` - Premium Commands that will only work if you get premium.")
-        embed.set_image(url="https://api.alexflipnote.dev/cats/EibKpS6nAd0_cats.gif")
-        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed = discord.Embed(title="> Command Categories", description='`.config` - Config Commands \n `moderation` - Moderation Commands \n `general` - General commands anyone can use. \n `staff` - Commands that will help the staff members. \n `music` - Music Commands! \n `premium` - **Premium** Commands that will only work if you get **premium**. \n \n *You can do ".help <category>" to view the commands.*', color=0xadd8e6)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @help.command(name="config")
 async def help_config(ctx):
-    embed = discord.Embed(title='> Config Commands', description='`.set-welcome` - Sets the welcome channel and notifies when someone joins. \n \n `.set-mute` - Sets the mute role which is used in .mute \n \n `.set-report` - Sets the report log channel, \n Usage - **.set-report <#channel>** \n \n `.set-suggestion` - Sets the suggestion channel. \n \n `.links-off` - Turns on all links and denies links to be sent.')
+    embed = discord.Embed(title='> Config Commands', description='`.set-welcome` - Sets the welcome channel and notifies when someone joins. \n \n `.set-mute` - Sets the mute role which is used in .mute \n \n `.set-report` - Sets the report log channel, Usage - **.set-report <#channel>** \n \n `.set-suggestion` - Sets the suggestion channel. \n \n `.links off` - Turns **off** all links and denies links to be sent. \n \n `.links on` - Turns **on** and allows links to be sent. \n \n `.verification <on/off/set>` - **Set/On/Off** a verification system.', color=0xadd8e6)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="moderation")
 async def help_moderation(ctx):
-
+    embed = discord.Embed(title='> Moderation Commands', description='', color=0xadd8e6)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="general")
 async def help_general(ctx):
-
+    embed = discord.Embed(title='> General Commands', descrition='', color=0xadd8e6)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
-@help.command(name="staff-help")
+@help.command(name="staff")
 async def help_staff(ctx):
-
+    embed = discord.Embed(title='> Staff Commands', description='', color=0xadd8e6)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="music")
 async def help_music(ctx):
-
+    embed = discord.Embed(title='> Music Commands', description='', color=0xadd8e6)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="premium")
 async def help_premium(ctx):
-
+    embed = discord.Embed(title='> Premium Commands', description='', color=0xff0000)
+    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @client.command()
@@ -86,7 +110,7 @@ async def ping(ctx):
     before_ws = int(round(client.latency * 1000, 1))
     message = await ctx.send("🏓 Pong")
     ping = (time.monotonic() - before) * 1000
-    await message.edit(content=f":cat2: WS: {before_ws}ms  |  REST: {int(ping)}ms")
+    await message.edit(content=f":zap: WS: {before_ws}ms  | :star:  REST: {int(ping)}ms")
 
 @client.command()
 async def userinfo(ctx, user: discord.Member = None):
@@ -135,6 +159,7 @@ async def serverinfo(ctx):
 
 
 @client.command()
+@commands.has_permissions(ban_members=True)
 async def ban(ctx, member : discord.Member, reason=None):
     role = discord.utils.get(ctx.guild.roles, name=MODERATION_ROLE)
     logs = client.get_channel(LOGGING_CHANNEL)
@@ -157,7 +182,7 @@ async def ban(ctx, member : discord.Member, reason=None):
         await ctx.send("You do not have permission to run this command, silly!")
 
 @client.command()
-@has_permissions(kick_members=True)
+@commands.has_permissions(kick_members=True)
 async def kick(ctx, member : discord.Member, reason=None):
     role = discord.utils.get(ctx.guild.roles, name=MODERATION_ROLE)
     logs = client.get_channel(LOGGING_CHANNEL)
