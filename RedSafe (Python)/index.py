@@ -11,17 +11,13 @@ redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/7433930
 client = discord.Client()
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.FSmA_URgc0pT71aGfLPtOaoaSXM"
 
-with open("prefix.json") as f:
-    prefixes = json.load(f)
-    default_prefix = "."
-
-
-
 def prefix(client, message):
-    id = message.guild.id
-    return prefixes.get(id, default_prefix)
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
 
-client = commands.Bot(command_prefix=prefix)
+    return prefixes[str(message.guild.id)]
+
+client = commands.Bot(command_prefix = prefix)
 
 client.remove_command('help')
 
@@ -48,13 +44,37 @@ async def on_ready():
     client.loop.create_task(status_task())
     global count
     print('Bot ready')
-    print("lambda is a lambda")
+    print("RedSafe Active!")
     count = 0
     for guild in client.guilds:
         print("Connected to server: {}".format(guild))
         count +=1
 
     client.loop.create_task(status_task())
+
+@client.event
+async def on_guild_join(guild):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes[str(message.guild.id)] = '.'
+
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+@client.event
+async def on_guild_remove(guild):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes.pop(str(guild.id))
+
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+@client.group()
+async def prefix(ctx):
+    embed
 
 @client.command()
 @commands.has_permissions(kick_members=True)
@@ -219,8 +239,20 @@ async def serverinfo(ctx):
     embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
     await ctx.send(embed=embed)
 
-@client.command()
+class MemberID(commands.Converter):
+    async def convert(self, ctx, argument):
+        try:
+            m = await commands.MemberConverter().convert(ctx, argument)
+        except commands.BadArgument:
+            try:
+                return int(argument, base=10)
+            except ValueError:
+                raise commands.BadArgument(f"{argument} is not a valid member or member ID.") from None
+        else:
+            return m.id
 
+@client.command()
+@commands.has_permissions(ban_members=True)
 async def ban(self, ctx, member: MemberID, *, reason: str = None):
     """ Bans a user from the current server. """
     m = ctx.guild.get_member(member)
@@ -244,8 +276,7 @@ async def ban(self, ctx, member: MemberID, *, reason: str = None):
 
 
 @client.command()
-
-
+@commands.has_permissions(kick_members=True)
 async def unban(self, ctx, member: MemberID, *, reason: str = None):
     """ Unbans a user from the current server. """
     try:
