@@ -5,7 +5,7 @@ import time
 import json
 from discord_webhook import DiscordWebhook
 from utils import permissions, default
-
+from discord.utils import get
 
 redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
 client = discord.Client()
@@ -53,6 +53,27 @@ async def on_ready():
     client.loop.create_task(status_task())
 
 @client.event
+async def on_message(ctx):
+    if ctx.content.find(f"<@!{client.user.id}>") != -1:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+        embed = discord.Embed(title='> Prefix', description=f"""The current prefix for this server is set to `{prefixes[str(ctx.guild.id)]}`""", color=0x00ff00)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.channel.send(embed=embed)
+
+#@client.event
+#async def on_message(ctx):
+#    if ctx.content.find(f".com", '.net', '.tk', '.uk', 'www.', 'http') != -1:
+#        member = discord.Member if not discord.Member else discord.Member
+#        embed = discord.Embed(title=f'{message.guild.name}', description=f'You are not allowed to send links on **{message.guild.name}**.')
+#        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+#        ctx.member.send(embed=embed)
+#        await ctx.message.delete()
+
+    await client.process_commands(ctx)
+
+
+@client.event
 async def on_guild_join(guild):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
@@ -74,7 +95,29 @@ async def on_guild_remove(guild):
 
 @client.group()
 async def prefix(ctx):
-    embed
+    if ctx.invoked_subcommand is None:
+       with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+
+       embed = discord.Embed(title='> Prefix', description=f"""The current prefix for this server is set to `{prefixes[str(ctx.guild.id)]}`""", color=0x00ff00)
+       embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+       await ctx.send(embed=embed)
+
+@prefix.command(name="set")
+@commands.has_permissions(administrator=True)
+async def prefix_set(ctx, prefix):
+
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes[str(ctx.guild.id)] = prefix
+
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+    embed = discord.Embed(title='Prefix', description=f'The bot prefix has been set to `{prefix}`', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
 
 @client.command()
 @commands.has_permissions(kick_members=True)
@@ -130,8 +173,125 @@ async def unmute(ctx, member: discord.Member, *, reason: str = None):
         else:
             await ctx.send(e)
 
+@client.command()
+@commands.has_permissions(administrator=True)
+async def setlog(ctx, channel):
+    print(channel)
+    with open('rslogsetting.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = channel
+
+    with open('rslogsetting.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Log', description=f'The Logs channel role been set to {channel}', color=0xadd8e6)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@client.group()
+async def premium(ctx):
+    if ctx.invoked_subcommand is None:
+        print("boop")
+
+@premium.command(name="check")
+async def premium_check(ctx):
+        with open('rspremium.json', 'r') as f:
+            rscheck = json.load(f)
+
+        premium = rscheck[str(ctx.guild.id)]
+        embed = discord.Embed(title='RedSafe Premium', description=f'RedSafe Premium is currently {premium}', color=0x00ff00)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
+
+@client.group()
+@commands.has_permissions(administrator=True)
+async def verification(ctx):
+    if ctx.invoked_subcommand is None:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+
+        prefix = prefixes[str(ctx.guild.id)]
+        embed = discord.Embed(title='Verification', description=f'You can turn **on**, **off**, or **set** verified roles \n Usage: \n \n `{prefix}verification on` - Turns the verification system on. \n `{prefix}verification off` - Turns off the verification system. \n `{prefix}verification set <@role>` - sets a role that is given after verification.', color=0x00ff00)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
+
+@verification.command(name="on")
+@commands.has_permissions(administrator=True)
+async def verification_on(ctx):
+
+    with open('verifysetting.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "enabled"
+
+    with open('verifysetting.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Verification', description=f'The Verification System has been **Enabled**', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@verification.command(name="off")
+@commands.has_permissions(administrator=True)
+async def verification_on(ctx):
+
+    with open('verifysetting.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('verifysetting.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Verification', description=f'The Verification System has been **Disabled**', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@verification.command(name="set")
+@commands.has_permissions(administrator=True)
+async def verification_set(ctx, role: discord.Role):
+
+    with open('verify.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = role.id
+
+    with open('verify.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Verification', description=f'The Verification System role been set to `{role}`', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
 
 
+
+@client.command()
+async def verify(ctx):
+    with open('verifysetting.json', 'r') as f:
+        verifysett = json.load(f)
+    settingverify = verifysett[str(ctx.guild.id)]
+
+
+    with open('verify.json', 'r') as f:
+        verifi = json.load(f)
+    verifyrole = verifi[str(ctx.guild.id)]
+
+    if "enabled" == settingverify:
+        for role in ctx.author.roles:
+            if role.name == verifyrole:
+                print("BOI ALREADY VERIFIED")
+            print(role.name)
+        role = get(ctx.guild.roles, id=verifyrole)
+        await ctx.author.add_roles(role, reason="Verification System. User Verified")
+        embed = discord.Embed(title='Verified', description=f'You have been verified on **{ctx.guild.name}**', color=0xFFA500)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+
+        user = client.get_user(ctx.author.id)
+        await user.send(embed=embed)
+
+    else:
+        await ctx.send("The Verification System has not been enabled.")
 
 @client.command()
 async def avatar(ctx, *, user: discord.Member = None):
@@ -145,42 +305,63 @@ async def avatar(ctx, *, user: discord.Member = None):
 @client.group()
 async def help(ctx):
     if ctx.invoked_subcommand is None:
-        embed = discord.Embed(title="> Command Categories", description='`config` - Config Commands \n `moderation` - Moderation Commands \n `general` - General commands anyone can use. \n `staff` - Commands that will help the staff members. \n `music` - Music Commands! \n `premium` - **Premium** Commands that will only work if you get **premium**. \n \n *You can do ".help <category>" to view the commands.*', color=0xadd8e6)
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+        prefox = prefixes[str(ctx.guild.id)]
+        embed = discord.Embed(title="> Command Categories", description=f'`config` - Config Commands \n `moderation` - Moderation Commands \n `general` - General commands anyone can use. \n `staff` - Commands that will help the staff members. \n `music` - Music Commands! \n `premium` - **Premium** Commands that will only work if you get **premium**. \n \n *You can do "{prefox}help <category>" to view the commands.*', color=0xadd8e6)
         embed.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @help.command(name="config")
 async def help_config(ctx):
-    embed = discord.Embed(title='> Config Commands', description='`.set-welcome` - Sets the welcome channel and notifies when someone joins. \n \n `.set-mute` - Sets the mute role which is used in .mute \n \n `.set-report` - Sets the report log channel, Usage - **.set-report <#channel>** \n \n `.set-suggestion` - Sets the suggestion channel. \n \n `.links off` - Turns **off** all links and denies links to be sent. \n \n `.links on` - Turns **on** and allows links to be sent. \n \n `.verification <on/off/set>` - **Set/On/Off** a verification system.', color=0xadd8e6)
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
+    embed = discord.Embed(title='> Config Commands', description=f'`{prefox}set-welcome` - Sets the welcome channel and notifies when someone joins. \n \n `{prefox}set-mute` - Sets the mute role which is used in {prefox}mute \n \n `{prefox}set-report` - Sets the report log channel, Usage - **{prefox}set-report <#channel>** \n \n `{prefox}set-suggestion` - Sets the suggestion channel. \n \n `{prefox}links off` - Turns **off** all links and denies links to be sent. \n \n `{prefox}links on` - Turns **on** and allows links to be sent. \n \n `{prefox}verification <on/off/set>` - **Set/On/Off** a verification system.', color=0xadd8e6)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="moderation")
 async def help_moderation(ctx):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Moderation Commands', description='', color=0xadd8e6)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="general")
 async def help_general(ctx):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> General Commands', descrition='', color=0xadd8e6)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="staff")
 async def help_staff(ctx):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Staff Commands', description='', color=0xadd8e6)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="music")
 async def help_music(ctx):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Music Commands', description='', color=0xadd8e6)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="premium")
 async def help_premium(ctx):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Premium Commands', description='', color=0xff0000)
     embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
     await ctx.send(embed=embed)
@@ -209,7 +390,7 @@ async def userinfo(ctx, user: discord.Member = None):
     embed.add_field(name='Status', value=user.status, inline=True)
     embed.add_field(name='On Mobile', value=user.is_on_mobile(), inline=True)
     embed.add_field(name='In Voice', value=voice_state, inline=True)
-    embed.add_field(name='Game', value=game, inline=True)
+    embed.add_field(name='Game / Custom Status', value=game, inline=True)
     embed.add_field(name='Highest Role', value=user.top_role.name, inline=True)
     embed.add_field(name='Account Created', value=user.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S'))
     embed.add_field(name='Join Date', value=user.joined_at.__format__('%A, %d. %B %Y @ %H:%M:%S'))
