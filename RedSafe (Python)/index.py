@@ -3,9 +3,13 @@ import asyncio
 from discord.ext import commands
 import time
 import json
-from discord_webhook import DiscordWebhook
+from discord_webhook import DiscordWebhook, DiscordEmbed
 from utils import permissions, default
 from discord.utils import get
+from discord.ext import commands,tasks
+from discord.ext.commands import errors
+import re
+
 
 redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
 client = discord.Client()
@@ -61,6 +65,7 @@ async def on_message(ctx):
         embed.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.channel.send(embed=embed)
 
+
 #@client.event
 #async def on_message(ctx):
 #    if ctx.content.find(f".com", '.net', '.tk', '.uk', 'www.', 'http') != -1:
@@ -72,26 +77,244 @@ async def on_message(ctx):
 
     await client.process_commands(ctx)
 
+with open('badwords.txt','r') as f:
+    bad_words = '|'.join(s for l in f for s in l.split(', '))
+    bad_word_checker = re.compile(bad_words).search
 
 @client.event
-async def on_guild_join(guild):
-    with open('prefixes.json', 'r') as f:
+async def on_message(message):
+    if not message.author.bot:
+        with open('swearfilterboi.json', 'r') as f:
+            prefixes = json.load(f)
+        if prefixes[str(message.guild.id)] == "enabled":
+            if bad_word_checker(message.content):
+                await message.delete()
+                embed = discord.Embed(text=f'{ctx.guild.name}', description=f"Hey! You aren't allowed swear on {ctx.guild.name}")
+                embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+                member.send(embed=embed)
+    await client.process_commands(message)
+
+@client.event
+async def on_member_join(member):
+    with open('onjoinconfigset.json', 'r') as f:
         prefixes = json.load(f)
+    prefix = prefixes[str(member.guild.id)]
+    with open('onjoinconfig.json', 'r') as f:
+        joe = json.load(f)
+    joes = joe[str(member.guild.id)]
+    print(joes)
+    if joes == "enabled":
+        channel = client.get_channel(prefix)
+        embed = discord.Embed(title=f'{member.name} Joined', description=f'Hey {member.name}, Welcome to **{member.guild.name}** \n Have a nice stay!', color=242424)
+        embed.set_image(url='https://cdn.discordapp.com/attachments/731716869576327201/744818377461071952/Welcome-Black-Text-White-BG.gif')
+        embed.set_thumbnail(url=member.avatar_url)
+        await channel.send(embed=embed)
 
-    prefixes[str(message.guild.id)] = '.'
+@client.event
+async def on_member_remove(member):
+    with open('onleaveconfigset.json', 'r') as f:
+        prefixes = json.load(f)
+    prefix = prefixes[str(member.guild.id)]
+    with open('onleaveconfig.json', 'r') as f:
+        joe = json.load(f)
+    joes = joe[str(member.guild.id)]
+    print(joes)
+    if joes == "enabled":
+        channel = client.get_channel(prefix)
+        embed = discord.Embed(title=f'{member.name} Left', description=f'{member.name} Left **{member.guild.name}** Bye! \n Hope you join back.', color=0xff0000)
+        embed.set_image(url='https://media.giphy.com/media/3o6ZtcOxQ9vi8vb9Cg/giphy.gif')
+        embed.set_thumbnail(url=member.avatar_url)
+        await channel.send(embed=embed)
 
-    with open('prefixes.json', 'w') as f:
-        json.dump(prefixes, f, indent=4)
+@client.group()
+@commands.has_permissions(administrator=True)
+async def swear(ctx):
+    if ctx.invoked_subcommand is None:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+
+        prefix = prefixes[str(ctx.guild.id)]
+        embed = discord.Embed(title='Swear Filter', description=f'You can turn **on**, or **off** the Swear Filter if you have RedSafe Premium. \n Usage: \n \n `{prefix}swear on` - Turns on the Swear Filter. \n `{prefix}swear off` - Turns off the Swear Filter.', color=0x00ff00)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
+
+@swear.command(name="on")
+@commands.has_permissions(administrator=True)
+async def swear_on(ctx):
+
+    with open('swearfilterboi.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "enabled"
+
+    with open('swearfilterboi.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Swear Filter', description=f'The Swear Filter has been **Enabled**', color=0x00ff00)
+    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@swear.command(name="off")
+@commands.has_permissions(administrator=True)
+async def swear_off(ctx):
+
+    with open('swearfilterboi.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('swearfilterboi.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Swear Filter', description=f'The Swear Filter has been **Disabled**', color=0x00ff00)
+    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+
+
+
+
+
+@client.group()
+@commands.has_permissions(administrator=True)
+async def welcome(ctx):
+    if ctx.invoked_subcommand is None:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+
+        prefix = prefixes[str(ctx.guild.id)]
+        embed = discord.Embed(title='RedSafe Welcome', description=f'You can turn **on**, **off**, or **set** Welcome message. \n Usage: \n \n `{prefix}welcome on` - Turns on the Welcome Messages. \n `{prefix}welcome off` - Turns off the Welcome Messages. \n `{prefix}welcome set <#channel>` - Set the welcome channel.', color=0x00ff00)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
+
+@welcome.command(name="on")
+@commands.has_permissions(administrator=True)
+async def welcome_on(ctx):
+
+    with open('onjoinconfig.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "enabled"
+
+    with open('onleaveconfig.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='RedSafe Welcome', description=f'Welcome Message has been **Enabled**', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@welcome.command(name="off")
+@commands.has_permissions(administrator=True)
+async def welcome_off(ctx):
+
+    with open('onjoinconfig.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('onjoinconfig.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='RedSafe Welcome', description=f'Welcome Message has been **Disabled**', color=0xff0000)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@welcome.command(name="set")
+@commands.has_permissions(administrator=True)
+async def welcome_set(ctx, string):
+
+    with open('onjoinconfigset.json', 'r') as f:
+        verify = json.load(f)
+
+    boop = int(re.search(r'\d+', string).group(0))
+
+    verify[str(ctx.guild.id)] = boop
+
+    with open('onjoinconfigset.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='RedSafe Welcome', description=f'The Welcome Channel been set to {string}', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@client.group()
+@commands.has_permissions(administrator=True)
+async def leave(ctx):
+    if ctx.invoked_subcommand is None:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+
+        prefix = prefixes[str(ctx.guild.id)]
+        embed = discord.Embed(title='RedSafe leave', description=f'You can turn **on**, **off**, or **set** leave message. \n Usage: \n \n `{prefix}leave on` - Turns on the leave Messages. \n `{prefix}leave off` - Turns off the leave Messages. \n `{prefix}leave set <#channel>` - Set the leave channel.', color=0x00ff00)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
+
+@leave.command(name="on")
+@commands.has_permissions(administrator=True)
+async def leave_on(ctx):
+
+    with open('onleaveconfig.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "enabled"
+
+    with open('onleaveconfig.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Leave Message', description=f'The Leave Message has been **Enabled**', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@leave.command(name="off")
+@commands.has_permissions(administrator=True)
+async def leave_off(ctx):
+
+    with open('onleaveconfig.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('onleaveconfig.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Leave Message', description=f'The Leave Message has been **Disabled**', color=0xff0000)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@leave.command(name="set")
+@commands.has_permissions(administrator=True)
+async def leave_set(ctx, string):
+
+    with open('onleaveconfigset.json', 'r') as f:
+        verify = json.load(f)
+
+    boop = int(re.search(r'\d+', string).group(0))
+
+    verify[str(ctx.guild.id)] = boop
+
+    with open('onleaveconfigset.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Leave Message', description=f'The Leave Message Channel been set to {string}', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+
+
+
+
+
+
+
 
 @client.event
 async def on_guild_remove(guild):
-    with open('prefixes.json', 'r') as f:
-        prefixes = json.load(f)
-
-    prefixes.pop(str(guild.id))
-
-    with open('prefixes.json', 'w') as f:
-        json.dump(prefixes, f, indent=4)
+    global count
+    count -=1
+    webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758248651515625503/r4JCjSTWZ9ly3sxnYjzjzF3g1saIgEqGY_cXxg6hmexnnhcokk_IM1qm138li0Judg2p')
+    embed = DiscordEmbed(title='Left Guild!', description=f"Guild : {guild.name} \n \n ID : {guild.id} \n \n Owner : {guild.owner}", color=242424)
+    webhook.add_embed(embed)
+    webhook.execute()
 
 @client.group()
 async def prefix(ctx):
@@ -118,6 +341,69 @@ async def prefix_set(ctx, prefix):
     embed = discord.Embed(title='Prefix', description=f'The bot prefix has been set to `{prefix}`', color=0x00ff00)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
+
+@client.event
+async def on_guild_join(guild):
+    global count
+    count +=1
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+
+    prefixes[str(guild.id)] = "."
+
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
+
+    webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758248651515625503/r4JCjSTWZ9ly3sxnYjzjzF3g1saIgEqGY_cXxg6hmexnnhcokk_IM1qm138li0Judg2p')
+    embed = DiscordEmbed(title='New Guild Join!', description=f"Guild : {guild.name} \n \n ID : {guild.id} \n \n Owner : {guild.owner}", color=242424)
+    webhook.add_embed(embed)
+    webhook.execute()
+    embed = discord.Embed(title='RedSafe', description='Hello There, This is RebootSafe. \n My prefix default is `.` You can change it with `.prefix set {prefix}` \n Have a nice day!', color=0xFFA500)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    try:
+        to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
+    except IndexError:
+        pass
+    else:
+        link = await to_send.create_invite(max_age=0)
+        webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758248651515625503/r4JCjSTWZ9ly3sxnYjzjzF3g1saIgEqGY_cXxg6hmexnnhcokk_IM1qm138li0Judg2p')
+        embed = DiscordEmbed(title='New Guild Join!', description=f"Guild : {guild.name} \n \n ID : {guild.id} \n \n Owner : {guild.owner} \n \n Invite : {link}", color=242424)
+        webhook.add_embed(embed)
+        webhook.execute()
+        await to_send.send(embed=embed)
+
+
+@client.command()
+async def megahonk(ctx):
+    webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/757575792271294596/JzkFCovOEduKc3zPNlPw_Wvqxb5aPT1eJmwQcB4-Kay7OwetSuoLkuahlLenZm1Y4bMI')
+    embed = DiscordEmbed(title='Your Title', description=f"<@!259875936852246528> MEGA HONK FROM {ctx.author.name} {ctx.author.id}", color=242424)
+    webhook.add_embed(embed)
+    webhook.execute()
+    await ctx.send("I have sent a Mega Honk :)")
+
+@client.command()
+@commands.cooldown(1, 300, commands.BucketType.guild)
+@commands.has_permissions(administrator=True)
+async def dm(ctx, user_id: int, *, message: str):
+    """ DM the user of your choice """
+    user = client.get_user(user_id)
+    if not user:
+        return await ctx.send(f"Could not find any UserID matching **{user_id}**")
+
+    try:
+        embed = discord.Embed(title=f"{ctx.guild.name}", description=f"New message from **{ctx.guild.name}**'s Staff \n \n  Message - {message}", color=0x1868af)
+        await user.send(embed=embed)
+        await ctx.send(f"✉️ Sent a DM to **{user_id}**")
+    except discord.Forbidden:
+        await ctx.send("This user might be having DMs blocked or it's a bot account...")
+
+@client.event
+async def on_command_error(ctx, err):
+    if isinstance(err, errors.CommandOnCooldown):
+        await ctx.send(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
+    else:
+        print(err)
+
 
 @client.command()
 @commands.has_permissions(kick_members=True)
@@ -317,7 +603,7 @@ async def help_config(ctx):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
-    embed = discord.Embed(title='> Config Commands', description=f'`{prefox}set-welcome` - Sets the welcome channel and notifies when someone joins. \n \n `{prefox}set-mute` - Sets the mute role which is used in {prefox}mute \n \n `{prefox}set-report` - Sets the report log channel, Usage - **{prefox}set-report <#channel>** \n \n `{prefox}set-suggestion` - Sets the suggestion channel. \n \n `{prefox}links off` - Turns **off** all links and denies links to be sent. \n \n `{prefox}links on` - Turns **on** and allows links to be sent. \n \n `{prefox}verification <on/off/set>` - **Set/On/Off** a verification system.', color=0xadd8e6)
+    embed = discord.Embed(title='> Config Commands', description=f'`{prefox}set-welcome` - Sets the welcome channel and notifies when someone joins. \n \n `{prefox}set-mute` - Sets the mute role which is used in {prefox}mute \n \n `{prefox}set-report` - Sets the report log channel, Usage - **{prefox}set-report <#channel>** \n \n `{prefox}set-suggestion` - Sets the suggestion channel. \n \n `{prefox}links off` - Turns **off** all links and denies links to be sent. \n \n `{prefox}links on` - Turns **on** and allows links to be sent. \n \n `{prefox}verification <on/off/set>` - **On/Off/Set** a verification system. \n \n `{prefox}welcome <on/off/set>` - **On/Off/Set** Welcome Message. \n \n `{prefox}leave <on/off/set>` - **On/Off/Set** Leave Message. \n \n `{prefox}prefix` - Changes the **prefix** of RedSafe on that server.', color=0xadd8e6)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -335,7 +621,7 @@ async def help_general(ctx):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
-    embed = discord.Embed(title='> General Commands', descrition='', color=0xadd8e6)
+    embed = discord.Embed(title='> General Commands', descrition=f'`{prefox}support` - Gives the link to the **support server**. \n \n `{prefox}invite` - gives a invite that you can use to **invite the bot**. \n \n ', color=0xadd8e6)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
