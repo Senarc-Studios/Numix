@@ -128,6 +128,50 @@ async def on_member_remove(member):
 
 @client.group()
 @commands.has_permissions(administrator=True)
+async def suggestion(ctx):
+    if ctx.invoked_subcommand is None:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+
+        prefix = prefixes[str(ctx.guild.id)]
+        embed = discord.Embed(title='Suggestion', description=f'You can turn **on**, **off**, or **set** Suggestion Channels. \n Usage: \n \n `{prefix}suggestion on` - Turns on the Suggestion Module. \n `{prefix}suggestion off` - Turns off the Suggestion Module. \n `{prefix}suggesion set <#channel>` - Set the Suggesiton channel.', color=0x00ff00)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
+
+@suggestion.command(name='set')
+async def suggetion_set(ctx, string):
+
+    with open('onjoinconfigset.json', 'r') as f:
+        verify = json.load(f)
+
+    schannel = int(re.search(r'\d+', string).group(0))
+
+    verify[str(ctx.guild.id)] = schannel
+
+    with open('onjoinconfigset.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Suggestion Channel', description=f'The Suggestion Channel been set to `{string}`', color=0x00ff00)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+#@client.command()
+#async def suggest(ctx, message):
+#
+#    with open('suggestset.json', 'r') as f:
+#        prefixes = json.load(f)
+#
+#    prefixes = prefixes[str(channel.guild.id)]
+#
+#    with open('suggestset.json', 'r') as f:
+#        suggest = json.load(f)
+#
+#    suggest = joe[str(channel.guild.id)]
+#    if suggest == 'enabled':
+#        embed = discord.Embed(title='Suggestion', description=f'Suggestion from {member.name} -  \n \n {ctx.author.message}')
+
+@client.group()
+@commands.has_permissions(administrator=True)
 async def swear(ctx):
     if ctx.invoked_subcommand is None:
         with open('prefixes.json', 'r') as f:
@@ -138,28 +182,40 @@ async def swear(ctx):
         embed.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
+@client.command()
+async def bug(ctx):
+    webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758644853441298462/VTSA8bQ797HENYiQnhphnWpalE3UJHmod4tu27HjThs6HZl6pgIQLvtxCE1h1AyaJqMu')
+    embed = discord.Embed(title=f'New Bud from {mesage.author.name}', description=f'Bug - \n \n {message.author}', color=242424)
+    embed.set_footer(text=f'{guild.name} | {guild.id}', icon_url=redsafelogo)
+    webhook.add_embed(embed)
+    webhook.execute()
+    try:
+        to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
+    except IndexError:
+        pass
+    else:
+        link = await to_send.create_invite(max_age=0)
+        webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758644853441298462/VTSA8bQ797HENYiQnhphnWpalE3UJHmod4tu27HjThs6HZl6pgIQLvtxCE1h1AyaJqMu')
+        embed = discord.Embed(title=f'New Bud from {mesage.author.name}', description=f'Bug - \n \n {message.author}', color=242424)
+        embed.set_footer(text=f'{guild.name} | {guild.id}', icon_url=redsafelogo)
+        webhook.add_embed(embed)
+        webhook.execute()
+        await to_send.send(embed=embed)
+
 @swear.command(name="on")
 @commands.has_permissions(administrator=True)
 async def swear_on(ctx):
+        with open('swearfilterboi.json', 'r') as f:
+            verify = json.load(f)
 
- async def premium_check(ctx):
-         with open('rspremium.json', 'r') as f:
-             rscheck = json.load(f)
+        verify[str(ctx.guild.id)] = "enabled"
 
-         premium = rscheck[str(ctx.guild.id)]
-              if premium == "enabled":
+        with open('swearfilterboi.json', 'w') as f:
+            json.dump(verify, f, indent=4)
 
-                with open('swearfilterboi.json', 'r') as f:
-                   verify = json.load(f)
-
-                 verify[str(ctx.guild.id)] = "enabled"
-
-    with open('swearfilterboi.json', 'w') as f:
-        json.dump(verify, f, indent=4)
-
-    embed = discord.Embed(title='Swear Filter', description=f'The Swear Filter has been **Enabled**', color=0x00ff00)
-    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
-    await ctx.send(embed=embed)
+        embed = discord.Embed(title='Swear Filter', description=f'The Swear Filter has been **Enabled**', color=0x00ff00)
+        embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
 
 @swear.command(name="off")
 @commands.has_permissions(administrator=True)
