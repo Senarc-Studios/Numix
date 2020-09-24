@@ -142,10 +142,17 @@ async def swear(ctx):
 @commands.has_permissions(administrator=True)
 async def swear_on(ctx):
 
-    with open('swearfilterboi.json', 'r') as f:
-        verify = json.load(f)
+ async def premium_check(ctx):
+         with open('rspremium.json', 'r') as f:
+             rscheck = json.load(f)
 
-    verify[str(ctx.guild.id)] = "enabled"
+         premium = rscheck[str(ctx.guild.id)]
+              if premium == "enabled":
+
+                with open('swearfilterboi.json', 'r') as f:
+                   verify = json.load(f)
+
+                 verify[str(ctx.guild.id)] = "enabled"
 
     with open('swearfilterboi.json', 'w') as f:
         json.dump(verify, f, indent=4)
@@ -728,7 +735,7 @@ async def ban(self, ctx, member: MemberID, *, reason: str = None):
 
     try:
         await ctx.send(default.actionmessage("banned"))
-        audit_logging = discord.utils.get(ctx.guild.channels, name="kaiser-logs")
+        audit_logging = discord.utils.get(ctx.guild.channels, name="redsafe-logs")
         embed = discord.Embed(title=":hammer: User Banned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
         await audit_logging.send(embed=embed)
         embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been banned in **{ctx.guild.name}** for : ```{str(reason)}```', color=0xff0000)
@@ -749,7 +756,7 @@ async def unban(self, ctx, member: MemberID, *, reason: str = None):
     try:
         await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
         await ctx.send(default.actionmessage("unbanned"))
-        audit_logging = discord.utils.get(ctx.guild.channels, name="kaiser-logs")
+        audit_logging = discord.utils.get(ctx.guild.channels, name="redsafe-logs")
         embed = discord.Embed(title=":leaves: User unbanned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
         await audit_logging.send(embed=embed)
         embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been unbanned from **{ctx.guild.name}**', color=0x00ff00)
@@ -770,12 +777,14 @@ async def kick(ctx, member : discord.Member, reason=None):
         embed = discord.Embed(title="Attempt at Kick", color=0x37cdaf)
         embed.add_field(name="Command Issuer", value=ctx.message.author.mention, inline=True)
         embed.add_field(name="Attempted to kick but forgot reason", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
+        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     else:
         memberstr = str(member)
         await logs.send(ctx.message.author.mention + " has kicked person " + memberstr)
         kick = discord.Embed(title="Kick", color=0x37cdaf)
         kick.add_field(name="Moderator", value=ctx.message.author.mention, inline=True)
         kick.add_field(name="Kicked", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
+        kick.add_field(name='Reason', value=f'{reason}', inline=True)
         await ctx.send(embed=kick)
         message = f"You have been kicked from {ctx.guild.name} for {reason}"
         await member.send(message)
