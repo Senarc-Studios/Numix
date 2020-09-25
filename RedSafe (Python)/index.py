@@ -82,14 +82,14 @@ with open('badwords.txt','r') as f:
     bad_word_checker = re.compile(bad_words).search
 
 @client.event
-async def on_message(message):
+async def on_message(message, member):
     if not message.author.bot:
         with open('swearfilterboi.json', 'r') as f:
             prefixes = json.load(f)
         if prefixes[str(message.guild.id)] == "enabled":
             if bad_word_checker(message.content):
                 await message.delete()
-                embed = discord.Embed(text=f'{ctx.guild.name}', description=f"Hey! You aren't allowed swear on {ctx.guild.name}")
+                embed = discord.Embed(text=f'{message.guild.name}', description=f"Hey! You aren't allowed swear on {message.guild.name}")
                 embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
                 member.send(embed=embed)
     await client.process_commands(message)
@@ -142,14 +142,14 @@ async def suggestion(ctx):
 async def suggetion_set(ctx, string):
 
     with open('onjoinconfigset.json', 'r') as f:
-        verify = json.load(f)
+        channel = json.load(f)
 
     schannel = int(re.search(r'\d+', string).group(0))
 
-    verify[str(ctx.guild.id)] = schannel
+    channel[str(ctx.guild.id)] = schannel
 
     with open('onjoinconfigset.json', 'w') as f:
-        json.dump(verify, f, indent=4)
+        json.dump(channel, f, indent=4)
 
     embed = discord.Embed(title='Suggestion Channel', description=f'The Suggestion Channel been set to `{string}`', color=0x00ff00)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
@@ -829,7 +829,11 @@ async def unban(self, ctx, member: MemberID, *, reason: str = None):
 async def kick(ctx, member : discord.Member, reason=None):
     logs = client.get_channel(LOGGING_CHANNEL)
     if reason == None:
-        await ctx.send(f"Woah {ctx.author.mention}, Make sure you provide a reason!")
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+        prefox = prefixes[str(ctx.guild.id)]
+
+        await ctx.send(f"Incorrect Usage, try {prefox}kick <@user> <reason>")
         embed = discord.Embed(title="Attempt at Kick", color=0x37cdaf)
         embed.add_field(name="Command Issuer", value=ctx.message.author.mention, inline=True)
         embed.add_field(name="Attempted to kick but forgot reason", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
