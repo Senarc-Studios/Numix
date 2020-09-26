@@ -9,7 +9,10 @@ from discord.utils import get
 from discord.ext import commands,tasks
 from discord.ext.commands import errors
 import re
-
+import os
+import youtube_dl
+from discord.utils import get
+import shutil
 
 redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
 client = discord.Client()
@@ -36,7 +39,7 @@ async def status_task():
         await asyncio.sleep(10)
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status2))
         await asyncio.sleep(10)
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status3))
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status3))
         await asyncio.sleep(10)
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{count} Servers"))
         await asyncio.sleep(10)
@@ -55,6 +58,17 @@ async def on_ready():
         count +=1
 
     client.loop.create_task(status_task())
+
+@client.command()
+@commands.is_owner()
+async def shutdown(ctx):
+    embed = discord.Embed(title='RedSafe ShutDown', description='The Bot is being **Shut Down** the owner, `Benitz Original#1317`', color=0xff0000)
+    embed.set_footer(text='RedSafe ShutDown', icon_url=redsafelogo)
+    embed.set_image(url='https://miro.medium.com/max/800/1*TTOJz35-lJmjWGj59786GA.png')
+    await ctx.send(embed=embed)
+    await client.change_presence(status=discord.Status.offline)
+    await ctx.bot.logout()
+    await login(TOKEN, bot=True)
 
 @client.event
 async def on_message(ctx):
@@ -82,14 +96,14 @@ with open('badwords.txt','r') as f:
     bad_word_checker = re.compile(bad_words).search
 
 @client.event
-async def on_message(message, member):
+async def on_message(message):
     if not message.author.bot:
         with open('swearfilterboi.json', 'r') as f:
             prefixes = json.load(f)
         if prefixes[str(message.guild.id)] == "enabled":
             if bad_word_checker(message.content):
                 await message.delete()
-                embed = discord.Embed(text=f'{message.guild.name}', description=f"Hey! You aren't allowed swear on {message.guild.name}")
+                embed = discord.Embed(text=f'{guild.name}', description=f"Hey! You aren't allowed swear on {guild.name}")
                 embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
                 member.send(embed=embed)
     await client.process_commands(message)
@@ -125,6 +139,127 @@ async def on_member_remove(member):
         embed.set_image(url='https://media.giphy.com/media/3o6ZtcOxQ9vi8vb9Cg/giphy.gif')
         embed.set_thumbnail(url=member.avatar_url)
         await channel.send(embed=embed)
+
+@client.command(pass_context=True)
+async def join(ctx):
+    global voice
+    channel = ctx.message.author.voice.channel
+    voice = get(client.voice.clients, guild=ctx.guild)
+
+    if voice and voice.is_connected():
+        await voice.move_to(channel)
+    else:
+        voice = await channel.connect()
+    await ctx.send(f'RedSafe has Joined {channel}')
+
+@client.command()
+async def leave(ctx):
+    channel = ctx.message.author.voice.channel
+    voice = get(client.voice_clients, guild=ctx.guild)
+
+    if voice and voice.is_connected():
+        await voice.disconnect()
+        await ctx.send(f'RedSafe has disconnected from {channel}')
+    else:
+        await ctx.send("RedSafe isn't connected to any Voice Channels.")
+
+#@client.command(pass_context=True, aliases=['p', 'pla'])
+#async def play(ctx, url: str):
+#
+#    def check_queue():
+#        Queue_infile = os.path.isdir('./Queue')
+#        if Queue_infile is True:
+#            DIR = os.path.abspath(os.path.realpath('Queue'))
+#            length = len(os.listdir(DIR))
+#            still_q = length - 1
+#            try:
+#                first_file = os.listdir(DIR)[0]
+#            except:
+#                print('No more song(s) has been queued\n')
+#                queues.clear()
+#                return
+#            main_location = os.path.dirname(os.path.realpath(__file__))
+#            song_path = os.abspath(os.path.realpath('Queue') + '\\' + first_file)
+#            if length != 0:
+#                print('Song done, Playing next queued song.\n')
+#                print(f'Song still in queue: {still_q}')
+#                song_there = os.path.is_file('song.mp3')
+#                if song_there:
+#                    os.remove('song.mp3')
+#                shutil.move(song_path, main_location)
+#                for file in os.listdir('./'):
+#                    if file.endswith('.mp3'):
+#                        os.rename(file, 'song.mp3')
+#
+#                voice.play(discord.FFmpegPCMAudio('song.mp3'), after=lambda e: check_queue())
+#                voice.source = discord.PCMVolumeTransformer(voice.source)
+#                voice.source.volume = 0.07
+#
+#            else:
+#                queues.clear()
+#                return
+#        else:
+#            queues.clear()
+#            print('No songs were queued before the ending of the last song.\n')
+#
+#
+#
+#    sond_there = os.path.isfile('song.mp3')
+#    try:
+#        if song_there:
+#            os.remove('song.mp3')
+#            queue.clear()
+#            print('Removed old song file')
+#    except PermissionError:
+#            print("Trying to delete song File, but it's being played.")
+#            await ctx.send('ERROR: Music Playing.')
+#            return
+#
+#    Queue_infile = os.path.isdir('./Queue')
+#    try:
+#        Queue_folder = './Queue'
+#        if Queue_infile is True:
+#            print('Removed old Queue Folder')
+#            shutil.rmtree(Queue_folder)
+#    except:
+#        print('No old Queue folder')
+#
+#    await ctx.send('Getting things ready!')
+#
+#    voice = get(client.voice_clients, guild=ctx.guild)
+#
+#    ydl_opts = {
+#    'format': 'bestaudio/best',
+#    'quiet': True,
+#    'postprocessors': [{
+#            'key': 'FFmpegExtractAudio',
+#            'preferredcodec': 'mp3'
+#            'preferredquality': '192',
+#        }],
+#    }
+#
+#    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+#        print('Downloading audio\n')
+#        ydl.download([url])
+#
+#    for file in os.listdir('./'):
+#        if file.endswith('.mp3'):
+#            name = file
+#            print(f'Rename File: {file}\n')
+#            os.rename(file, 'song.mp3')
+#
+#    voice.play(discord.FFmpegPCMAudio('song.mp3'), after=lambda e: check_queue())
+#    voice.source = discord.PCMVolumeTransformer(voice.source)
+#    voice.source.volume = 0.07
+#
+#    nname = name.rsplit('-', 2)
+#    embed = discord.embed(title=f'Playing Music in {channel}', description=f'{author.name} is playing {nname[0]}', color=242424)
+#    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+#    await ctx.send(embed=embed)
+#    print(f'Playing {nname[0]} on {ctx.guild.name}')
+#
+#@client.command(pass_through=True, aliases=['pa', 'pau'])
+#async def pause(ctx):
 
 @client.group()
 @commands.has_permissions(administrator=True)
@@ -185,7 +320,7 @@ async def swear(ctx):
 @client.command()
 async def bug(ctx):
     webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758644853441298462/VTSA8bQ797HENYiQnhphnWpalE3UJHmod4tu27HjThs6HZl6pgIQLvtxCE1h1AyaJqMu')
-    embed = discord.Embed(title=f'New Bud from {mesage.author.name}', description=f'Bug - \n \n {message.author}', color=242424)
+    embed = discord.Embed(title=f'New Bud from {message.author.name}', description=f'Bug - \n \n {message.author}', color=242424)
     embed.set_footer(text=f'{guild.name} | {guild.id}', icon_url=redsafelogo)
     webhook.add_embed(embed)
     webhook.execute()
@@ -302,7 +437,7 @@ async def welcome_set(ctx, string):
 
 @client.group()
 @commands.has_permissions(administrator=True)
-async def leave(ctx):
+async def leavemsg(ctx):
     if ctx.invoked_subcommand is None:
         with open('prefixes.json', 'r') as f:
             prefixes = json.load(f)
@@ -312,9 +447,9 @@ async def leave(ctx):
         embed.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
-@leave.command(name="on")
+@leavemsg.command(name="on")
 @commands.has_permissions(administrator=True)
-async def leave_on(ctx):
+async def leavemsg_on(ctx):
 
     with open('onleaveconfig.json', 'r') as f:
         verify = json.load(f)
@@ -328,9 +463,9 @@ async def leave_on(ctx):
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
-@leave.command(name="off")
+@leavemsg.command(name="off")
 @commands.has_permissions(administrator=True)
-async def leave_off(ctx):
+async def leavemsg_off(ctx):
 
     with open('onleaveconfig.json', 'r') as f:
         verify = json.load(f)
@@ -344,9 +479,9 @@ async def leave_off(ctx):
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
-@leave.command(name="set")
+@leavemsg.command(name="set")
 @commands.has_permissions(administrator=True)
-async def leave_set(ctx, string):
+async def leavemsg_set(ctx, string):
 
     with open('onleaveconfigset.json', 'r') as f:
         verify = json.load(f)
