@@ -30,7 +30,7 @@ client.remove_command('help')
 
 status4 = 'You type ".help"'
 status2 = 'Discord API'
-status3 = 'RedSafe Premium'
+status3 = 'WireFox Premium'
 
 async def status_task():
     while True:
@@ -294,7 +294,7 @@ async def suggetion_set(ctx, string):
 #async def suggest(ctx, message):
 #
 #    with open('suggestset.json', 'r') as f:
-#        prefixes = json.load(f)
+#       prefixes = json.load(f)
 #
 #    prefixes = prefixes[str(channel.guild.id)]
 #
@@ -303,7 +303,7 @@ async def suggetion_set(ctx, string):
 #
 #    suggest = joe[str(channel.guild.id)]
 #    if suggest == 'enabled':
-#        embed = discord.Embed(title='Suggestion', description=f'Suggestion from {member.name} -  \n \n {ctx.author.message}')
+#       embed = discord.Embed(title='Suggestion', description=f'Suggestion from {member.name} -  \n \n {ctx.author.message}')
 
 @client.group()
 @commands.has_permissions(administrator=True)
@@ -318,24 +318,19 @@ async def swear(ctx):
         await ctx.send(embed=embed)
 
 @client.command()
-async def bug(ctx):
-    webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758644853441298462/VTSA8bQ797HENYiQnhphnWpalE3UJHmod4tu27HjThs6HZl6pgIQLvtxCE1h1AyaJqMu')
-    embed = discord.Embed(title=f'New Bud from {message.author.name}', description=f'Bug - \n \n {message.author}', color=242424)
-    embed.set_footer(text=f'{guild.name} | {guild.id}', icon_url=redsafelogo)
-    webhook.add_embed(embed)
-    webhook.execute()
-    try:
-        to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
-    except IndexError:
-        pass
-    else:
-        link = await to_send.create_invite(max_age=0)
+async def bug(ctx, *, reason: commands.clean_content = None):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
+    if reason:
         webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758644853441298462/VTSA8bQ797HENYiQnhphnWpalE3UJHmod4tu27HjThs6HZl6pgIQLvtxCE1h1AyaJqMu')
-        embed = discord.Embed(title=f'New Bud from {mesage.author.name}', description=f'Bug - \n \n {message.author}', color=242424)
-        embed.set_footer(text=f'{guild.name} | {guild.id}', icon_url=redsafelogo)
+        embed = DiscordEmbed(title=f'New Bug from {ctx.author.name}', description=f'Bug - \n \n {reason}', color=242424)
+        embed.set_footer(text=f'{ctx.guild.name} | {ctx.guild.id}', icon_url=redsafelogo)
         webhook.add_embed(embed)
         webhook.execute()
-        await to_send.send(embed=embed)
+        await ctx.send("I have sent a Bug Report to the Developers")
+    else:
+        await ctx.send("Please Provide Subtext")
 
 @swear.command(name="on")
 @commands.has_permissions(administrator=True)
@@ -747,8 +742,6 @@ async def verification_set(ctx, role: discord.Role):
     embed = discord.Embed(title='Verification', description=f'The Verification System role been set to `{role}`', color=0x00ff00)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
-
-
 
 @client.command()
 async def verify(ctx):
