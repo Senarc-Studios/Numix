@@ -17,6 +17,8 @@ import shutil
 redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
 client = discord.Client()
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.FSmA_URgc0pT71aGfLPtOaoaSXM"
+bversion = '1.5.3'
+devs = '`Benitz Original#1317` and `Kittens#3154`'
 
 def prefix(client, message):
     with open('prefixes.json', 'r') as f:
@@ -30,7 +32,7 @@ client.remove_command('help')
 
 status4 = 'You type ".help"'
 status2 = 'Discord API'
-status3 = 'WireFox Premium'
+status3 = 'RedSafe Premium'
 
 async def status_task():
     while True:
@@ -48,8 +50,19 @@ async def status_task():
 
 @client.event
 async def on_ready():
+    before_ws = int(round(client.latency * 1000, 1))
+    webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/760023398838960129/xYvZWgjgv5FpJAjUxaRCmnDovrtECKqSR5MCr-W607QdZ4qmxaAqvegRvQuh5n_U2LjT')
+    embed = DiscordEmbed(title='Start-Up', description=f'RedSafe is Online.', color=0x00ff00)
+    embed.add_embed_field(name='Bot Name:', value=f'**RedSafe Python**', inline=True)
+    embed.add_embed_field(name='Logged In with ID:', value=f'`{client.user.id}`', inline=True)
+    embed.add_embed_field(name='Ping:', value=f'**{before_ws}**ms', inline=True)
+    embed.add_embed_field(name=':warning: NOTE! :warning:', value='This Bot is still in **beta stage** and will take a while to release.', inline=False)
+    embed.set_timestamp()
+    webhook.add_embed(embed)
+    webhook.execute()
     client.loop.create_task(status_task())
     global count
+
     print('Bot ready')
     print("RedSafe Active!")
     count = 0
@@ -79,6 +92,23 @@ async def on_message(ctx):
         embed.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.channel.send(embed=embed)
 
+@client.command()
+async def about(ctx):
+
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
+
+    with open('rspremium.json', 'r') as f:
+        rscheck = json.load(f)
+
+    ping = int(round(client.latency * 1000, 1))
+    premium = rscheck[str(ctx.guild.id)]
+    embed = discord.Embed(title='RedSafe Bot', description=f'\n**RedSafe** is a Powerful Moderation, Staff-Help, Music, Multi-Purpose Bot that you can **[invite](http://redsafe.bot.nu)** and use on **your server**.\n\n :stopwatch:  **Version** - {bversion} \n\n :computer:  **Developers** - {devs} \n\n :key:  **Prefix** - `{prefox}` \n\n :tada:  **Premium** - **{premium}** \n\n :globe_with_meridians:  **Language** - **Discord.py** \n\n :zap:  **Ping** - {ping}``', color=0x242424)
+    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+
 
 #@client.event
 #async def on_message(ctx):
@@ -104,7 +134,7 @@ async def on_message(message):
             if bad_word_checker(message.content):
                 await message.delete()
                 embed = discord.Embed(text=f'{guild.name}', description=f"Hey! You aren't allowed swear on {guild.name}")
-                embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+                embed.set_footer(text='RedSafe', icon_url=redsafelogo)
                 member.send(embed=embed)
     await client.process_commands(message)
 
@@ -261,6 +291,10 @@ async def leave(ctx):
 #@client.command(pass_through=True, aliases=['pa', 'pau'])
 #async def pause(ctx):
 
+@client.command()
+async def bc(ctx):
+    await ctx.send('No Beta Commands on progress at the moment.')
+
 @client.group()
 @commands.has_permissions(administrator=True)
 async def suggestion(ctx):
@@ -276,34 +310,50 @@ async def suggestion(ctx):
 @suggestion.command(name='set')
 async def suggetion_set(ctx, string):
 
-    with open('onjoinconfigset.json', 'r') as f:
+    with open('suggestcha.json', 'r') as f:
         channel = json.load(f)
 
     schannel = int(re.search(r'\d+', string).group(0))
 
     channel[str(ctx.guild.id)] = schannel
 
-    with open('onjoinconfigset.json', 'w') as f:
+    with open('suggestcha.json', 'w') as f:
         json.dump(channel, f, indent=4)
 
-    embed = discord.Embed(title='Suggestion Channel', description=f'The Suggestion Channel been set to `{string}`', color=0x00ff00)
+    embed = discord.Embed(title='Suggestion Channel', description=f'The Suggestion Channel been set to {string}', color=0x00ff00)
     embed.set_footer(text='RedSafe', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
-#@client.command()
-#async def suggest(ctx, message):
-#
-#    with open('suggestset.json', 'r') as f:
-#       prefixes = json.load(f)
-#
-#    prefixes = prefixes[str(channel.guild.id)]
-#
-#    with open('suggestset.json', 'r') as f:
-#        suggest = json.load(f)
-#
-#    suggest = joe[str(channel.guild.id)]
-#    if suggest == 'enabled':
-#       embed = discord.Embed(title='Suggestion', description=f'Suggestion from {member.name} -  \n \n {ctx.author.message}')
+@suggestion.command(name='on')
+async def suggestion_on(ctx):
+    with open('suggestset.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "enabled"
+
+    with open('suggestset.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    embed = discord.Embed(title='Suggestion', description=f'The Suggestion Module has been **Enabled**', color=0x00ff00)
+    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
+
+@client.command()
+async def suggest(ctx, message, channel, string):
+
+    with open('suggestcha.json', 'r') as f:
+       prefixes = json.load(f)
+
+    prefixes = prefixes[str(channel.guild.id)]
+
+    with open('suggestset.json', 'r') as f:
+        suggest = json.load(f)
+
+    suggest = joe[str(channel.guild.id)]
+    if suggest == 'enabled':
+        channel = client.get_channel(prefixes)
+        embed = discord.Embed(title='Suggestion', description=f'Suggestion from {author.name} -  \n \n {string}')
+        await ctx.send(embed=embed)
 
 @client.group()
 @commands.has_permissions(administrator=True)
@@ -328,9 +378,17 @@ async def bug(ctx, *, reason: commands.clean_content = None):
         embed.set_footer(text=f'{ctx.guild.name} | {ctx.guild.id}', icon_url=redsafelogo)
         webhook.add_embed(embed)
         webhook.execute()
-        await ctx.send("I have sent a Bug Report to the Developers")
+        rs = discord.Embed(title='RedSafe Bugs', description=f'The bug has been reported to RedSafe Developers. Thank you for reporting the bug.\n You can join RedSafe support with `{prefox}support`', color=0x00ff00)
+        rs.set_footer(text='RedSafe Support', icon_url=redsafelogo)
+        await ctx.send(embed=rs)
+        time.sleep(10)
+        await client.delete_message(messages)
     else:
-        await ctx.send("Please Provide Subtext")
+        nos = discord.Embed(title='RedSafe Bugs', description=f"You have to do `{prefox}bug <bugreport>` to send a bug, `{prefox}bug` doesn't do anything.\n No report has been sent to the Developers.", color=0xff0000)
+        nos.set_footer(text='RedSafe', icon_url=redsafelogo)
+        await ctx.send(embed=nos)
+        time.sleep(10)
+        await client.delete_message(messages)
 
 @swear.command(name="on")
 @commands.has_permissions(administrator=True)
