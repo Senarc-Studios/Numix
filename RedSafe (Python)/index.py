@@ -13,12 +13,16 @@ import os
 import youtube_dl
 from discord.utils import get
 import shutil
+from discord.ext.commands import has_permissions, MissingPermissions
 
-redsafelogo = 'https://cdn.discordapp.com/attachments/731716869576327201/743393021936140358/RedSafe_Logo1.png'
+redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/3f00cd933cf382a9f06212367676e4af.png?size=1024'
 client = discord.Client()
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.FSmA_URgc0pT71aGfLPtOaoaSXM"
-bversion = '1.5.3'
+bversion = '1.5.7'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
+botname = 'RedDead'
+cmd = '26'
+events = '9'
 
 def prefix(client, message):
     with open('prefixes.json', 'r') as f:
@@ -32,7 +36,7 @@ client.remove_command('help')
 
 status4 = 'You type ".help"'
 status2 = 'Discord API'
-status3 = 'RedSafe Premium'
+status3 = f'{botname} Premium'
 
 async def status_task():
     while True:
@@ -74,9 +78,21 @@ async def on_ready():
 
 @client.command()
 @commands.is_owner()
+async def reboot(ctx):
+    await ctx.send(f'{botname} is Rebooting...')
+    await reconnect(TOKEN)
+
+@client.command(pass_context=True)
+@commands.is_owner()
+async def restart(ctx):
+    await ctx.send("Restarting Bot <a:loading_colored:744984714624106528>")
+    await login(TOKEN, bot=True)
+
+@client.command()
+@commands.is_owner()
 async def shutdown(ctx):
-    embed = discord.Embed(title='RedSafe ShutDown', description='The Bot is being **Shut Down** the owner, `Benitz Original#1317`', color=0xff0000)
-    embed.set_footer(text='RedSafe ShutDown', icon_url=redsafelogo)
+    embed = discord.Embed(title=f'{botname} ShutDown', description='The Bot is being **Shut Down** the owner, `Benitz Original#1317`', color=0xff0000)
+    embed.set_footer(text=f'{botname} ShutDown', icon_url=redsafelogo)
     embed.set_image(url='https://miro.medium.com/max/800/1*TTOJz35-lJmjWGj59786GA.png')
     await ctx.send(embed=embed)
     await client.change_presence(status=discord.Status.offline)
@@ -89,8 +105,14 @@ async def on_message(ctx):
         with open('prefixes.json', 'r') as f:
             prefixes = json.load(f)
         embed = discord.Embed(title='> Prefix', description=f"""The current prefix for this server is set to `{prefixes[str(ctx.guild.id)]}`""", color=0x00ff00)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=botname, icon_url=redsafelogo)
         await ctx.channel.send(embed=embed)
+
+@client.command()
+async def invite(ctx):
+    embed = discord.Embed(title=f'{botname}', descrition=f'> [Bot Invite](http://{botname}.bot.nu) \n > [Support Server](https://discord.com/cRTnVaQ) \n > [Website]()')
+    embed.set_footer(text=botname, icon_url=redsafelogo)
+    ctx.send(embed=embed)
 
 @client.command()
 async def about(ctx):
@@ -104,8 +126,8 @@ async def about(ctx):
 
     ping = int(round(client.latency * 1000, 1))
     premium = rscheck[str(ctx.guild.id)]
-    embed = discord.Embed(title='RedSafe Bot', description=f'\n**RedSafe** is a Powerful Moderation, Staff-Help, Music, Multi-Purpose Bot that you can **[invite](http://redsafe.bot.nu)** and use on **your server**.\n\n :stopwatch:  **Version** - {bversion} \n\n :computer:  **Developers** - {devs} \n\n :key:  **Prefix** - `{prefox}` \n\n :tada:  **Premium** - **{premium}** \n\n :globe_with_meridians:  **Language** - **Discord.py** \n\n :zap:  **Ping** - {ping}``', color=0x242424)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed = discord.Embed(title=f'{botname} Bot', description=f'\n**{botname}** is a Powerful Moderation, Staff-Help, Music, Multi-Purpose Bot that you can **[invite](http://{botname}.bot.nu)** and use on **your server**.\n\n :stopwatch:  **Version** - {bversion} \n\n :computer:  **Developers** - {devs} \n\n :key:  **Prefix** - `{prefox}` \n\n :tada:  **Premium** - **{premium}** \n\n :globe_with_meridians:  **Language** - **Discord.py** \n\n :zap:  **Ping** - `{ping}`m/s \n\n :pen_ballpoint: **Commands** - `{cmd}` **Commands Loaded** \n\n :rotating_light: **Events** - `{events}` **Events Loaded**', color=242424)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 
@@ -134,8 +156,10 @@ async def on_message(message):
             if bad_word_checker(message.content):
                 await message.delete()
                 embed = discord.Embed(text=f'{guild.name}', description=f"Hey! You aren't allowed swear on {guild.name}")
-                embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+                embed.set_footer(text=botname, icon_url=redsafelogo)
                 member.send(embed=embed)
+        else:
+            print('')
     await client.process_commands(message)
 
 @client.event
@@ -167,6 +191,7 @@ async def on_member_remove(member):
         channel = client.get_channel(prefix)
         embed = discord.Embed(title=f'{member.name} Left', description=f'{member.name} Left **{member.guild.name}** Bye! \n Hope you join back.', color=0xff0000)
         embed.set_image(url='https://media.giphy.com/media/3o6ZtcOxQ9vi8vb9Cg/giphy.gif')
+        embed.set_footer(text=botname, icon_url=redsafelogo)
         embed.set_thumbnail(url=member.avatar_url)
         await channel.send(embed=embed)
 
@@ -293,7 +318,7 @@ async def leave(ctx):
 
 @client.command()
 async def bc(ctx):
-    await ctx.send('No Beta Commands on progress at the moment.')
+    await ctx.send('<info:>')
 
 @client.group()
 @commands.has_permissions(administrator=True)
@@ -304,7 +329,7 @@ async def suggestion(ctx):
 
         prefix = prefixes[str(ctx.guild.id)]
         embed = discord.Embed(title='Suggestion', description=f'You can turn **on**, **off**, or **set** Suggestion Channels. \n Usage: \n \n `{prefix}suggestion on` - Turns on the Suggestion Module. \n `{prefix}suggestion off` - Turns off the Suggestion Module. \n `{prefix}suggesion set <#channel>` - Set the Suggesiton channel.', color=0x00ff00)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=botname, icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @suggestion.command(name='set')
@@ -321,7 +346,7 @@ async def suggetion_set(ctx, string):
         json.dump(channel, f, indent=4)
 
     embed = discord.Embed(title='Suggestion Channel', description=f'The Suggestion Channel been set to {string}', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @suggestion.command(name='on')
@@ -335,24 +360,52 @@ async def suggestion_on(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Suggestion', description=f'The Suggestion Module has been **Enabled**', color=0x00ff00)
-    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
+#Warn command
 @client.command()
-async def suggest(ctx, message, channel, string):
+@has_permissions(kick_members=True)
+async def warn(ctx, member:discord.Member, *, reason=None):
+    arg=reason
+    author=ctx.author
+    guild=ctx.message.guild
+    overwritee = discord.PermissionOverwrite()
+    overwrite = discord.PermissionOverwrite()
+    channel = get(guild.text_channels, name='warn-logs')
 
+    if channel is None:
+        channel = await guild.create_text_channel('warn-logs')
+        overwritee.read_messages = False
+        overwritee.read_message_history = False
+        overwritee.send_messages = False
+        overwrite.read_messages = True
+        overwrite.read_message_history = True
+        overwrite.send_messages = True
+        await channel.set_permissions(guild.default_role, overwrite=overwritee)
+
+    if member is None:
+        await ctx.send("Please specify a user and/or reason!")
+
+        await channel.send(f'{member.mention} got warned for: ```\n{arg}\n``` Warned by: {author.mention}')
+        await member.send(f'You got warned for: ```\n{arg}\n``` Warned by: {author} Warned on: **{guild.name}**')
+        await ctx.send(f'{member.mention} got warned for: ```\n{arg}\n``` Warned by: {author.mention}')
+        await ctx.message.delete()
+
+@client.command()
+async def suggest(ctx, str, *, reason: commands.clean_content = None):
     with open('suggestcha.json', 'r') as f:
-       prefixes = json.load(f)
+        prefixes = json.load(f)
 
-    prefixes = prefixes[str(channel.guild.id)]
+    prefix = prefixes[str(channel.guild.id)]
 
     with open('suggestset.json', 'r') as f:
         suggest = json.load(f)
 
     suggest = joe[str(channel.guild.id)]
     if suggest == 'enabled':
-        channel = client.get_channel(prefixes)
-        embed = discord.Embed(title='Suggestion', description=f'Suggestion from {author.name} -  \n \n {string}')
+        channel = client.get_channel(prefix)
+        embed = discord.Embed(title='Suggestion', description=f'Suggestion from {author.name} -  \n \n {reason}')
         await ctx.send(embed=embed)
 
 @client.group()
@@ -364,7 +417,7 @@ async def swear(ctx):
 
         prefix = prefixes[str(ctx.guild.id)]
         embed = discord.Embed(title='Swear Filter', description=f'You can turn **on**, or **off** the Swear Filter if you have RedSafe Premium. \n Usage: \n \n `{prefix}swear on` - Turns on the Swear Filter. \n `{prefix}swear off` - Turns off the Swear Filter.', color=0x00ff00)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=botname, icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @client.command()
@@ -378,17 +431,17 @@ async def bug(ctx, *, reason: commands.clean_content = None):
         embed.set_footer(text=f'{ctx.guild.name} | {ctx.guild.id}', icon_url=redsafelogo)
         webhook.add_embed(embed)
         webhook.execute()
-        rs = discord.Embed(title='RedSafe Bugs', description=f'The bug has been reported to RedSafe Developers. Thank you for reporting the bug.\n You can join RedSafe support with `{prefox}support`', color=0x00ff00)
+        rs = discord.Embed(title=f'{botname} Bugs', description=f'The bug has been reported to RedSafe Developers. Thank you for reporting the bug.\n You can join RedSafe support with `{prefox}invite`', color=0x00ff00)
         rs.set_footer(text='RedSafe Support', icon_url=redsafelogo)
         await ctx.send(embed=rs)
         time.sleep(10)
-        await client.delete_message(messages)
+        await client.delete_message(message)
     else:
         nos = discord.Embed(title='RedSafe Bugs', description=f"You have to do `{prefox}bug <bugreport>` to send a bug, `{prefox}bug` doesn't do anything.\n No report has been sent to the Developers.", color=0xff0000)
         nos.set_footer(text='RedSafe', icon_url=redsafelogo)
         await ctx.send(embed=nos)
         time.sleep(10)
-        await client.delete_message(messages)
+        await client.delete_message(message)
 
 @swear.command(name="on")
 @commands.has_permissions(administrator=True)
@@ -597,6 +650,39 @@ async def prefix_set(ctx, prefix):
 async def on_guild_join(guild):
     global count
     count +=1
+
+    with open('swearfilterboi.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('swearfilterboi.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    with open('onjoinconfig.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('onjoinconfig.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    with open('onleaveconfig.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('onleaveconfig.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
+    with open('verifysetting.json', 'r') as f:
+        verify = json.load(f)
+
+    verify[str(ctx.guild.id)] = "disabled"
+
+    with open('verifysetting.json', 'w') as f:
+        json.dump(verify, f, indent=4)
+
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
 
@@ -844,7 +930,7 @@ async def help(ctx):
             prefixes = json.load(f)
         prefox = prefixes[str(ctx.guild.id)]
         embed = discord.Embed(title="> Command Categories", description=f'`config` - Config Commands \n `moderation` - Moderation Commands \n `general` - General commands anyone can use. \n `staff` - Commands that will help the staff members. \n `music` - Music Commands! \n `premium` - **Premium** Commands that will only work if you get **premium**. \n \n *You can do "{prefox}help <category>" to view the commands.*', color=0xadd8e6)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=botname, icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @help.command(name="config")
@@ -853,7 +939,7 @@ async def help_config(ctx):
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Config Commands', description=f'`{prefox}set-welcome` - Sets the welcome channel and notifies when someone joins. \n \n `{prefox}set-mute` - Sets the mute role which is used in {prefox}mute \n \n `{prefox}set-report` - Sets the report log channel, Usage - **{prefox}set-report <#channel>** \n \n `{prefox}set-suggestion` - Sets the suggestion channel. \n \n `{prefox}links off` - Turns **off** all links and denies links to be sent. \n \n `{prefox}links on` - Turns **on** and allows links to be sent. \n \n `{prefox}verification <on/off/set>` - **On/Off/Set** a verification system. \n \n `{prefox}welcome <on/off/set>` - **On/Off/Set** Welcome Message. \n \n `{prefox}leave <on/off/set>` - **On/Off/Set** Leave Message. \n \n `{prefox}prefix` - Changes the **prefix** of RedSafe on that server.', color=0xadd8e6)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="moderation")
@@ -862,7 +948,7 @@ async def help_moderation(ctx):
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Moderation Commands', description='', color=0xadd8e6)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="general")
@@ -871,7 +957,7 @@ async def help_general(ctx):
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> General Commands', descrition=f'`{prefox}support` - Gives the link to the **support server**. \n \n `{prefox}invite` - gives a invite that you can use to **invite the bot**. \n \n ', color=0xadd8e6)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="staff")
@@ -880,7 +966,7 @@ async def help_staff(ctx):
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Staff Commands', description='', color=0xadd8e6)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="music")
@@ -889,7 +975,7 @@ async def help_music(ctx):
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Music Commands', description='', color=0xadd8e6)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @help.command(name="premium")
@@ -898,7 +984,7 @@ async def help_premium(ctx):
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
     embed = discord.Embed(title='> Premium Commands', description='', color=0xff0000)
-    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @client.command()
@@ -909,6 +995,8 @@ async def ping(ctx):
     message = await ctx.send("🏓 Pong!")
     ping = (time.monotonic() - before) * 1000
     await message.edit(content=f":zap: WS: {before_ws}ms  | :star:  REST: {int(ping)}ms")
+
+
 
 @client.command()
 async def userinfo(ctx, user: discord.Member = None):
@@ -931,7 +1019,7 @@ async def userinfo(ctx, user: discord.Member = None):
     embed.add_field(name='Join Date', value=user.joined_at.__format__('%A, %d. %B %Y @ %H:%M:%S'))
     embed.set_thumbnail(url=user.avatar_url)
     embed.set_author(name=user.name, icon_url=user.avatar_url)
-    embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @client.command()
@@ -952,7 +1040,7 @@ async def serverinfo(ctx):
     embed.add_field(name='Created At', value=ctx.guild.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S'))
     embed.set_thumbnail(url=ctx.guild.icon_url)
     embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-    embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
+    embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 class MemberID(commands.Converter):
@@ -981,7 +1069,7 @@ async def ban(self, ctx, member: MemberID, *, reason: str = None):
         embed = discord.Embed(title=":hammer: User Banned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
         await audit_logging.send(embed=embed)
         embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been banned in **{ctx.guild.name}** for : ```{str(reason)}```', color=0xff0000)
-        embed2.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed2.set_footer(text=botname, icon_url=redsafelogo)
         await member.send(embed=embed2)
         await ctx.guild.ban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
     except Exception as e:
@@ -1002,7 +1090,7 @@ async def unban(self, ctx, member: MemberID, *, reason: str = None):
         embed = discord.Embed(title=":leaves: User unbanned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
         await audit_logging.send(embed=embed)
         embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been unbanned from **{ctx.guild.name}**', color=0x00ff00)
-        embed2.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=botname, icon_url=redsafelogo)
         await member.send(embed=embed2)
     except Exception as e:
         if "object has no attribute" in str(e):
@@ -1023,7 +1111,7 @@ async def kick(ctx, member : discord.Member, reason=None):
         embed = discord.Embed(title="Attempt at Kick", color=0x37cdaf)
         embed.add_field(name="Command Issuer", value=ctx.message.author.mention, inline=True)
         embed.add_field(name="Attempted to kick but forgot reason", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=botname, icon_url=redsafelogo)
     else:
         memberstr = str(member)
         await logs.send(ctx.message.author.mention + " has kicked person " + memberstr)
@@ -1031,9 +1119,11 @@ async def kick(ctx, member : discord.Member, reason=None):
         kick.add_field(name="Moderator", value=ctx.message.author.mention, inline=True)
         kick.add_field(name="Kicked", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
         kick.add_field(name='Reason', value=f'{reason}', inline=True)
+        kick.set_footer(text=botname, icon_url=redsafelogo)
         await ctx.send(embed=kick)
-        message = f"You have been kicked from {ctx.guild.name} for {reason}"
-        await member.send(message)
+        embed = discord.Embed(title=f'{ctx.guild.name}', description=f"You've been kicked from {ctx.guild.name}")
+        embed.set_footer(text=botname, icon_url=redsafelogo)
+        await member.send(embed=embed)
         await member.kick(reason=f"Moderator:{ctx.message.author.name} Reason:" + reason)
 
 
