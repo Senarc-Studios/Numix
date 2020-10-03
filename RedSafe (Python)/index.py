@@ -77,7 +77,7 @@ async def on_ready():
     global count
 
     print('Bot ready')
-    print("RedSafe Active!")
+    print(f"{botname} Active!")
     count = 0
     for guild in client.guilds:
         print("Connected to server: {}".format(guild))
@@ -220,7 +220,7 @@ async def join(ctx):
         await voice.move_to(channel)
     else:
         voice = await channel.connect()
-    await ctx.send(f'RedSafe has Joined {channel}')
+    await ctx.send(f'{botname} has Joined {channel}')
 
 @client.command()
 async def leave(ctx):
@@ -229,9 +229,9 @@ async def leave(ctx):
 
     if voice and voice.is_connected():
         await voice.disconnect()
-        await ctx.send(f'RedSafe has disconnected from {channel}')
+        await ctx.send(f'{botname} has disconnected from {channel}')
     else:
-        await ctx.send("RedSafe isn't connected to any Voice Channels.")
+        await ctx.send(f"{botname} isn't connected to any Voice Channels.")
 
 #@client.command(pass_context=True, aliases=['p', 'pla'])
 #async def play(ctx, url: str):
@@ -324,7 +324,7 @@ async def leave(ctx):
 #
 #    nname = name.rsplit('-', 2)
 #    embed = discord.embed(title=f'Playing Music in {channel}', description=f'{author.name} is playing {nname[0]}', color=242424)
-#    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+#    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
 #    await ctx.send(embed=embed)
 #    print(f'Playing {nname[0]} on {ctx.guild.name}')
 #
@@ -434,7 +434,7 @@ async def swear(ctx):
             prefixes = json.load(f)
 
         prefix = prefixes[str(ctx.guild.id)]
-        embed = discord.Embed(title='Swear Filter', description=f'You can turn **on**, or **off** the Swear Filter if you have RedSafe Premium. \n Usage: \n \n `{prefix}swear on` - Turns on the Swear Filter. \n `{prefix}swear off` - Turns off the Swear Filter.', color=0x00ff00)
+        embed = discord.Embed(title='Swear Filter', description=f'You can turn **on**, or **off** the Swear Filter if you have {botname} Premium. \n Usage: \n \n `{prefix}swear on` - Turns on the Swear Filter. \n `{prefix}swear off` - Turns off the Swear Filter.', color=0x00ff00)
         embed.set_footer(text=botname, icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
@@ -449,13 +449,13 @@ async def bug(ctx, *, reason: commands.clean_content = None):
         embed.set_footer(text=f'{ctx.guild.name} | {ctx.guild.id}', icon_url=redsafelogo)
         webhook.add_embed(embed)
         webhook.execute()
-        rs = discord.Embed(title=f'{botname} Bugs', description=f'The bug has been reported to RedSafe Developers. Thank you for reporting the bug.\n You can join RedSafe support with `{prefox}invite`', color=0x00ff00)
+        rs = discord.Embed(title=f'{botname} Bugs', description=f'The bug has been reported to {botname} Developers. Thank you for reporting the bug.\n You can join {botname} support with `{prefox}invite`', color=0x00ff00)
         rs.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=rs)
         time.sleep(10)
         await client.delete_message(message)
     else:
-        nos = discord.Embed(title='RedSafe Bugs', description=f"You have to do `{prefox}bug <bugreport>` to send a bug, `{prefox}bug` doesn't do anything.\n No report has been sent to the Developers.", color=0xff0000)
+        nos = discord.Embed(title=f'{botname} Bugs', description=f"You have to do `{prefox}bug <bugreport>` to send a bug, `{prefox}bug` doesn't do anything.\n No report has been sent to the Developers.", color=0xff0000)
         nos.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=nos)
         time.sleep(10)
@@ -518,7 +518,7 @@ async def welcome(ctx):
             prefixes = json.load(f)
 
         prefix = prefixes[str(ctx.guild.id)]
-        embed = discord.Embed(title='RedSafe Welcome', description=f'You can turn **on**, **off**, or **set** Welcome message. \n Usage: \n \n `{prefix}welcome on` - Turns on the Welcome Messages. \n `{prefix}welcome off` - Turns off the Welcome Messages. \n `{prefix}welcome set <#channel>` - Set the welcome channel.', color=0x00ff00)
+        embed = discord.Embed(title=f'{botname} Welcome', description=f'You can turn **on**, **off**, or **set** Welcome message. \n Usage: \n \n `{prefix}welcome on` - Turns on the Welcome Messages. \n `{prefix}welcome off` - Turns off the Welcome Messages. \n `{prefix}welcome set <#channel>` - Set the welcome channel.', color=0x00ff00)
         embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
@@ -534,7 +534,7 @@ async def welcome_on(ctx):
     with open('onleaveconfig.json', 'w') as f:
         json.dump(verify, f, indent=4)
 
-    embed = discord.Embed(title='RedSafe Welcome', description=f'Welcome Message has been **Enabled**', color=0x00ff00)
+    embed = discord.Embed(title=f'{botname} Welcome', description=f'Welcome Message has been **Enabled**', color=0x00ff00)
     embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -550,7 +550,7 @@ async def welcome_off(ctx):
     with open('onjoinconfig.json', 'w') as f:
         json.dump(verify, f, indent=4)
 
-    embed = discord.Embed(title='RedSafe Welcome', description=f'Welcome Message has been **Disabled**', color=0xff0000)
+    embed = discord.Embed(title=f'{botname} Welcome', description=f'Welcome Message has been **Disabled**', color=0xff0000)
     embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -568,7 +568,7 @@ async def welcome_set(ctx, string):
     with open('onjoinconfigset.json', 'w') as f:
         json.dump(verify, f, indent=4)
 
-    embed = discord.Embed(title='RedSafe Welcome', description=f'The Welcome Channel been set to {string}', color=0x00ff00)
+    embed = discord.Embed(title=f'{botname} Welcome', description=f'The Welcome Channel been set to {string}', color=0x00ff00)
     embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -580,7 +580,7 @@ async def leavemsg(ctx):
             prefixes = json.load(f)
 
         prefix = prefixes[str(ctx.guild.id)]
-        embed = discord.Embed(title='RedSafe leave', description=f'You can turn **on**, **off**, or **set** leave message. \n Usage: \n \n `{prefix}leave on` - Turns on the leave Messages. \n `{prefix}leave off` - Turns off the leave Messages. \n `{prefix}leave set <#channel>` - Set the leave channel.', color=0x00ff00)
+        embed = discord.Embed(title=f'{botname} leave', description=f'You can turn **on**, **off**, or **set** leave message. \n Usage: \n \n `{prefix}leave on` - Turns on the leave Messages. \n `{prefix}leave off` - Turns off the leave Messages. \n `{prefix}leave set <#channel>` - Set the leave channel.', color=0x00ff00)
         embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
@@ -613,7 +613,7 @@ async def leavemsg_off(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Leave Message', description=f'The Leave Message has been **Disabled**', color=0xff0000)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @leavemsg.command(name="set")
@@ -658,7 +658,7 @@ async def prefix(ctx):
             prefixes = json.load(f)
 
        embed = discord.Embed(title='> Prefix', description=f"""The current prefix for this server is set to `{prefixes[str(ctx.guild.id)]}`""", color=0x00ff00)
-       embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+       embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
        await ctx.send(embed=embed)
 
 @prefix.command(name="set")
@@ -674,7 +674,7 @@ async def prefix_set(ctx, prefix):
         json.dump(prefixes, f, indent=4)
 
     embed = discord.Embed(title='Prefix', description=f'The bot prefix has been set to `{prefix}`', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @client.event
@@ -734,7 +734,7 @@ async def on_guild_join(guild):
     embed = DiscordEmbed(title='New Guild Join!', description=f"Guild : {guild.name} \n \n ID : {guild.id} \n \n Owner : {guild.owner}", color=242424)
     webhook.add_embed(embed)
     webhook.execute()
-    embed = discord.Embed(title='RedSafe', description='Hello There, This is RebootSafe. \n My prefix default is `.` You can change it with `.prefix set {prefix}` \n Have a nice day!', color=0xFFA500)
+    embed = discord.Embed(title=f'{botname}', description='Hello There, This is RebootSafe. \n My prefix default is `.` You can change it with `.prefix set {prefix}` \n Have a nice day!', color=0xFFA500)
     embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     try:
         to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
@@ -840,7 +840,7 @@ async def premium_check(ctx):
             rscheck = json.load(f)
 
         premium = rscheck[str(ctx.guild.id)]
-        embed = discord.Embed(title='RedSafe Premium', description=f'RedSafe Premium is currently {premium}', color=0x00ff00)
+        embed = discord.Embed(title=f'{botname} Premium', description=f'{botname} Premium is currently {premium}', color=0x00ff00)
         embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
