@@ -1,28 +1,35 @@
 import discord
 import asyncio
-from discord.ext import commands
+from discord.ext import commands, tasks
 import time
 import json
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from utils import permissions, default
 from discord.utils import get
-from discord.ext import commands,tasks
-from discord.ext.commands import errors
 import re
 import os
 import youtube_dl
-from discord.utils import get
 import shutil
-from discord.ext.commands import has_permissions, MissingPermissions
+from discord.ext.commands import has_permissions, MissingPermissions, errors
+import pymongo
+
+#Data Base Below
+
+#client = pymongo.MongoClient("mongodb+srv://RedSafe-Bot:F0H5XARYJt69SD9l@redsafe.hoqeu.mongodb.net/RedSafe?retryWrites=true&w=majority")
+#db = client.RedSafe
+client = discord.Client()
+
+#Bot Info below
 
 redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/3f00cd933cf382a9f06212367676e4af.png?size=1024'
-client = discord.Client()
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.FSmA_URgc0pT71aGfLPtOaoaSXM"
-bversion = '1.5.7'
+bversion = '1.6.1'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
 botname = 'RedDead'
-cmd = '26'
+cmd = '27'
 events = '9'
+
+#Prefix below
 
 def prefix(client, message):
     with open('prefixes.json', 'r') as f:
@@ -34,8 +41,10 @@ client = commands.Bot(command_prefix = prefix)
 
 client.remove_command('help')
 
+#status
+
 status4 = 'You type ".help"'
-status2 = 'Discord API'
+status2 = 'the Discord API'
 status3 = f'{botname} Premium'
 
 async def status_task():
@@ -43,7 +52,7 @@ async def status_task():
         global count
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=status4))
         await asyncio.sleep(10)
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status2))
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.competing, name=status2))
         await asyncio.sleep(10)
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=status3))
         await asyncio.sleep(10)
@@ -56,8 +65,8 @@ async def status_task():
 async def on_ready():
     before_ws = int(round(client.latency * 1000, 1))
     webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/760023398838960129/xYvZWgjgv5FpJAjUxaRCmnDovrtECKqSR5MCr-W607QdZ4qmxaAqvegRvQuh5n_U2LjT')
-    embed = DiscordEmbed(title='Start-Up', description=f'RedSafe is Online.', color=0x00ff00)
-    embed.add_embed_field(name='Bot Name:', value=f'**RedSafe Python**', inline=True)
+    embed = DiscordEmbed(title='Start-Up', description=f'{botname} is Online.', color=0x00ff00)
+    embed.add_embed_field(name='Bot Name:', value=f'**{botname}**', inline=True)
     embed.add_embed_field(name='Logged In with ID:', value=f'`{client.user.id}`', inline=True)
     embed.add_embed_field(name='Ping:', value=f'**{before_ws}**ms', inline=True)
     embed.add_embed_field(name=':warning: NOTE! :warning:', value='This Bot is still in **beta stage** and will take a while to release.', inline=False)
@@ -77,21 +86,26 @@ async def on_ready():
     client.loop.create_task(status_task())
 
 @client.command()
-@commands.is_owner()
-async def reboot(ctx):
-    await ctx.send(f'{botname} is Rebooting...')
-    await reconnect(TOKEN)
+async def rename(ctx, reason: commands.clean_content = None):
+    if ctx.author.id == 529499034495483926:
+        await client.user.edit(username=reason)
 
-@client.command(pass_context=True)
-@commands.is_owner()
-async def restart(ctx):
-    await ctx.send("Restarting Bot <a:loading_colored:744984714624106528>")
-    await login(TOKEN, bot=True)
+@commands.command()
+@commands.check(permissions.is_owner)
+async def clear(self, ctx, *, search: commands.clean_content = None):
+    await ctx.message.delete()
+    if search == None:
+        embed = discord.Embed(title='0 Messages Clear', description='No messages were clear, because you did not spesify the ammount of messages to be deleted.', color=0xff0000)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
+    else:
+        await ctx.channel.purge(limit=int(search))
+        embed = discord.Embed(title=f'{search} Messages Clear', description=f'{search} messages were clear, specified ammount of messages has been deleted.', color=0x00ff00)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
 
 @client.command()
 @commands.is_owner()
 async def shutdown(ctx):
-    embed = discord.Embed(title=f'{botname} ShutDown', description='The Bot is being **Shut Down** the owner, `Benitz Original#1317`', color=0xff0000)
+    embed = discord.Embed(title=f'{botname} ShutDown', description='The Bot is being **Shut Down** by the owner, `Benitz Original#1317`', color=0xff0000)
     embed.set_footer(text=f'{botname} ShutDown', icon_url=redsafelogo)
     embed.set_image(url='https://miro.medium.com/max/800/1*TTOJz35-lJmjWGj59786GA.png')
     await ctx.send(embed=embed)
@@ -105,14 +119,15 @@ async def on_message(ctx):
         with open('prefixes.json', 'r') as f:
             prefixes = json.load(f)
         embed = discord.Embed(title='> Prefix', description=f"""The current prefix for this server is set to `{prefixes[str(ctx.guild.id)]}`""", color=0x00ff00)
-        embed.set_footer(text=botname, icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.channel.send(embed=embed)
+    await client.process_commands(ctx)
 
 @client.command()
 async def invite(ctx):
-    embed = discord.Embed(title=f'{botname}', descrition=f'> [Bot Invite](http://{botname}.bot.nu) \n > [Support Server](https://discord.com/cRTnVaQ) \n > [Website]()')
-    embed.set_footer(text=botname, icon_url=redsafelogo)
-    ctx.send(embed=embed)
+    embed = discord.Embed(title=f'{botname} Invites', description=f'Here are all the links related to **{botname}** \n\n > [Bot Invite](http://{botname}.bot.nu) \n > [Support Server](https://discord.com/cRTnVaQ) \n > [Website](https://google.com) \n\n This bot is **created**, **managed**, and **developed** by {devs}', color=242424)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
+    await ctx.send(embed=embed)
 
 @client.command()
 async def about(ctx):
@@ -127,7 +142,7 @@ async def about(ctx):
     ping = int(round(client.latency * 1000, 1))
     premium = rscheck[str(ctx.guild.id)]
     embed = discord.Embed(title=f'{botname} Bot', description=f'\n**{botname}** is a Powerful Moderation, Staff-Help, Music, Multi-Purpose Bot that you can **[invite](http://{botname}.bot.nu)** and use on **your server**.\n\n :stopwatch:  **Version** - {bversion} \n\n :computer:  **Developers** - {devs} \n\n :key:  **Prefix** - `{prefox}` \n\n :tada:  **Premium** - **{premium}** \n\n :globe_with_meridians:  **Language** - **Discord.py** \n\n :zap:  **Ping** - `{ping}`m/s \n\n :pen_ballpoint: **Commands** - `{cmd}` **Commands Loaded** \n\n :rotating_light: **Events** - `{events}` **Events Loaded**', color=242424)
-    embed.set_footer(text=botname, icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 
@@ -141,26 +156,26 @@ async def about(ctx):
 #        ctx.member.send(embed=embed)
 #        await ctx.message.delete()
 
-    await client.process_commands(ctx)
+#    await client.process_commands(ctx)
+#
+#with open('badwords.txt','r') as f:
+#    bad_words = '|'.join(s for l in f for s in l.split(', '))
+#    bad_word_checker = re.compile(bad_words).search
 
-with open('badwords.txt','r') as f:
-    bad_words = '|'.join(s for l in f for s in l.split(', '))
-    bad_word_checker = re.compile(bad_words).search
-
-@client.event
-async def on_message(message):
-    if not message.author.bot:
-        with open('swearfilterboi.json', 'r') as f:
-            prefixes = json.load(f)
-        if prefixes[str(message.guild.id)] == "enabled":
-            if bad_word_checker(message.content):
-                await message.delete()
-                embed = discord.Embed(text=f'{guild.name}', description=f"Hey! You aren't allowed swear on {guild.name}")
-                embed.set_footer(text=botname, icon_url=redsafelogo)
-                member.send(embed=embed)
-        else:
-            print('')
-    await client.process_commands(message)
+#@client.event
+#async def on_message(message):
+#    if not message.author.bot:
+#        with open('swearfilterboi.json', 'r') as f:
+#            prefixes = json.load(f)
+#        if prefixes[str(message.guild.id)] == "enabled":
+#            if bad_word_checker(message.content):
+#                await message.delete()
+#                embed = discord.Embed(text=f'{guild.name}', description=f"Hey! You aren't allowed swear on {guild.name}")
+#                embed.set_footer(text=botname, icon_url=redsafelogo)
+#                await user.send(embed=embed)
+#        else:
+#            print('')
+#    await client.process_commands(message)
 
 @client.event
 async def on_member_join(member):
@@ -191,7 +206,7 @@ async def on_member_remove(member):
         channel = client.get_channel(prefix)
         embed = discord.Embed(title=f'{member.name} Left', description=f'{member.name} Left **{member.guild.name}** Bye! \n Hope you join back.', color=0xff0000)
         embed.set_image(url='https://media.giphy.com/media/3o6ZtcOxQ9vi8vb9Cg/giphy.gif')
-        embed.set_footer(text=botname, icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         embed.set_thumbnail(url=member.avatar_url)
         await channel.send(embed=embed)
 
@@ -329,7 +344,7 @@ async def suggestion(ctx):
 
         prefix = prefixes[str(ctx.guild.id)]
         embed = discord.Embed(title='Suggestion', description=f'You can turn **on**, **off**, or **set** Suggestion Channels. \n Usage: \n \n `{prefix}suggestion on` - Turns on the Suggestion Module. \n `{prefix}suggestion off` - Turns off the Suggestion Module. \n `{prefix}suggesion set <#channel>` - Set the Suggesiton channel.', color=0x00ff00)
-        embed.set_footer(text=botname, icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @suggestion.command(name='set')
@@ -346,7 +361,7 @@ async def suggetion_set(ctx, string):
         json.dump(channel, f, indent=4)
 
     embed = discord.Embed(title='Suggestion Channel', description=f'The Suggestion Channel been set to {string}', color=0x00ff00)
-    embed.set_footer(text=botname, icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @suggestion.command(name='on')
@@ -360,8 +375,11 @@ async def suggestion_on(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Suggestion', description=f'The Suggestion Module has been **Enabled**', color=0x00ff00)
-    embed.set_footer(text=botname, icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
+
+
+
 
 #Warn command
 @client.command()
@@ -393,7 +411,7 @@ async def warn(ctx, member:discord.Member, *, reason=None):
         await ctx.message.delete()
 
 @client.command()
-async def suggest(ctx, str, *, reason: commands.clean_content = None):
+async def suggest(ctx, *, reason: commands.clean_content = None):
     with open('suggestcha.json', 'r') as f:
         prefixes = json.load(f)
 
@@ -404,9 +422,9 @@ async def suggest(ctx, str, *, reason: commands.clean_content = None):
 
     suggest = joe[str(channel.guild.id)]
     if suggest == 'enabled':
-        channel = client.get_channel(prefix)
-        embed = discord.Embed(title='Suggestion', description=f'Suggestion from {author.name} -  \n \n {reason}')
-        await ctx.send(embed=embed)
+        embed = discord.Embed(title='Suggestion', description=f'Suggestion from {ctx.author.name} -  \n \n {reason}')
+        chnl = client.get_channel(int(prefix))
+        await chnl.send(embed=embed)
 
 @client.group()
 @commands.has_permissions(administrator=True)
@@ -432,13 +450,13 @@ async def bug(ctx, *, reason: commands.clean_content = None):
         webhook.add_embed(embed)
         webhook.execute()
         rs = discord.Embed(title=f'{botname} Bugs', description=f'The bug has been reported to RedSafe Developers. Thank you for reporting the bug.\n You can join RedSafe support with `{prefox}invite`', color=0x00ff00)
-        rs.set_footer(text='RedSafe Support', icon_url=redsafelogo)
+        rs.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=rs)
         time.sleep(10)
         await client.delete_message(message)
     else:
         nos = discord.Embed(title='RedSafe Bugs', description=f"You have to do `{prefox}bug <bugreport>` to send a bug, `{prefox}bug` doesn't do anything.\n No report has been sent to the Developers.", color=0xff0000)
-        nos.set_footer(text='RedSafe', icon_url=redsafelogo)
+        nos.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=nos)
         time.sleep(10)
         await client.delete_message(message)
@@ -446,6 +464,15 @@ async def bug(ctx, *, reason: commands.clean_content = None):
 @swear.command(name="on")
 @commands.has_permissions(administrator=True)
 async def swear_on(ctx):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
+
+    with open('rspremium.json', 'r') as f:
+        rscheck = json.load(f)
+    premium = rscheck[str(ctx.guild.id)]
+
+    if premium == 'enabled':
         with open('swearfilterboi.json', 'r') as f:
             verify = json.load(f)
 
@@ -455,7 +482,11 @@ async def swear_on(ctx):
             json.dump(verify, f, indent=4)
 
         embed = discord.Embed(title='Swear Filter', description=f'The Swear Filter has been **Enabled**', color=0x00ff00)
-        embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname} Premium', icon_url=redsafelogo)
+        await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(title=f'{botname} Premium', description=f"You don't have {botname} Premium active. \n You can activate it from the support server. \n You can get the Support Server invite link by doing `{prefox}invite`")
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @swear.command(name="off")
@@ -471,7 +502,7 @@ async def swear_off(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Swear Filter', description=f'The Swear Filter has been **Disabled**', color=0x00ff00)
-    embed.set_footer(text='RedSafe Premium', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname} Premium', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 
@@ -488,7 +519,7 @@ async def welcome(ctx):
 
         prefix = prefixes[str(ctx.guild.id)]
         embed = discord.Embed(title='RedSafe Welcome', description=f'You can turn **on**, **off**, or **set** Welcome message. \n Usage: \n \n `{prefix}welcome on` - Turns on the Welcome Messages. \n `{prefix}welcome off` - Turns off the Welcome Messages. \n `{prefix}welcome set <#channel>` - Set the welcome channel.', color=0x00ff00)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @welcome.command(name="on")
@@ -504,7 +535,7 @@ async def welcome_on(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='RedSafe Welcome', description=f'Welcome Message has been **Enabled**', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @welcome.command(name="off")
@@ -520,7 +551,7 @@ async def welcome_off(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='RedSafe Welcome', description=f'Welcome Message has been **Disabled**', color=0xff0000)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @welcome.command(name="set")
@@ -538,7 +569,7 @@ async def welcome_set(ctx, string):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='RedSafe Welcome', description=f'The Welcome Channel been set to {string}', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @client.group()
@@ -550,7 +581,7 @@ async def leavemsg(ctx):
 
         prefix = prefixes[str(ctx.guild.id)]
         embed = discord.Embed(title='RedSafe leave', description=f'You can turn **on**, **off**, or **set** leave message. \n Usage: \n \n `{prefix}leave on` - Turns on the leave Messages. \n `{prefix}leave off` - Turns off the leave Messages. \n `{prefix}leave set <#channel>` - Set the leave channel.', color=0x00ff00)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @leavemsg.command(name="on")
@@ -566,7 +597,7 @@ async def leavemsg_on(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Leave Message', description=f'The Leave Message has been **Enabled**', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @leavemsg.command(name="off")
@@ -600,7 +631,7 @@ async def leavemsg_set(ctx, string):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Leave Message', description=f'The Leave Message Channel been set to {string}', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 
@@ -691,12 +722,20 @@ async def on_guild_join(guild):
     with open('prefixes.json', 'w') as f:
         json.dump(prefixes, f, indent=4)
 
+    with open('prefixes.json', 'r') as f:
+        rspre = json.load(f)
+
+    rspre[str(ctx.guild.id)] = 'disabled'
+
+    with open('prefixes.json', 'w') as f:
+        json.dump(rspre, f, indent=4)
+
     webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758248651515625503/r4JCjSTWZ9ly3sxnYjzjzF3g1saIgEqGY_cXxg6hmexnnhcokk_IM1qm138li0Judg2p')
     embed = DiscordEmbed(title='New Guild Join!', description=f"Guild : {guild.name} \n \n ID : {guild.id} \n \n Owner : {guild.owner}", color=242424)
     webhook.add_embed(embed)
     webhook.execute()
     embed = discord.Embed(title='RedSafe', description='Hello There, This is RebootSafe. \n My prefix default is `.` You can change it with `.prefix set {prefix}` \n Have a nice day!', color=0xFFA500)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     try:
         to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
     except IndexError:
@@ -709,19 +748,10 @@ async def on_guild_join(guild):
         webhook.execute()
         await to_send.send(embed=embed)
 
-
-@client.command()
-async def megahonk(ctx):
-    webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/757575792271294596/JzkFCovOEduKc3zPNlPw_Wvqxb5aPT1eJmwQcB4-Kay7OwetSuoLkuahlLenZm1Y4bMI')
-    embed = DiscordEmbed(title='Your Title', description=f"<@!259875936852246528> MEGA HONK FROM {ctx.author.name} {ctx.author.id}", color=242424)
-    webhook.add_embed(embed)
-    webhook.execute()
-    await ctx.send("I have sent a Mega Honk :)")
-
 @client.command()
 @commands.cooldown(1, 300, commands.BucketType.guild)
 @commands.has_permissions(administrator=True)
-async def dm(ctx, user_id: int, *, message: str):
+async def notify(ctx, user_id: int, *, message: str):
     """ DM the user of your choice """
     user = client.get_user(user_id)
     if not user:
@@ -729,6 +759,7 @@ async def dm(ctx, user_id: int, *, message: str):
 
     try:
         embed = discord.Embed(title=f"{ctx.guild.name}", description=f"New message from **{ctx.guild.name}**'s Staff \n \n  Message - {message}", color=0x1868af)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await user.send(embed=embed)
         await ctx.send(f"✉️ Sent a DM to **{user_id}**")
     except discord.Forbidden:
@@ -737,7 +768,7 @@ async def dm(ctx, user_id: int, *, message: str):
 @client.event
 async def on_command_error(ctx, err):
     if isinstance(err, errors.CommandOnCooldown):
-        await ctx.send(f"This command is on cooldown... try again in {err.retry_after:.2f} seconds.")
+        await ctx.send(f"Command is on Cooldown, please try again in {err.retry_after:.2f} seconds.")
     else:
         print(err)
 
@@ -752,20 +783,21 @@ async def mute(ctx, member: discord.Member, *, reason: str = None):
     muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
 
     if not muted_role:
-        return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
+        return await ctx.send('Error: `no "Muted" role found.`')
 
     try:
         await member.add_roles(muted_role, reason=default.responsible(ctx.author, reason))
         await ctx.send(default.actionmessage("muted"))
         audit_logging = discord.utils.get(ctx.guild.channels, name="redsafe-logs")
-        embed = discord.Embed(title=":mute: User muted: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
+        embed = discord.Embed(title='User has been muted', description=":mute: User muted: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason), color=0xff0000)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await audit_logging.send(embed=embed)
-        embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You were muted in **{ctx.guild.name}** for : ```{str(reason)}```', color=0xff0000)
-        embed2.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been muted in **{ctx.guild.name}** for : ```{str(reason)}```', color=0xff0000)
+        embed2.set_footer(text=f'action by {author.name} | {botname}', icon_url=redsafelogo)
         await member.send(embed=embed2)
     except Exception as e:
         if "object has no attribute" in str(e):
-            await ctx.send("Please make sure to setup a Channel named #redsafe-logs so that I can log mutes / bans. " + ctx.message.author.mention)
+            await ctx.send('`Error: No "#redsafe-logs" log channel found`')
         else:
             await ctx.send(e)
 
@@ -779,38 +811,23 @@ async def unmute(ctx, member: discord.Member, *, reason: str = None):
     muted_role = next((g for g in ctx.guild.roles if g.name == "Muted"), None)
 
     if not muted_role:
-        return await ctx.send("Are you sure you've made a role called **Muted**? Remember that it's case sensetive too...")
+        return await ctx.send('Error: `no "Muted" role found.`')
 
     try:
         await member.remove_roles(muted_role, reason=default.responsible(ctx.author, reason))
         await ctx.send(default.actionmessage("unmuted"))
         audit_logging = discord.utils.get(ctx.guild.channels, name="redsafe-logs")
-        embed = discord.Embed(title=":loud_sound: User unmuted: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
+        embed = discord.Embed(title='User has been unmuted', description=":loud_sound: User unmuted: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await audit_logging.send(embed=embed)
-        embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You were unmuted in **{ctx.guild.name}**', color=0x00ff00)
-        embed2.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been unmuted in **{ctx.guild.name}**', color=0x00ff00)
+        embed2.set_footer(text=f'action by {author.name} | {botname}', icon_url=redsafelogo)
         await member.send(embed=embed2)
     except Exception as e:
         if "object has no attribute" in str(e):
-            await ctx.send("Please make sure to setup a Channel named #redsafe-logs so that I can log unmutes / unbans. " + ctx.message.author.mention)
+            await ctx.send('`Error: No "#redsafe-logs" log channel found`')
         else:
             await ctx.send(e)
-
-@client.command()
-@commands.has_permissions(administrator=True)
-async def setlog(ctx, channel):
-    print(channel)
-    with open('rslogsetting.json', 'r') as f:
-        verify = json.load(f)
-
-    verify[str(ctx.guild.id)] = channel
-
-    with open('rslogsetting.json', 'w') as f:
-        json.dump(verify, f, indent=4)
-
-    embed = discord.Embed(title='Log', description=f'The Logs channel role been set to {channel}', color=0xadd8e6)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
-    await ctx.send(embed=embed)
 
 @client.group()
 async def premium(ctx):
@@ -824,7 +841,7 @@ async def premium_check(ctx):
 
         premium = rscheck[str(ctx.guild.id)]
         embed = discord.Embed(title='RedSafe Premium', description=f'RedSafe Premium is currently {premium}', color=0x00ff00)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @client.group()
@@ -836,7 +853,7 @@ async def verification(ctx):
 
         prefix = prefixes[str(ctx.guild.id)]
         embed = discord.Embed(title='Verification', description=f'You can turn **on**, **off**, or **set** verified roles \n Usage: \n \n `{prefix}verification on` - Turns the verification system on. \n `{prefix}verification off` - Turns off the verification system. \n `{prefix}verification set <@role>` - sets a role that is given after verification.', color=0x00ff00)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await ctx.send(embed=embed)
 
 @verification.command(name="on")
@@ -852,7 +869,7 @@ async def verification_on(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Verification', description=f'The Verification System has been **Enabled**', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @verification.command(name="off")
@@ -868,7 +885,7 @@ async def verification_on(ctx):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Verification', description=f'The Verification System has been **Disabled**', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @verification.command(name="set")
@@ -884,7 +901,7 @@ async def verification_set(ctx, role: discord.Role):
         json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Verification', description=f'The Verification System role been set to `{role}`', color=0x00ff00)
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @client.command()
@@ -906,13 +923,13 @@ async def verify(ctx):
         role = get(ctx.guild.roles, id=verifyrole)
         await ctx.author.add_roles(role, reason="Verification System. User Verified")
         embed = discord.Embed(title='Verified', description=f'You have been verified on **{ctx.guild.name}**', color=0xFFA500)
-        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
 
         user = client.get_user(ctx.author.id)
         await user.send(embed=embed)
 
     else:
-        await ctx.send("The Verification System has not been enabled.")
+        print(f'Verification not enabled on {guild.name}.')
 
 @client.command()
 async def avatar(ctx, *, user: discord.Member = None):
@@ -920,7 +937,7 @@ async def avatar(ctx, *, user: discord.Member = None):
     user = user or ctx.author
     embed = discord.Embed(title=f"{user.name}'s avatar", color=0x00ff00)
     embed.set_image(url=user.avatar_url_as(size=1024))
-    embed.set_footer(text='RedSafe', icon_url=redsafelogo)
+    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
 @client.group()
@@ -947,7 +964,7 @@ async def help_moderation(ctx):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
-    embed = discord.Embed(title='> Moderation Commands', description='', color=0xadd8e6)
+    embed = discord.Embed(title='> Moderation Commands', description=f'`{prefox}kick` - **kicks** and **notifies** the mentioned User. \n\n `{prefox}ban` - **Bans** and **notifes** the mentioned User. \n\n `{prefox}mute` - Mutes the mentioned user permanently *(still in progress)*', color=0xadd8e6)
     embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -956,7 +973,7 @@ async def help_general(ctx):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
-    embed = discord.Embed(title='> General Commands', descrition=f'`{prefox}support` - Gives the link to the **support server**. \n \n `{prefox}invite` - gives a invite that you can use to **invite the bot**. \n \n ', color=0xadd8e6)
+    embed = discord.Embed(title='> General Commands', descrition=f'`{prefox}ping` - Shows the Webshock and Rest latency of the bot. \n\n `{prefox}invite` - Provides all the **links** that is related to {botname}. \n \n ', color=0xadd8e6)
     embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -965,7 +982,7 @@ async def help_staff(ctx):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
-    embed = discord.Embed(title='> Staff Commands', description='', color=0xadd8e6)
+    embed = discord.Embed(title='> Staff Commands', description=f'`{prefox}notify` - Notifies the user with the message sent by the staff. \n\n `{prefox}clear` - Clears a specified ammount of messages. \n\n ', color=0xadd8e6)
     embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -974,7 +991,7 @@ async def help_music(ctx):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
-    embed = discord.Embed(title='> Music Commands', description='', color=0xadd8e6)
+    embed = discord.Embed(title='> Music Commands', description=f"Sorry, {botname}'s Music Commands aren't ready.", color=0xadd8e6)
     embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -983,7 +1000,7 @@ async def help_premium(ctx):
     with open('prefixes.json', 'r') as f:
         prefixes = json.load(f)
     prefox = prefixes[str(ctx.guild.id)]
-    embed = discord.Embed(title='> Premium Commands', description='', color=0xff0000)
+    embed = discord.Embed(title='> Premium Commands', description=f"Sorry, {botname}'s Premium Commands aren't ready.", color=0xff0000)
     embed.set_footer(text=botname, icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
@@ -1028,9 +1045,9 @@ async def serverinfo(ctx):
     emoji_count = len(ctx.guild.emojis)
     channel_count = len([x for x in ctx.guild.channels if isinstance(x, discord.channel.TextChannel)])
     embed = discord.Embed(timestamp=ctx.message.created_at)
-    embed.add_field(name='Name (ID)', value=f"{ctx.guild.name} ({ctx.guild.id})")
-    embed.add_field(name='Owner', value=ctx.guild.owner, inline=False)
-    embed.add_field(name='Members', value=ctx.guild.member_count)
+    embed.add_field(name='Server (ID)', value=f"{ctx.guild.name} ({ctx.guild.id})")
+    embed.add_field(name='Server Owner', value=ctx.guild.owner, inline=False)
+    embed.add_field(name='Member Count', value=ctx.guild.member_count)
     embed.add_field(name='Text Channels', value=str(channel_count))
     embed.add_field(name='Region', value=ctx.guild.region)
     embed.add_field(name='Verification Level', value=str(ctx.guild.verification_level))
@@ -1066,7 +1083,7 @@ async def ban(self, ctx, member: MemberID, *, reason: str = None):
     try:
         await ctx.send(default.actionmessage("banned"))
         audit_logging = discord.utils.get(ctx.guild.channels, name="redsafe-logs")
-        embed = discord.Embed(title=":hammer: User Banned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
+        embed = discord.Embed(title='Banned User', description=":hammer: User Banned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason), color=0xff0000)
         await audit_logging.send(embed=embed)
         embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been banned in **{ctx.guild.name}** for : ```{str(reason)}```', color=0xff0000)
         embed2.set_footer(text=botname, icon_url=redsafelogo)
@@ -1074,27 +1091,27 @@ async def ban(self, ctx, member: MemberID, *, reason: str = None):
         await ctx.guild.ban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
     except Exception as e:
         if "object has no attribute" in str(e):
-            await ctx.send("Please make sure to setup a Channel named #redsafe-logs so that I can log mutes / bans. " + ctx.message.author.mention)
+            await ctx.send('`Error: No "#redsafe-logs" log channel found`')
         else:
             await ctx.send(e)
 
 
 @client.command()
-@commands.has_permissions(kick_members=True)
+@commands.has_permissions(ban_members=True)
 async def unban(self, ctx, member: MemberID, *, reason: str = None):
     """ Unbans a user from the current server. """
     try:
         await ctx.guild.unban(discord.Object(id=member), reason=default.responsible(ctx.author, reason))
         await ctx.send(default.actionmessage("unbanned"))
         audit_logging = discord.utils.get(ctx.guild.channels, name="redsafe-logs")
-        embed = discord.Embed(title=":leaves: User unbanned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason))
+        embed = discord.Embed(title='Unbanned User', description=":leaves: User unbanned: " + str(member.name) + " (" + str(member.id) + ") \n \n Responsible moderator: " + str(ctx.author) + " \n Reason: " + str(reason), color=0x00ff00)
         await audit_logging.send(embed=embed)
         embed2 = discord.Embed(title=f'{ctx.guild.name}', description=f'You have been unbanned from **{ctx.guild.name}**', color=0x00ff00)
         embed.set_footer(text=botname, icon_url=redsafelogo)
         await member.send(embed=embed2)
     except Exception as e:
         if "object has no attribute" in str(e):
-            await ctx.send("Please make sure to setup a Channel named #redsafe-logs so that I can log unmutes / unbans. " + ctx.message.author.mention)
+            await ctx.send('`Error: No "#redsafe-logs" log channel found`')
         else:
             await ctx.send(e)
 
@@ -1107,7 +1124,7 @@ async def kick(ctx, member : discord.Member, reason=None):
             prefixes = json.load(f)
         prefox = prefixes[str(ctx.guild.id)]
 
-        await ctx.send(f"Incorrect Usage, try {prefox}kick <@user> <reason>")
+        await ctx.send(f"Incorrect Usage, try **{prefox}kick <@user> <reason>**")
         embed = discord.Embed(title="Attempt at Kick", color=0x37cdaf)
         embed.add_field(name="Command Issuer", value=ctx.message.author.mention, inline=True)
         embed.add_field(name="Attempted to kick but forgot reason", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
