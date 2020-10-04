@@ -12,11 +12,12 @@ import youtube_dl
 import shutil
 from discord.ext.commands import has_permissions, MissingPermissions, errors
 import pymongo
+from pymongo import MongoClient
 
 #Data Base Below
 
-#client = pymongo.MongoClient("mongodb+srv://RedSafe-Bot:F0H5XARYJt69SD9l@redsafe.hoqeu.mongodb.net/RedSafe?retryWrites=true&w=majority")
-#db = client.RedSafe
+client = pymongo.MongoClient("mongodb+srv://RedSafe-Bot:F0H5XARYJt69SD9l@redsafe.hoqeu.mongodb.net/RedSafe?retryWrites=true&w=majority")
+db = client.RedSafe
 client = discord.Client()
 
 #Bot Info below
@@ -90,16 +91,15 @@ async def rename(ctx, reason: commands.clean_content = None):
     if ctx.author.id == 529499034495483926:
         await client.user.edit(username=reason)
 
-@commands.command()
-@commands.check(permissions.is_owner)
+@client.command()
+@commands.has_permissions(manage_messages=True)
 async def clear(self, ctx, *, search: commands.clean_content = None):
-    await ctx.message.delete()
     if search == None:
         embed = discord.Embed(title='0 Messages Clear', description='No messages were clear, because you did not spesify the ammount of messages to be deleted.', color=0xff0000)
         embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     else:
         await ctx.channel.purge(limit=int(search))
-        embed = discord.Embed(title=f'{search} Messages Clear', description=f'{search} messages were clear, specified ammount of messages has been deleted.', color=0x00ff00)
+        embed = discord.Embed(title=f'Messages Cleared', description=f'Specified ammount of messages has been deleted.', color=0x00ff00)
         embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
 
 @client.command()
