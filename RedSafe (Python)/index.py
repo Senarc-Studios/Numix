@@ -23,7 +23,7 @@ client = discord.Client()
 #Bot Info below
 
 redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/3f00cd933cf382a9f06212367676e4af.png?size=1024'
-TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.FSmA_URgc0pT71aGfLPtOaoaSXM"
+TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.pkMvoANEYVUnbZU-hC9ausZikxE"
 bversion = '1.6.1'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
 botname = 'RedDead'
@@ -66,8 +66,8 @@ async def status_task():
 async def on_ready():
     before_ws = int(round(client.latency * 1000, 1))
     webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/760023398838960129/xYvZWgjgv5FpJAjUxaRCmnDovrtECKqSR5MCr-W607QdZ4qmxaAqvegRvQuh5n_U2LjT')
-    embed = DiscordEmbed(title='Start-Up', description=f'{botname} is Online.', color=0x00ff00)
-    embed.add_embed_field(name='Bot Name:', value=f'**{botname}**', inline=True)
+    embed = DiscordEmbed(title='Start-Up', description=f'{client.user} is Online.', color=0x00ff00)
+    embed.add_embed_field(name='Bot Name:', value=f'**{client.user}**', inline=True)
     embed.add_embed_field(name='Logged In with ID:', value=f'`{client.user.id}`', inline=True)
     embed.add_embed_field(name='Ping:', value=f'**{before_ws}**ms', inline=True)
     embed.add_embed_field(name=':warning: NOTE! :warning:', value='This Bot is still in **beta stage** and will take a while to release.', inline=False)
@@ -111,7 +111,6 @@ async def shutdown(ctx):
     await ctx.send(embed=embed)
     await client.change_presence(status=discord.Status.offline)
     await ctx.bot.logout()
-    await login(TOKEN, bot=True)
 
 @client.event
 async def on_message(ctx):
@@ -145,37 +144,29 @@ async def about(ctx):
     embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
     await ctx.send(embed=embed)
 
+with open('badwords.txt','r') as f:
+    bad_words = '|'.join(s for l in f for s in l.split(', '))
+    bad_word_checker = re.compile(bad_words).search
 
+@client.event
+async def on_message(message):
+    if not message.author.bot:
+        with open('swearfilterboi.json', 'r') as f:
+            prefixes = json.load(f)
+        if prefixes[str(message.guild.id)] == "enabled":
+            if bad_word_checker(message.content):
 
-#@client.event
-#async def on_message(ctx):
-#    if ctx.content.find(f".com", '.net', '.tk', '.uk', 'www.', 'http') != -1:
-#        member = discord.Member if not discord.Member else discord.Member
-#        embed = discord.Embed(title=f'{message.guild.name}', description=f'You are not allowed to send links on **{message.guild.name}**.')
-#        embed.set_footer(text='RedSafe', icon_url=redsafelogo)
-#        ctx.member.send(embed=embed)
-#        await ctx.message.delete()
+                with open('prefixes.json', 'r') as f:
+                    prefixes = json.load(f)
+                prefox = prefixes[str(ctx.guild.id)]
 
-#    await client.process_commands(ctx)
-#
-#with open('badwords.txt','r') as f:
-#    bad_words = '|'.join(s for l in f for s in l.split(', '))
-#    bad_word_checker = re.compile(bad_words).search
-
-#@client.event
-#async def on_message(message):
-#    if not message.author.bot:
-#        with open('swearfilterboi.json', 'r') as f:
-#            prefixes = json.load(f)
-#        if prefixes[str(message.guild.id)] == "enabled":
-#            if bad_word_checker(message.content):
-#                await message.delete()
-#                embed = discord.Embed(text=f'{guild.name}', description=f"Hey! You aren't allowed swear on {guild.name}")
-#                embed.set_footer(text=botname, icon_url=redsafelogo)
-#                await user.send(embed=embed)
-#        else:
-#            print('')
-#    await client.process_commands(message)
+                await message.delete()
+                embed = discord.Embed(title=f'{message.guild.name}', description=f"Hey! You aren't allowed swear on **{message.guild.name}** \n\n *If swearing is allowed on this server, please contact a staff member to turn off the swear filter with `{prefox}swear off`*", color=0xff0000)
+                embed.set_footer(text=botname, icon_url=redsafelogo)
+                await message.author.send(embed=embed)
+        else:
+            print('')
+            await client.process_commands(message)
 
 @client.event
 async def on_member_join(member):
@@ -191,6 +182,7 @@ async def on_member_join(member):
         embed = discord.Embed(title=f'{member.name} Joined', description=f'Hey {member.name}, Welcome to **{member.guild.name}** \n Have a nice stay!', color=242424)
         embed.set_image(url='https://cdn.discordapp.com/attachments/731716869576327201/744818377461071952/Welcome-Black-Text-White-BG.gif')
         embed.set_thumbnail(url=member.avatar_url)
+        embed.set_footer(text=f'{Guild.member_count}th Member', icon_url=f'{guild.icon_url}')
         await channel.send(embed=embed)
 
 @client.event
@@ -206,7 +198,7 @@ async def on_member_remove(member):
         channel = client.get_channel(prefix)
         embed = discord.Embed(title=f'{member.name} Left', description=f'{member.name} Left **{member.guild.name}** Bye! \n Hope you join back.', color=0xff0000)
         embed.set_image(url='https://media.giphy.com/media/3o6ZtcOxQ9vi8vb9Cg/giphy.gif')
-        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
+        embed.set_footer(text=f'{Guild.member_count} Members left', icon_url=f'{guild.icon_url}')
         embed.set_thumbnail(url=member.avatar_url)
         await channel.send(embed=embed)
 
@@ -232,104 +224,6 @@ async def leave(ctx):
         await ctx.send(f'{botname} has disconnected from {channel}')
     else:
         await ctx.send(f"{botname} isn't connected to any Voice Channels.")
-
-#@client.command(pass_context=True, aliases=['p', 'pla'])
-#async def play(ctx, url: str):
-#
-#    def check_queue():
-#        Queue_infile = os.path.isdir('./Queue')
-#        if Queue_infile is True:
-#            DIR = os.path.abspath(os.path.realpath('Queue'))
-#            length = len(os.listdir(DIR))
-#            still_q = length - 1
-#            try:
-#                first_file = os.listdir(DIR)[0]
-#            except:
-#                print('No more song(s) has been queued\n')
-#                queues.clear()
-#                return
-#            main_location = os.path.dirname(os.path.realpath(__file__))
-#            song_path = os.abspath(os.path.realpath('Queue') + '\\' + first_file)
-#            if length != 0:
-#                print('Song done, Playing next queued song.\n')
-#                print(f'Song still in queue: {still_q}')
-#                song_there = os.path.is_file('song.mp3')
-#                if song_there:
-#                    os.remove('song.mp3')
-#                shutil.move(song_path, main_location)
-#                for file in os.listdir('./'):
-#                    if file.endswith('.mp3'):
-#                        os.rename(file, 'song.mp3')
-#
-#                voice.play(discord.FFmpegPCMAudio('song.mp3'), after=lambda e: check_queue())
-#                voice.source = discord.PCMVolumeTransformer(voice.source)
-#                voice.source.volume = 0.07
-#
-#            else:
-#                queues.clear()
-#                return
-#        else:
-#            queues.clear()
-#            print('No songs were queued before the ending of the last song.\n')
-#
-#
-#
-#    sond_there = os.path.isfile('song.mp3')
-#    try:
-#        if song_there:
-#            os.remove('song.mp3')
-#            queue.clear()
-#            print('Removed old song file')
-#    except PermissionError:
-#            print("Trying to delete song File, but it's being played.")
-#            await ctx.send('ERROR: Music Playing.')
-#            return
-#
-#    Queue_infile = os.path.isdir('./Queue')
-#    try:
-#        Queue_folder = './Queue'
-#        if Queue_infile is True:
-#            print('Removed old Queue Folder')
-#            shutil.rmtree(Queue_folder)
-#    except:
-#        print('No old Queue folder')
-#
-#    await ctx.send('Getting things ready!')
-#
-#    voice = get(client.voice_clients, guild=ctx.guild)
-#
-#    ydl_opts = {
-#    'format': 'bestaudio/best',
-#    'quiet': True,
-#    'postprocessors': [{
-#            'key': 'FFmpegExtractAudio',
-#            'preferredcodec': 'mp3'
-#            'preferredquality': '192',
-#        }],
-#    }
-#
-#    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-#        print('Downloading audio\n')
-#        ydl.download([url])
-#
-#    for file in os.listdir('./'):
-#        if file.endswith('.mp3'):
-#            name = file
-#            print(f'Rename File: {file}\n')
-#            os.rename(file, 'song.mp3')
-#
-#    voice.play(discord.FFmpegPCMAudio('song.mp3'), after=lambda e: check_queue())
-#    voice.source = discord.PCMVolumeTransformer(voice.source)
-#    voice.source.volume = 0.07
-#
-#    nname = name.rsplit('-', 2)
-#    embed = discord.embed(title=f'Playing Music in {channel}', description=f'{author.name} is playing {nname[0]}', color=242424)
-#    embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
-#    await ctx.send(embed=embed)
-#    print(f'Playing {nname[0]} on {ctx.guild.name}')
-#
-#@client.command(pass_through=True, aliases=['pa', 'pau'])
-#async def pause(ctx):
 
 @client.command()
 async def bc(ctx):
@@ -492,14 +386,23 @@ async def swear_on(ctx):
 @swear.command(name="off")
 @commands.has_permissions(administrator=True)
 async def swear_off(ctx):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefox = prefixes[str(ctx.guild.id)]
 
-    with open('swearfilterboi.json', 'r') as f:
-        verify = json.load(f)
+    with open('rspremium.json', 'r') as f:
+        rscheck = json.load(f)
+    premium = rscheck[str(ctx.guild.id)]
 
-    verify[str(ctx.guild.id)] = "disabled"
+    if premium == 'enabled':
 
-    with open('swearfilterboi.json', 'w') as f:
-        json.dump(verify, f, indent=4)
+        with open('swearfilterboi.json', 'r') as f:
+            verify = json.load(f)
+
+            verify[str(ctx.guild.id)] = "disabled"
+
+            with open('swearfilterboi.json', 'w') as f:
+                json.dump(verify, f, indent=4)
 
     embed = discord.Embed(title='Swear Filter', description=f'The Swear Filter has been **Disabled**', color=0x00ff00)
     embed.set_footer(text=f'{botname} Premium', icon_url=redsafelogo)
@@ -761,9 +664,9 @@ async def notify(ctx, user_id: int, *, message: str):
         embed = discord.Embed(title=f"{ctx.guild.name}", description=f"New message from **{ctx.guild.name}**'s Staff \n \n  Message - {message}", color=0x1868af)
         embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         await user.send(embed=embed)
-        await ctx.send(f"✉️ Sent a DM to **{user_id}**")
+        await ctx.send(f"**{user_id}** has been notified, followed by the message.")
     except discord.Forbidden:
-        await ctx.send("This user might be having DMs blocked or it's a bot account...")
+        await ctx.send("Unable to notify user, user may have DMs closed or, User might be a bot.")
 
 @client.event
 async def on_command_error(ctx, err):
@@ -1024,7 +927,7 @@ async def userinfo(ctx, user: discord.Member = None):
     else:
         game = None
     voice_state = None if not user.voice else user.voice.channel
-    embed = discord.Embed(timestamp=ctx.message.created_at)
+    embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
     embed.add_field(name='User ID', value=user.id, inline=True)
     embed.add_field(name='Nick', value=user.nick, inline=True)
     embed.add_field(name='Status', value=user.status, inline=True)
@@ -1044,7 +947,7 @@ async def serverinfo(ctx):
     role_count = len(ctx.guild.roles)
     emoji_count = len(ctx.guild.emojis)
     channel_count = len([x for x in ctx.guild.channels if isinstance(x, discord.channel.TextChannel)])
-    embed = discord.Embed(timestamp=ctx.message.created_at)
+    embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
     embed.add_field(name='Server (ID)', value=f"{ctx.guild.name} ({ctx.guild.id})")
     embed.add_field(name='Server Owner', value=ctx.guild.owner, inline=False)
     embed.add_field(name='Member Count', value=ctx.guild.member_count)
