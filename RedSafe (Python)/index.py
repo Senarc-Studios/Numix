@@ -24,7 +24,7 @@ client = discord.Client()
 
 redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/3f00cd933cf382a9f06212367676e4af.png?size=1024'
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.pkMvoANEYVUnbZU-hC9ausZikxE"
-bversion = '1.6.1'
+bversion = '1.6.2'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
 botname = 'RedDead'
 cmd = '27'
@@ -1058,4 +1058,4 @@ def traceback_maker(err, advance: bool = True):
     return error if advance else f"{type(err).__name__}: {err}"
 
 
-client.run(TOKEN)
+client.run(TOKEN, bot = True, reconnect = True)
