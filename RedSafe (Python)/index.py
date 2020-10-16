@@ -673,6 +673,12 @@ async def on_command_error(ctx, err):
     if isinstance(err, errors.CommandOnCooldown):
         await ctx.send(f"Command is on Cooldown, please try again in {err.retry_after:.2f} seconds.")
     else:
+        webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/757575792271294596/JzkFCovOEduKc3zPNlPw_Wvqxb5aPT1eJmwQcB4-Kay7OwetSuoLkuahlLenZm1Y4bMI')
+        embed = DiscordEmbed(title='An Error has occurred', description=f'Error: \n ```py\n{err}```', color=0xff0000)
+        embed.set_timestamp()
+        embed.set_thumbnail(url=f'{redsafelogo}')
+        webhook.add_embed(embed)
+        webhook.execute()
         print(err)
 
 
