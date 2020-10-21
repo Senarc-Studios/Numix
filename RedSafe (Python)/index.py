@@ -26,7 +26,7 @@ redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/3f00cd933cf
 TOKEN = "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.pkMvoANEYVUnbZU-hC9ausZikxE"
 bversion = '1.6.2'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
-botname = 'RedDead'
+botname = 'RedMeow'
 cmd = '27'
 events = '9'
 
