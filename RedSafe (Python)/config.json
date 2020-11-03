@@ -1,5 +1,14 @@
 {
+  "token": "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.PFzVQMJXvyGK9aWt25k9Qb7ky_8",
+  "join_message": "RedSafe Python, Still in Progress.",
   "owners": [
-    259875936852246528
-  ]
+    529499034495483926
+  ],
+  "prefix": [
+    "p."
+  ],
+  "playing": "Discord.py",
+  "playing_type": "listening",
+  "status_type": "online",
+  "version": "2.0.1"
 }
