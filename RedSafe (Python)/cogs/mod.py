@@ -1,6 +1,7 @@
 import discord
 import re
 import asyncio
+import json
 
 from discord.ext import commands
 from utils import permissions, default
@@ -43,6 +44,16 @@ class Moderator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.config = default.get("config.json")
+
+    @commands.command(aliases=['reminder'])
+    @commands.guild_only()
+    async def remind(self, ctx, *, reminder: commands.clean_content):
+
+        await asyncio.sleep(reminder[len(reminder[])-1])
+        embed = discord.Embed(title='Reminder', description=f'Your Reminder: \n {reminder}')
+        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
+        await ctx.send(f'<@!{ctx.author.id}>')
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.has_permissions(ban_members=True)

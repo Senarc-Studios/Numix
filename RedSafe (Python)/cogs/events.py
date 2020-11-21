@@ -30,6 +30,7 @@ class Events(commands.Cog):
         status4 = 'You type ".help"'
         status2 = 'Discord API'
         status3 = f'{botname} Premium'
+        status5 = f'RedSafe Beta {bversion}'
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'{len(self.bot.guilds)} Servers'))
         await asyncio.sleep(10)
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{status2}'))
@@ -37,6 +38,8 @@ class Events(commands.Cog):
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'{status3}'))
         await asyncio.sleep(10)
         await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'{status4}'))
+        await asyncio.sleep(10)
+        await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'{status5}'))
         await asyncio.sleep(10)
 
     @commands.Cog.listener()
@@ -55,16 +58,16 @@ class Events(commands.Cog):
     async def on_command_error(self, ctx, err):
 
         if isinstance(err, errors.MissingPermissions):
-            await ctx.send("You don't have permission to perform that command.")
+            await ctx.send("<:c:771005703849902151> You don't have permission to perform that command.")
 
         elif isinstance(err, errors.CheckFailure):
             pass
 
         elif isinstance(err, errors.MaxConcurrencyReached):
-            await ctx.send(f"You've used max capacity of command usage at once.")
+            await ctx.send(f"<:c:771005703849902151> You've used max capacity of command usage at once.")
 
         elif isinstance(err, errors.CommandOnCooldown):
-            await ctx.send(f"Try again in {err.retry_after:.2f} seconds, the command is in cooldown.")
+            await ctx.send(f":stopwatch: Try again in {err.retry_after:.2f} seconds, the command is in cooldown.")
 
         elif isinstance(err, errors.CommandNotFound):
             pass
@@ -76,6 +79,16 @@ class Events(commands.Cog):
             embed.set_thumbnail(url=f'{redsafelogo}')
             webhook.add_embed(embed)
             webhook.execute()
+            print(f'Command Error on {ctx.guild.name} \n\n Error: {err}')
+
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        joinmsg = discord.Embed(title=f'{botname} Beta', description=f'My default prefix is `.`')
+        joinmsg.add_field(name='Server Owner:', value=f'<@!{guild.owner_id}>')
+        joinmsg.add_field(name='Bot Description:', value='A Python Discord Bot. Helpful, Thoughtful, Mindful.')
+        joinmsg.add_field(name='Support Server:', value='**https://discord.gg/cRTnVaQ**')
+        joinmsg.add_field(name='Bot Invite:', value='https://RedSafe.tk/invite')
+        joinmsg.set_footer(text=f'{botname}', icon_url=redsafelogo)
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
@@ -134,7 +147,7 @@ class Events(commands.Cog):
         embed = DiscordEmbed(title='New Guild Join!', description=f"Guild : {guild.name} \n \n ID : {guild.id} \n \n Owner : {guild.owner}", color=242424)
         webhook.add_embed(embed)
         webhook.execute()
-        embed = discord.Embed(title=f'{botname}', description='Hello There, This is RebootSafe. \n My prefix default is `.` You can change it with `.prefix set {prefix}` \n Have a nice day!', color=0xFFA500)
+        embed = discord.Embed(title=f'{botname}', description=f'Hello There, This is {botname}. \n My prefix default is `.` You can change it with `.prefix set {prefix}` \n Have a nice day!', color=0xFFA500)
         embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
         try:
             to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
@@ -149,18 +162,6 @@ class Events(commands.Cog):
             await to_send.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_guild_join(self, guild):
-        if not self.config.join_message:
-            return
-
-        try:
-            to_send = sorted([chan for chan in guild.channels if chan.permissions_for(guild.me).send_messages and isinstance(chan, discord.TextChannel)], key=lambda x: x.position)[0]
-        except IndexError:
-            pass
-        else:
-            await to_send.send(self.config.join_message)
-
-    @commands.Cog.listener()
     async def on_member_join(self, member):
         with open('onjoinconfigset.json', 'r') as f:
             prefixes = json.load(f)
@@ -170,7 +171,7 @@ class Events(commands.Cog):
         joes = joe[str(member.guild.id)]
         print(joes)
         if joes == "enabled":
-            channel = client.get_channel(prefix)
+            channel = bot.get_channel(prefix)
             embed = discord.Embed(title=f'{member.name} Joined', description=f'Hey {member.name}, Welcome to **{member.guild.name}** \n Have a nice stay!', color=242424)
             embed.set_image(url='https://cdn.discordapp.com/attachments/731716869576327201/744818377461071952/Welcome-Black-Text-White-BG.gif')
             embed.set_thumbnail(url=member.avatar_url)

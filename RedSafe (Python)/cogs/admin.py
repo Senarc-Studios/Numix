@@ -4,8 +4,9 @@ import discord
 import importlib
 import os
 import sys
-from discord_webhook import DiscordWebhook, DiscordEmbed
+import json
 
+from discord_webhook import DiscordWebhook, DiscordEmbed
 from discord.ext import commands
 from utils import permissions, default, http, dataIO
 from discord.utils import get
@@ -27,10 +28,39 @@ class Admin(commands.Cog):
         self._last_result = None
 
     @commands.command()
-    @commands.check(permissions.is_owner)
-    async def say(self, ctx, str):
-        message.delete()
-        await ctx.send(str)
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(rate=1, per=60, type=commands.BucketType.user)
+    async def bug(self, ctx, *, reason: commands.clean_content = None):
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+        prefox = prefixes[str(ctx.guild.id)]
+        if reason == None:
+            ctx.message.delete()
+            nos = discord.Embed(title=f'{botname} Bugs', description=f"You have to do `{prefox}bug <bugreport>` to send a bug, `{prefox}bug` doesn't do anything.\n No report has been sent to the Developers.", color=0xF26A72)
+            nos.set_footer(text=f'{botname}', icon_url=redsafelogo)
+            await ctx.send(embed=nos, delete_after=10)
+        else:
+            ctx.message.delete()
+            webhook = DiscordWebhook(url='https://discordapp.com/api/webhooks/758644853441298462/VTSA8bQ797HENYiQnhphnWpalE3UJHmod4tu27HjThs6HZl6pgIQLvtxCE1h1AyaJqMu')
+            embed = DiscordEmbed(title=f'New Bug | {ctx.author.name}', description=f'Reporter Name: **{ctx.author.name}** \n Reporter ID: **{ctx.author.id}** \n Guild Name: **{ctx.guild.name}** \n Guild ID: **{ctx.guild.id}** \nGuild Owner ID: **{ctx.guild.owner_id}** \n\n **Bug** - {reason}', color=0xF26A72)
+            embed.set_footer(text=f'{botname} Bugs', icon_url=redsafelogo)
+            embed.set_thumbnail(url=f'{ctx.author.avatar_url}')
+            webhook.add_embed(embed)
+            webhook.execute()
+            rs = discord.Embed(title=f'{botname} Bugs', description=f'The bug has been reported to {botname} Developers. Thank you for reporting the bug.\n You can join {botname} support with `{prefox}invite`', color=0xF26A72)
+            rs.set_footer(text=f'{botname}', icon_url=redsafelogo)
+            await ctx.send(embed=rs, delete_after=10)
+
+    @commands.command()
+    async def say(self, ctx, *, msg):
+        if ctx.message.author.id == 529499034495483926:
+            await ctx.message.delete()
+            await ctx.send(msg)
+        elif ctx.message.author.id == ctx.guild.owner_id:
+            await ctx.message.delete()
+            await ctx.send(msg)
+        else:
+            await ctx.send("<:c:771005703849902151> You don't have permission to do that.")
 
     @commands.command()
     @commands.check(permissions.is_owner)
