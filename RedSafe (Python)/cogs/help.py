@@ -18,12 +18,11 @@ from pymongo import MongoClient
 
 #meta data
 redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/af33e499779a7f1f8dfad17b4bf72497.png?size=1024'
-bversion = '2.0.1'
+bversion = '2.2.0'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
 botname = 'RedSafe'
 cmd = '27'
 events = '9'
-accent = '0xF26A72'
 #meta data
 
 class help(commands.Cog):

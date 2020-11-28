@@ -8,12 +8,11 @@ from utils import permissions, default
 
 #meta data
 redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/af33e499779a7f1f8dfad17b4bf72497.png?size=1024'
-bversion = '2.0.1'
+bversion = '2.2.0'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
 botname = 'RedSafe'
 cmd = '27'
 events = '9'
-accent = 'F26A72'
 #meta data
 
 # Source: https://github.com/Rapptz/RoboDanny/blob/rewrite/cogs/mod.py
@@ -45,43 +44,138 @@ class Moderator(commands.Cog):
         self.bot = bot
         self.config = default.get("config.json")
 
-    @commands.command(aliases=['reminder'])
-    @commands.guild_only()
-    async def remind(self, ctx, *, reminder: commands.clean_content):
+    @bot.command(case_insensitive = True, aliases = ["remind", "remindme", "remind_me"])
+    @commands.bot_has_permissions(attach_files = True, embed_links = True)
+    async def reminder(ctx, time, *, reminder):
+    	print(time)
+    	print(reminder)
+    	user = ctx.message.author
+    	embed = discord.Embed(color=0xF26A72)
+    	embed.set_footer(text="Discord.py For Beginners", icon_url=f"{logo}")
+    	seconds = 0
+    	if reminder is None:
+    		embed.add_field(name='Warning', value=' Run the command again but specify what do you want me to remind you about.') # Error message
+    	if time.lower().endswith("d"):
+    		seconds += int(time[:-1]) * 60 * 60 * 24
+    		counter = f"{seconds // 60 // 60 // 24} days"
+    	if time.lower().endswith("h"):
+    		seconds += int(time[:-1]) * 60 * 60
+    		counter = f"{seconds // 60 // 60} hours"
+    	elif time.lower().endswith("m"):
+    		seconds += int(time[:-1]) * 60
+    		counter = f"{seconds // 60} minutes"
+    	elif time.lower().endswith("s"):
+    		seconds += int(time[:-1])
+    		counter = f"{seconds} seconds"
+    	if seconds == 0:
+    		embed.add_field(name='Warning',
+    						value='Please specify a proper duration, do `!help reminder` for more information.')
+    	elif seconds < 300:
+    		embed.add_field(name='Warning',
+    						value='You have specified a too short duration!\nMinimum duration is 5 minutes.')
+    	elif seconds > 7776000:
+    		embed.add_field(name='Warning', value='You have specified a too long duration!\nMaximum duration is 90 days.')
+    	else:
+    		beforermd = discord.Embed(title='Reminder Set', description=f'You will be reminded in {counter}', color=0xF26A72)
+    		beforermd.set_footer(text='Discord.py For Beginners', icon_url=logo)
+	    	afterrmd = discord.Embed(title='Reminder', description=f'**Your reminder:** \n {reminder} \n\n *reminder set {counter} ago*', color=0xF26A72)
+    		afterrmd.set_footer(text='Discord.py For Beginners', icon_url=logo)
+		    await ctx.send(embed=beforermd)
+		    await asyncio.sleep(seconds)
+		    await ctx.send(embed=afterrmd)
+	    	return
+    	await ctx.send(embed=embed)
 
-        await asyncio.sleep(reminder[len(reminder[])-1])
-        embed = discord.Embed(title='Reminder', description=f'Your Reminder: \n {reminder}')
-        embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
-        await ctx.send(f'<@!{ctx.author.id}>')
-        await ctx.send(embed=embed)
+    @bot.command(case_insensitive = True, aliases = ["temp-mute", "temp_mute"])
+    @commands.bot_has_permissions(manage_messages = True)
+    async def tempmute(ctx, user: discord.Member, time, *, reason):
+	    print(time)
+        print(reminder)
+	    user = ctx.message.author
+	    seconds = 0
+	    if reason is None:
+	    	await ctx.send('<:F:780326063120318465> User was not muted, because no reason was specified.') # Error message
+	    if time.lower().endswith("y"):
+	    	seconds += int(time[:-1]) * 60 * 60 * 24 * 365
+	    	counter = f"{seconds // 60 // 60 // 24 // 365} years"
+	    if time.lower().endswith("d"):
+    		seconds += int(time[:-1]) * 60 * 60 * 24
+    		counter = f"{seconds // 60 // 60 // 24} days"
+    	if time.lower().endswith("h"):
+    		seconds += int(time[:-1]) * 60 * 60
+    		counter = f"{seconds // 60 // 60} hours"
+    	elif time.lower().endswith("m"):
+    		seconds += int(time[:-1]) * 60 * 60 * 24 * 30
+    		counter = f"{seconds // 60 // 60 // 24 // 30} months"
+    	elif time.lower().endswith("s"):
+    		seconds += int(time[:-1])
+    		counter = f"{seconds} seconds"
+    	if seconds == 0:
+    		await ctx.send('<:F:780326063120318465> User was not muted, because no time was specified.') 
+    	else:
+    		beforermd = discord.Embed(title='Muted User', description=f'User has been muted for {counter} \n\n **reason:**\n{reason}', color=0xF26A72)
+    		beforermd.set_footer(text='RedSafe', icon_url=redsafelogo)
 
-    @commands.command()
-    @commands.has_permissions(ban_members=True)
-    async def tempban(self, ctx, user:discord.User, duration: int, *, reason: commands.clean_content = None):
-        if reason == None:
-            banned = discord.Embed(title='Temp-Ban', description=f'{user} has been temporarily banned from **{ctx.guild.name}** for **{duration}** \n\n **Reason:** {reason}')
-            banned.timestamp = datetime.utcnow()
-        else:
-            channel = get(ctx.guild.channels, name=f'{botname}-logs')
-            embed = discord.Embed(title='User banned', color=0xF26A72)
-            embed.add_field(name='Moderator:', value=f'{ctx.author.name}#{ctx.author.discriminator}', inline=False)
-            embed.add_field(name='Reason:', value=f'{reason}', inline=False)
-            await channel.send(embed=embed)
+    		banned = discord.Embed(title=f'[Muted] {ctx.guild.name}', description=f'You have been muted on **{ctx.guild.name}** for **{counter}**', color=0xF26A72)
+    		banned.set_footer(text='RedSafe', icon_url=redsafelogo)
 
-            notif = discord.Embed(title=f'[Banned] {ctx.guild.name}', description=f'Hey {user.name}! You have been banned on {ctx.guild.name} \n\n Reason: \n {reason}', color=0xF26A72)
-            notif.set_footer(text='RedSafe', icon_url=redsafelogo)
-            notif.timestamp = datetime.utcnow()
-            await user.send(embed=notif)
+    		await ctx.send(embed=beforermd)
+    		await user.send(embed=banned)
+    		await ctx.guild.unban(user, reason=reason)
+    		await asyncio.sleep(seconds)
+    		await ctx.guild.unban(user)
+    		return
+    	await ctx.send(embed=embed)
 
-            await ctx.guild.ban(user, reason=reason)
-            await asyncio.sleep(duration)
-            await ctx.guild.unban(user)
+    @bot.command(case_insensitive = True, aliases = ["temp-ban", "temp_ban"])
+    @commands.bot_has_permissions(ban_members = True)
+    async def tempban(ctx, user: discord.Member, time, *, reason):
+	    print(time)
+        print(reminder)
+	    user = ctx.message.author
+	    seconds = 0
+	    if reason is None:
+	    	await ctx.send('<:F:780326063120318465> User was not banned, because no reason was specified.') # Error message
+	    if time.lower().endswith("y"):
+	    	seconds += int(time[:-1]) * 60 * 60 * 24 * 365
+	    	counter = f"{seconds // 60 // 60 // 24 // 365} years"
+	    if time.lower().endswith("d"):
+    		seconds += int(time[:-1]) * 60 * 60 * 24
+    		counter = f"{seconds // 60 // 60 // 24} days"
+    	if time.lower().endswith("h"):
+    		seconds += int(time[:-1]) * 60 * 60
+    		counter = f"{seconds // 60 // 60} hours"
+    	elif time.lower().endswith("m"):
+    		seconds += int(time[:-1]) * 60 * 60 * 24 * 30
+    		counter = f"{seconds // 60 // 60 // 24 // 30} months"
+    	elif time.lower().endswith("s"):
+    		seconds += int(time[:-1])
+    		counter = f"{seconds} seconds"
+    	if seconds == 0:
+    		await ctx.send('<:F:780326063120318465> User was not banned, because no time was specified.') 
+    	else:
+            audit = get(guild.text_channels, name='redsafe-logs')
+    		beforermd = discord.Embed(title='Banned User', description=f'User has been banned for {counter} \n\n **reason:**\n{reason}', color=0xF26A72)
+    		beforermd.set_footer(text=f'{botname}', icon_url=redsafelogo)
 
-    @commands.command()
-    @commands.guild_only()
-    @commands.has_permissions(manage_messages=True)
-    async def tempmute(self, ctx, time: int, *, reason: commands.clean_content):
-        await ctx.send('Commands on work')
+            log = discord.Embed(title='User Temp-Banned', description=f'**User:**\n<@!{user.id}>({user.name}#{user.discriminator}) \n\n **Moderator:**\n<@!{ctx.author.id}>({ctx.author.name}#{ctx.author.discriminator}) \n\n **Reason:**\n{reason}', color=0xF26A72)
+		    log.set_footer(text='Discord.py For Beginners', icon_url=logo)
+
+	    	afterrmd = discord.Embed(title='User Unbanned', description=f'**User:**\n{user} \n\n **Unbanned after:**\n{counter}', color=0xF26A72)
+    		afterrmd.set_footer(title='Discord.py For Beginners', icon_url=logo)
+
+    		banned = discord.Embed(title=f'[Banned] {ctx.guild.name}', description=f'You have been banned on **{ctx.guild.name}** for **{counter}**', color=0xF26A72)
+    		banned.set_footer(text=f'{botname}', icon_url=redsafelogo)
+
+            await audit.send(embed=log)
+    		await ctx.send(embed=beforermd)
+    		await user.send(embed=banned)
+    		await ctx.guild.unban(user, reason=reason)
+    		await asyncio.sleep(seconds)
+    		await ctx.guild.unban(user)
+            await audit.send(embed=afterrmd)
+    		return
+    	await ctx.send(embed=embed)
 
     @commands.command()
     @commands.guild_only()
@@ -94,40 +188,16 @@ class Moderator(commands.Cog):
             await ctx.send(embed=embed, delete_after=5)
         else:
             await ctx.channel.purge(limit=int(search))
-            embed2 = discord.Embed(title=f'Messages Cleared', description=f'Specified ammount of messages has been deleted.', color=0xF26A72)
+            embed2 = discord.Embed(title=f'{int(search)} Messages Cleared', description=f'{int(search)} messages has been deleted.', color=0xF26A72)
             embed2.set_footer(text=f'{botname}', icon_url=redsafelogo)
             await ctx.send(embed=embed2, delete_after=5)
+
 
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member : discord.Member, reason=None):
-        with open('logs.json', 'r') as f:
-            loging = json.load(f)
-        logs = loging[str(ctx.guild.id)]
-        if reason == None:
-            with open('prefixes.json', 'r') as f:
-                prefixes = json.load(f)
-            prefox = prefixes[str(ctx.guild.id)]
-
-            await ctx.send(f"Incorrect Usage, try **{prefox}kick <@user> <reason>**")
-            embed = discord.Embed(title="Attempt at Kick", color=0x37cdaf)
-            embed.add_field(name="Command Issuer", value=ctx.message.author.mention, inline=True)
-            embed.add_field(name="Attempted to kick but forgot reason", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
-            embed.set_footer(text=botname, icon_url=redsafelogo)
-        else:
-            memberstr = str(member)
-            await logs.send(ctx.message.author.mention + " has kicked person " + memberstr)
-            kick = discord.Embed(title="Kick", color=0x37cdaf)
-            kick.add_field(name="Moderator", value=ctx.message.author.mention, inline=True)
-            kick.add_field(name="Kicked", value=f"{member.name}#{member.discriminator} <@" + str(member.id) + ">" + f"({member.id})", inline=True)
-            kick.add_field(name='Reason', value=f'{reason}', inline=True)
-            kick.set_footer(text=botname, icon_url=redsafelogo)
-            await ctx.send(embed=kick)
-            embed = discord.Embed(title=f'{ctx.guild.name}', description=f"You've been kicked from {ctx.guild.name}")
-            embed.set_footer(text=botname, icon_url=redsafelogo)
-            await member.send(embed=embed)
-            await member.kick(reason=f"Moderator:{ctx.message.author.name} Reason:" + reason)
+        await member.kick(reason=f"Moderator:{ctx.message.author.name} Reason:" + reason)
 
     @commands.command(aliases=["nick"])
     @commands.guild_only()
@@ -223,42 +293,6 @@ class Moderator(commands.Cog):
         except Exception as e:
             await ctx.send(e)
 
-    @commands.command(aliases=["ar"])
-    @commands.guild_only()
-    @permissions.has_permissions(manage_roles=True)
-    async def announcerole(self, ctx, *, role: discord.Role):
-        """ Makes a role mentionable and removes it whenever you mention the role """
-        if role == ctx.guild.default_role:
-            return await ctx.send("To prevent abuse, I won't allow mentionable role for everyone/here role.")
-
-        if ctx.author.top_role.position <= role.position:
-            return await ctx.send("It seems like the role you attempt to mention is over your permissions, therefor I won't allow you.")
-
-        if ctx.me.top_role.position <= role.position:
-            return await ctx.send("This role is above my permissions, I can't make it mentionable ;-;")
-
-        await role.edit(mentionable=True, reason=f"[ {ctx.author} ] announcerole command")
-        msg = await ctx.send(f"**{role.name}** is now mentionable, if you don't mention it within 30 seconds, I will revert the changes.")
-
-        while True:
-            def role_checker(m):
-                if (role.mention in m.content):
-                    return True
-                return False
-
-            try:
-                checker = await self.bot.wait_for('message', timeout=30.0, check=role_checker)
-                if checker.author.id == ctx.author.id:
-                    await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
-                    return await msg.edit(content=f"**{role.name}** mentioned by **{ctx.author}** in {checker.channel.mention}")
-                    break
-                else:
-                    await checker.delete()
-            except asyncio.TimeoutError:
-                await role.edit(mentionable=False, reason=f"[ {ctx.author} ] announcerole command")
-                return await msg.edit(content=f"**{role.name}** was never mentioned by **{ctx.author}**...")
-                break
-
     @commands.group()
     @commands.guild_only()
     @permissions.has_permissions(ban_members=True)
@@ -280,7 +314,7 @@ class Moderator(commands.Cog):
             ctx, "playing", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
-    @find.command(name="username", aliases=["name"])
+    @find.command(name="username", aliases=["name", "find"])
     async def find_name(self, ctx, *, search: str):
         loop = [f"{i} ({i.id})" for i in ctx.guild.members if search.lower() in i.name.lower() and not i.bot]
         await default.prettyResults(
@@ -301,7 +335,7 @@ class Moderator(commands.Cog):
             ctx, "name", f"Found **{len(loop)}** on your search for **{search}**", loop
         )
 
-    @find.command(name="discriminator", aliases=["discrim"])
+    @find.command(name="discriminator", aliases=["discrim", "disc"])
     async def find_discriminator(self, ctx, *, search: str):
         if not len(search) == 4 or not re.compile("^[0-9]*$").search(search):
             return await ctx.send("You must provide exactly 4 digits")
@@ -318,7 +352,7 @@ class Moderator(commands.Cog):
     async def prune(self, ctx):
         """ Removes messages from the current server. """
         if ctx.invoked_subcommand is None:
-            await ctx.send_help(str(ctx.command))
+            return
 
     async def do_removal(self, ctx, limit, predicate, *, before=None, after=None, message=True):
         if limit > 2000:

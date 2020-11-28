@@ -15,10 +15,24 @@ config = default.get("config.json")
 print("Client Connecting")
 
 def prefix(client, message):
-    with open('prefixes.json', 'r') as f:
-        prefixes = json.load(f)
+    try:
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
 
-    return prefixes[str(message.guild.id)]
+        return prefixes[str(message.guild.id)]
+    except AttributeError:
+        with open('prefixes.json', 'r') as f:
+			prefixes = json.load(f)
+
+		prefixes[str(guild.id)] = "."
+
+		with open('prefixes.json', 'w') as f:
+			json.dump(prefixes, f, indent=4)
+
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+
+        return prefixes[str(message.guild.id)]
 
 bot = Bot(
     command_prefix=prefix,
