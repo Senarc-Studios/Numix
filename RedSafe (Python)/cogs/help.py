@@ -7,7 +7,6 @@ import time
 import json
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from utils import permissions, default
-from discord.utils import get
 import re
 import os
 import youtube_dl
@@ -15,11 +14,12 @@ import shutil
 from discord.ext.commands import has_permissions, MissingPermissions, errors
 import pymongo
 from pymongo import MongoClient
+from discord.utils import get
 
 #meta data
 redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/af33e499779a7f1f8dfad17b4bf72497.png?size=1024'
 bversion = '2.2.1'
-devs = '`Benitz Original#1317` and `Kittens#3154`'
+devs = '`Danoxzilla-X#7003`, `Benitz Original#1317` and `MythicalKittens#0001`'
 botname = 'RedSafe'
 cmd = '27'
 events = '9'
