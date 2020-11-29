@@ -12,7 +12,7 @@ from utils import default
 
 #meta data
 redsafelogo = 'https://cdn.discordapp.com/avatars/545230136669241365/af33e499779a7f1f8dfad17b4bf72497.png?size=1024'
-bversion = '2.2.0'
+bversion = '2.2.1'
 devs = '`Benitz Original#1317` and `Kittens#3154`'
 botname = 'RedSafe'
 cmd = '27'
@@ -159,7 +159,7 @@ class Events(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_join(self, member):
 		audit = get(guild.text_channels, name='redsafe-logs')
-		log = discord.Embed(title='Member Left', description=f'**Member:**\n<@!{member.id}>({member.name}#{member.discriminator})\n\n**Member ID:**\n{member.id}\n\n**Account Created At:**\n{member.created_at.__format__('%A, %d. %B %Y, %H:%M:%S')}\n\n**Joined At:**{member.joined_at.__format__('%A, %d. %B %Y, %H:%M:%S')}', color=0xF26A72)
+		log = discord.Embed(title='Member Left', description=f"**Member:**\n<@!{member.id}>({member.name}#{member.discriminator})\n\n**Member ID:**\n{member.id}\n\n**Account Created At:**\n{member.created_at.__format__('%A, %d. %B %Y, %H:%M:%S')}\n\n**Joined At:**{member.joined_at.__format__('%A, %d. %B %Y, %H:%M:%S')}", color=0xF26A72)
 		log.set_thumbnail(url=f'{member.avatar_url}')
 		log.set_footer(text=f'{botname}', icon_url=redsafelogo)
 		await audit.send(embed=log)
@@ -182,7 +182,7 @@ class Events(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_remove(self, member):
 		audit = get(guild.text_channels, name='redsafe-logs')
-		log = discord.Embed(title='Member Left', description=f'**Member:**\n<@!{member.id}>({member.name}#{member.discriminator})\n\n**Member ID:**\n{member.id}\n\n**Account Created At:**\n{member.created_at.__format__('%A, %d. %B %Y, %H:%M:%S')}\n\n**Joined At:**{member.joined_at.__format__('%A, %d. %B %Y, %H:%M:%S')}', color=0xF26A72)
+		log = discord.Embed(title='Member Left', description=f"**Member:**\n<@!{member.id}>({member.name}#{member.discriminator})\n\n**Member ID:**\n{member.id}\n\n**Account Created At:**\n{member.created_at.__format__('%A, %d. %B %Y, %H:%M:%S')}\n\n**Joined At:**{member.joined_at.__format__('%A, %d. %B %Y, %H:%M:%S')}", color=0xF26A72)
 		log.set_thumbnail(url=f'{member.avatar_url}')
 		log.set_footer(text=f'{botname}', icon_url=redsafelogo)
 		await audit.send(embed=log)

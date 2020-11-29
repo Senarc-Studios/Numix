@@ -15,39 +15,25 @@ config = default.get("config.json")
 print("Client Connecting")
 
 def prefix(client, message):
-    try:
-        with open('prefixes.json', 'r') as f:
-            prefixes = json.load(f)
+	with open('prefixes.json', 'r') as f:
+		prefixes = json.load(f)
 
-        return prefixes[str(message.guild.id)]
-    except AttributeError:
-        with open('prefixes.json', 'r') as f:
-			prefixes = json.load(f)
-
-		prefixes[str(guild.id)] = "."
-
-		with open('prefixes.json', 'w') as f:
-			json.dump(prefixes, f, indent=4)
-
-        with open('prefixes.json', 'r') as f:
-            prefixes = json.load(f)
-
-        return prefixes[str(message.guild.id)]
+	return prefixes[str(message.guild.id)]
 
 bot = Bot(
-    command_prefix=prefix,
-    prefix=prefix,
-    command_attrs=dict(hidden=True)
+	command_prefix=prefix,
+	prefix=prefix,
+	command_attrs=dict(hidden=True)
 )
 
 bot.remove_command('help')
 
 for file in os.listdir("./cogs"):
-    if file.endswith(".py"):
-        name = file[:-3]
-        bot.load_extension(f"cogs.{name}")
+	if file.endswith(".py"):
+		name = file[:-3]
+		bot.load_extension(f"cogs.{name}")
 
 try:
-    bot.run(config.token)
+	bot.run(config.token)
 except Exception as e:
-    print(f'Error when logging in: {e}')
+	print(f'Error when logging in: {e}')
