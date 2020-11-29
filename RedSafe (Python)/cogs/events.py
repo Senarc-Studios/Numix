@@ -154,7 +154,7 @@ class Events(commands.Cog):
 		global count
 		count +=1
 
-		
+
 
 	@commands.Cog.listener()
 	async def on_member_join(self, member):

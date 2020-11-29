@@ -109,7 +109,7 @@ class Moderator(commands.Cog):
 			seconds += int(time[:-1])
 			counter = f"{seconds} seconds"
 		if seconds == 0:
-			await ctx.send('<:F:780326063120318465> User was not muted, because no time was specified.') 
+			await ctx.send('<:F:780326063120318465> User was not muted, because no time was specified.')
 		else:
 			audit = get(guild.text_channels, name='redsafe-logs')
 			beforermd = discord.Embed(title='Muted User', description=f'User has been muted for {counter} \n\n **reason:**\n{reason}', color=0xF26A72)
@@ -158,7 +158,7 @@ class Moderator(commands.Cog):
 			seconds += int(time[:-1])
 			counter = f"{seconds} seconds"
 		if seconds == 0:
-			await ctx.send('<:F:780326063120318465> User was not banned, because no time was specified.') 
+			await ctx.send('<:F:780326063120318465> User was not banned, because no time was specified.')
 		else:
 			audit = get(guild.text_channels, name='redsafe-logs')
 			beforermd = discord.Embed(title='Banned User', description=f'User has been banned for {counter} \n\n **reason:**\n{reason}', color=0xF26A72)
