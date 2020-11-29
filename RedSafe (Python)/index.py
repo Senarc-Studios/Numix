@@ -10,7 +10,7 @@ from utils.data import Bot, HelpFormat
 cluster = MongoClient('mongodb+srv://RedSafe-Bot:F0H5XARYJt69SD9l@redsafe.hoqeu.mongodb.net/RedSafe?retryWrites=true&w=majority')
 db = cluster['RedSafe']
 #DB
-# i flipppin like muffins 2			
+# i flipppin like muffins		
 config = default.get("config.json")
 print("Client Connecting")
 
