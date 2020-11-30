@@ -25,7 +25,7 @@ class Fun_Commands(commands.Cog):
         self.config = default.get("config.json")
 
     @commands.command(aliases=['8ball'])
-    async def eightball(self, ctx, *, question: commands.clean_content):
+    async def _8ball(self, ctx, *, question: commands.clean_content):
         """ Consult 8ball to receive an answer """
         answer = random.choice(lists.ballresponse)
         await ctx.send(f"🎱 **Question:** {question}\n**Answer:** {answer}")
