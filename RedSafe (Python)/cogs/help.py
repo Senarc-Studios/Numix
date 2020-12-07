@@ -43,7 +43,7 @@ class help(commands.Cog):
 			embed.set_footer(text=botname, icon_url=redsafelogo)
 			await ctx.send(embed=embed)
 		elif category == "moderation":
-			embed = discord.Embed(title='> Moderation Commands', description=f'`{prefox}kick` - **kicks** and **notifies** the mentioned User. \n\n `{prefox}ban` - **Bans** and **notifes** the mentioned User. \n\n `{prefox}mute` - Mutes the mentioned user permanently \n\n `{prefox}temp-mute` - Temp-Mutes a mentioned user with a reason. \n\n `{prefox}temp-ban` - Temp-bans a mentioned user with a reason.', color=accent)
+			embed = discord.Embed(title='> Moderation Commands', description=f'`{prefox}kick` - **kicks** and **notifies** the mentioned User. \n\n `{prefox}ban` - **Bans** and **notifes** the mentioned User. \n\n `{prefox}mute` - Mutes the mentioned user permanently \n\n `{prefox}temp-mute` - Temp-Mutes a mentioned user with a reason. \n\n `{prefox}temp-ban` - Temp-bans a mentioned user with a reason.', color=0xF26A72)
 			embed.set_footer(text=botname, icon_url=redsafelogo)
 			await ctx.send(embed=embed)
 		elif category == "general":
