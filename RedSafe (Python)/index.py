@@ -7,18 +7,21 @@ from utils import default
 from utils.data import Bot, HelpFormat
 
 #DB
-cluster = MongoClient('mongodb+srv://RedSafe-Bot:F0H5XARYJt69SD9l@redsafe.hoqeu.mongodb.net/RedSafe?retryWrites=true&w=majority')
+
+DB_UserName = 'RedSafe-Bot'
+
+DB_Password = 'F0H5XARYJt69SD9l'
+
+cluster = MongoClient(f'mongodb+srv://{DB_UserName}:{DB_Password}@redsafe.hoqeu.mongodb.net/RedSafe?retryWrites=true&w=majority')
 db = cluster['RedSafe']
 #DB
-# i flipppin like muffins		
+		
 config = default.get("config.json")
 print("Client Connecting")
 
 def prefix(client, message):
-	with open('prefixes.json', 'r') as f:
-		prefixes = json.load(f)
-
-	return prefixes[str(message.guild.id)]
+	prefix_from_db = db['Prefixes']
+	return prefix_from_db.find(message.guild.id)
 
 bot = Bot(
 	command_prefix=prefix,

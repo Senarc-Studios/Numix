@@ -149,11 +149,6 @@ class Events(commands.Cog):
 			webhook.execute()
 			await to_send.send(embed=embed)
 
-	@commands.Cog.listener()
-	async def on_guild_join(self, guild):
-		global count
-		count +=1
-
 
 
 	@commands.Cog.listener()

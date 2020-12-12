@@ -28,8 +28,29 @@ events = '9'
 class Config(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+	
+#prefix = {f"{message.guild.id}": .}
+#                               ^
+#SyntaxError: invalid syntax
+#
+#The above exception was the direct cause of the following exception:
 
-	@commands.command()
+	@commands.Cog.listener()
+	async def on_message(self, message):
+		if message.guild.id is None:
+			return
+		else:
+			try:
+				prefix_from_db = db['Prefixes']
+				test = prefix_from_db.find(message.guild.id)
+				print(test)
+			except AttributeError:
+				prefix_from_db = db['Prefixes']
+				pr = {f"{message.guild.id}": .}
+				prefix_from_db.insert(pr)
+				await bot.process_command(message) 
+
+	@commands.command()# It's on session details in the Live Share Tab
 	@commands.has_permissions(administrator=True)
 	async def linkfilter(self, ctx):
 		with open('prefixes.json', 'r') as f:
@@ -125,15 +146,12 @@ class Config(commands.Cog):
 
 	@prefix.command(name="set")
 	@commands.has_permissions(administrator=True)
-	async def prefix_set(self, ctx, prefix):
-
-		with open('prefixes.json', 'r') as f:
-			prefixes = json.load(f)
-
-		prefixes[str(ctx.guild.id)] = prefix
-
-		with open('prefixes.json', 'w') as f:
-			json.dump(prefixes, f, indent=4)
+	async def prefix_set(self, ctx, *, prefix):
+		
+		collection = db['Prefixes']
+		
+		new_prefix = {f"{ctx.guild.id}": prefix}
+		collection.update(new_prefix)
 
 		embed = discord.Embed(title='Prefix', description=f'The bot prefix has been set to `{prefix}`', color=0x00ff00)
 		embed.set_footer(text=f'{botname}', icon_url=redsafelogo)
@@ -235,7 +253,6 @@ class Config(commands.Cog):
 			await channel.send(embed=logem)
 
 		else:
-			return
-
+			return 
 def setup(bot):
 	bot.add_cog(Config(bot))

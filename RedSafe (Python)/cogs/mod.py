@@ -468,32 +468,25 @@ class Moderator(commands.Cog):
 
 		await ctx.send(f'Successfully removed {total_reactions} reactions.')
 
-#warn system with logs
+	#warn system with logs
 
 	@commands.command()
-	async def warn(self, ctx: discord.Member-None, Reason-None):
-		sentmessage = ctx.message
-		await sentmessage.delete()
-		embed = discord.Embed(title="Warning commannd",color=0xdd9011)
-		embed.set_footer(text=f"WarningID:{ctx.message.id}.{ctx.guild.id}")
-		message = await ctx.send(embed=embed)
-		if ctx.channel.permissions_for(ctx.author).kick_members is True:
-			if member == none or member == ctx.author:
-				embed.add_field(name="OP error", value=f" The value for member {member} is not valid Discord User, try rs!warn [@Mention | <ID>] <reason>")
-				await message.edit(embed=embed)
-				return
-			if reason == none:
-				Reason = "no reason given"
-			embed.add_field(name="Warning Information", value=f"The Member {member} has been warned for {reason}")
-			await message.edit(embed=embed)
-			warnsFile = open("Logs\Warnings.txt", "ars!")
-			warnsFile.write(f"WarningID:{ctx.author.id}.{ctx.guild.id} | User:{ctx.author.name}.{ctx.author.discriminator}.{ctx.author.id} | Reason:{Reason}\n")
+	@commands.has_permissions()
+	async def warn(self, ctx, user: discord.Member, *, reason=None):
+		if reason is None:
+			await ctx.send(f'<:c:771005703849902151> You have to specify a reason for your warn.')
+			return
 		else:
-			await message.edit(content="you do not have permissions to run this command, \n if this is  false info please ocntact server administrator \n`missing permissions :KICK_MEMBERS:`")
+			embed = discord.Embed(title="User Warned", description=f'Warn ID: {ctx.author.discriminator}.{ctx.message.id}', color=0xF26A72)
+			embed.set_footer(text=f"Warn ID: {ctx.message.id}.{ctx.guild.id}")
+			warnsFile = open("Logs\Warnings.txt", "ars!")
+			warnsFile.write(f"Warn ID: {ctx.author.discriminator}.{ctx.message.id} | User: {user.name}#{user.discriminator} | Reason: {Reason}\n")
+			notif = discord.Embed(title=f'[Warned] {ctx.guild.name}', description=f"You've been warned on {ctx.guild.name}, for `{reason}`", color=0xF26A72)
+			notif.set_footer(text=f'{botname}', icon_url=redsafelogo)
 
 
-@commands.command
-async def warninfo(ctx, WarningID)
+	@commands.command()
+	async def infractions(ctx, *, WarnID):
 
 def setup(bot):
 	bot.add_cog(Moderator(bot))
