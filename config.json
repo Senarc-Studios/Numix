@@ -2,8 +2,12 @@
 	"owners": [
 		635838945862746113, 529499034495483926
 	],
-	"token": "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.7IhtPNKUJjMm3B7cfHCpRO1VHD8",
-	"botversion": "0.0.1",
+	"token": "NzQ0ODY1OTkwODEwMjcxNzg1.Xzpcgw.bmdcdBCLRSHjYCYLkPEujj356Qk",
+	"botversion": "0.1.1",
 	"devs": "`Benitz Original#1317` and `Danoxzilla#7003`",
-	"logo": "https://cdn.discordapp.com/avatars/744865990810271785/d4da704d65f395fbb51122d70f7731f6.png?size=1024"
+	"logo": "https://cdn.discordapp.com/avatars/744865990810271785/d4da704d65f395fbb51122d70f7731f6.png?size=1024",
+	"supportserver": "https://discord.gg/Ke6unQHNd9",
+	"ads": [
+		738356303595831416, 259875936852246528
+	]
 }

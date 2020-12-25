@@ -1,5 +1,10 @@
 from numix_imports import *
 
+# Mongo Data Base
+
+client = pymongo.MongoClient("mongodb+srv://Benitz:<password>@numix.dksdu.mongodb.net/<dbname>?retryWrites=true&w=majority")
+db = client.test
+
 print("Bot Starting.")
 
 # Intents
@@ -16,6 +21,101 @@ config = default.get("config.json")
 bot = commands.Bot(command_prefix=["N!", "n!", "Numix", "Numix ", "<@!545230136669241365>", "<@!545230136669241365> "], intents=intents)
 bot.remove_command("help")
 
+# Eval
+
+@bot.command(name='e')
+@commands.is_owner()
+async def _e(ctx, *, body=None):
+	env = {
+		'ctx': ctx,
+		'channel': ctx.channel,
+		'author': ctx.author,
+		'guild': ctx.guild,
+		'message': ctx.message,
+		'source': inspect.getsource
+	}
+
+	env.update(globals())
+
+	body = cleanup_code(body)
+	stdout = io.StringIO()
+	err = out = None
+
+	to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
+
+	def paginate(text: str):
+		'''Simple generator that paginates text.'''
+		last = 0
+		pages = []
+		for curr in range(0, len(text)):
+			if curr % 1980 == 0:
+				pages.append(text[last:curr])
+				last = curr
+				appd_index = curr
+		if appd_index != len(text)-1:
+			pages.append(text[last:curr])
+		return list(filter(lambda a: a != '', pages))
+
+	try:
+		exec(to_compile, env)
+	except Exception as e:
+		err = await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+		return await ctx.message.add_reaction('\u2049')
+
+	func = env['func']
+	try:
+		with redirect_stdout(stdout):
+			ret = await func()
+	except Exception as e:
+		value = stdout.getvalue()
+		err = await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+	else:
+		value = stdout.getvalue()
+		if ret is None:
+			if value:
+				try:
+
+					out = await ctx.send(f'```py\n{value}\n```')
+				except:
+					paginated_text = paginate(value)
+					for page in paginated_text:
+						if page == paginated_text[-1]:
+							out = await ctx.send(f'```py\n{page}\n```')
+							break
+						await ctx.send(f'```py\n{page}\n```')
+		else:
+			bot._last_result = ret
+			try:
+				out = await ctx.send(f'```py\n{value}{ret}\n```')
+			except:
+				paginated_text = paginate(f"{value}{ret}")
+				for page in paginated_text:
+					if page == paginated_text[-1]:
+						out = await ctx.send(f'```py\n{page}\n```')
+						break
+					await ctx.send(f'```py\n{page}\n```')
+
+	if out:
+		await ctx.message.add_reaction('\u2705')  # tick
+	elif err:
+		await ctx.message.add_reaction('\u2049')  # x
+	else:
+		await ctx.message.add_reaction('\u2705')
+
+def cleanup_code(content):
+	"""Automatically removes code blocks from the code."""
+	# remove ```py\n```
+	if content.startswith('```') and content.endswith('```'):
+		return '\n'.join(content.split('\n')[1:-1])
+
+	# remove `foo`
+	return content.strip('` \n')
+
+def get_syntax_error(e):
+	if e.text is None:
+		return f'```py\n{e.__class__.__name__}: {e}\n```'
+	return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
+
 # Load Cog
 
 @bot.command()
@@ -25,7 +125,7 @@ async def load(ctx, *, name: str):
 		bot.load_extension(f"cogs.{name}")
 	except Exception as e:
 		return await ctx.send(default.traceback_maker(e))
-	await ctx.send(f'"{name}" Cog loaded')
+	await ctx.send(f'"**{name}**" Cog loaded')
 
 # Unload Cog
 
@@ -36,7 +136,7 @@ async def unload(ctx, *, name: str):
 		bot.unload_extension(f"cogs.{name}")
 	except Exception as e:
 		return await ctx.send(default.traceback_maker(e))
-	await ctx.send(f'"{name}" Cog unloaded')
+	await ctx.send(f'"**{name}**" Cog unloaded')
 
 # Reload Cog
 
@@ -47,7 +147,7 @@ async def reload(ctx, *, name: str):
 		bot.reload_extension(f"cogs.{name}")
 	except Exception as e:
 		return await ctx.send(default.traceback_maker(e))
-	await ctx.send(f'"{name}" Cog reloaded')
+	await ctx.send(f'"**{name}**" Cog reloaded')
 
 # Read Cogs
 

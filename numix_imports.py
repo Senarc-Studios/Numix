@@ -3,6 +3,7 @@ import io
 import re
 import json
 import time
+import psutil
 import base64
 import asyncio
 import discord
@@ -12,21 +13,11 @@ import datetime
 import textwrap
 import traceback
 import contextlib
-import discord
-from discord.ext import commands
-import os
-import json
-import inspect
-import io
-import textwrap
-import traceback
-import aiohttp
-from contextlib import redirect_stdout
-import base64
-import json
-from utils import default
+import pymongo
+
+from pymongo import MongoClient
 from random import choice
-from datetime import date
+from datetime import datetime
 from utils import default
 from discord.utils import get
 from contextlib import redirect_stdout
