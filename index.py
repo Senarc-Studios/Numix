@@ -18,7 +18,7 @@ config = default.get("config.json")
 
 # Bot Decorator
 
-bot = commands.Bot(command_prefix=["N!", "n!", "Numix", "Numix ", "<@!545230136669241365>", "<@!545230136669241365> "], intents=intents)
+bot = commands.Bot(command_prefix=["N! ", "n! ", "N!", "n!", "Numix", "Numix ", "<@!545230136669241365>", "<@!545230136669241365> "], intents=intents)
 bot.remove_command("help")
 
 # Eval
