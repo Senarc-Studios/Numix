@@ -1,10 +1,5 @@
 from numix_imports import *
 
-# Mongo Data Base
-
-client = pymongo.MongoClient("mongodb+srv://Benitz:<password>@numix.dksdu.mongodb.net/<dbname>?retryWrites=true&w=majority")
-db = client.test
-
 print("Bot Starting.")
 
 # Intents
