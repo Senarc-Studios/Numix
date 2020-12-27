@@ -23,5 +23,13 @@ class Info(commands.Cog):
 		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
 		await ctx.send(embed=embed)
 
+	@commands.command()
+	async def devserver(self, ctx):
+		ram = self.process.memory_full_info().rss / 1024**2
+
+		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+		embed.set_footer(text="ZillaHyps", icon_url=self.config.Danoxzilla_serv_logo)
+		await ctx.send(embed=embed)
+
 def setup(bot):
 	bot.add_cog(Info(bot))
