@@ -1,10 +1,5 @@
 from numix_imports import *
 
-# Mongo Data Base
-
-client = pymongo.MongoClient("mongodb+srv://Benitz:<password>@numix.dksdu.mongodb.net/<dbname>?retryWrites=true&w=majority")
-db = client.test
-
 print("Bot Starting.")
 
 # Intents
@@ -18,7 +13,7 @@ config = default.get("config.json")
 
 # Bot Decorator
 
-bot = commands.Bot(command_prefix=["N!", "n!", "Numix", "Numix ", "<@!545230136669241365>", "<@!545230136669241365> "], intents=intents)
+bot = commands.Bot(command_prefix=["N! ", "n! ", "N!", "n!", "Numix", "Numix ", "<@!545230136669241365>", "<@!545230136669241365> "], intents=intents)
 bot.remove_command("help")
 
 # Eval

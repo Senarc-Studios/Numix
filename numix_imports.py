@@ -13,12 +13,15 @@ import datetime
 import textwrap
 import traceback
 import contextlib
-import pymongo
+import urllib
+import secrets
+import random
+import mysql.connector
 
-from pymongo import MongoClient
+from io import BytesIO
 from random import choice
 from datetime import datetime
-from utils import default
+from utils import lists, permissions, http, default, argparser
 from discord.utils import get
 from contextlib import redirect_stdout
 from discord.ext import commands, tasks

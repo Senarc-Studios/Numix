@@ -9,7 +9,8 @@ class Leveling(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        mongo_url = "mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/<dbname>?retryWrites=true&w=majority"
+        return
+        mongo_url = "mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
         cluster = MongoClient(mongo_url)
         db = cluster["DataBase_1"]
         collection = db["Leveling"]
