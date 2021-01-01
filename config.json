@@ -7,7 +7,10 @@
     "devs": "Benitz Original#1317 and Danoxzilla#7003",
     "logo": "https://cdn.discordapp.com/avatars/744865990810271785/d4da704d65f395fbb51122d70f7731f6.png?size=1024",
 	"supportserver": "https://discord.gg/Ke6unQHNd9",
-	"alexflipnote_api": "nice_token_you_got_here",
+    "alexflipnote_api": "nice_token_you_got_here",
+    "success": "<:S:792611551726796800>",
+    "mongo1": "mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/",
+    "mongo2": "?retryWrites=true&w=majority",
     "ads": [
         738356303595831416, 259875936852246528, 729189625754550352, 755662384751968286
     ]

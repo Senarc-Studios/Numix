@@ -21,8 +21,9 @@ class ErrorHandler(commands.Cog):
 		else:
 			ss = get(self.bot.guilds, id=791553406266245121)
 			report = get(ss.text_channels, id=791556612715708448)
-			embed = discord.Embed(title='An Error has occurred', description=f'Error: \n ```py\n{err}```', timestamp=ctx.message.created_at, color=0x2F3136)
+			embed = discord.Embed(title='An Error has occurred', description=f'Error: \n ```py\n{err}```', timestamp=ctx.message.created_at, color=242424)
 			embed.set_thumbnail(url=self.config.logo)
+			embed.set_footer(text="Numix Developers", icon_url=self.config.logo)
 			await report.send(embed=embed)
 			print(err)
 

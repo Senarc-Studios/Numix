@@ -49,7 +49,7 @@ class Fun(commands.Cog):
 
 	@commands.command(aliases=["bird"])
 	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-	async def birb(self, ctx):
+	async def bird(self, ctx):
 		""" Posts a random birb """
 		await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/birb', 'file', token=self.alex_api_token)
 
@@ -98,7 +98,7 @@ class Fun(commands.Cog):
 
 		await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png", token=self.alex_api_token)
 
-	@commands.command()
+	@commands.command(aliases=["dict", "dictionary", "meaning"])
 	@commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
 	async def urban(self, ctx, *, search: commands.clean_content):
 		""" Find the 'best' definition to your words """

@@ -1,5 +1,8 @@
 from numix_imports import *
 
+cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+collection = cluster.DataBase_1.prefixes
+
 print("Bot Starting.")
 
 # Intents
@@ -13,7 +16,16 @@ config = default.get("config.json")
 
 # Bot Decorator
 
-bot = commands.Bot(command_prefix=["N! ", "n! ", "N!", "n!", "Numix", "Numix ", "<@!545230136669241365>", "<@!545230136669241365> "], intents=intents)
+def prefix(bot, message):
+	global client
+	if not message.guild:
+		return commands.when_mentioned_or("n!")(bot, message)
+	prefix = "n!"
+	for x in collection.find({"_id":message.guild.id}):
+		prefix=x["prefix"]
+	return commands.when_mentioned_or(prefix)(bot, message)
+
+bot = commands.Bot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
 
 # Eval

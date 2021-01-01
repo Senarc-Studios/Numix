@@ -16,9 +16,10 @@ import contextlib
 import urllib
 import secrets
 import random
-import mysql.connector
+import pymongo
 
 from io import BytesIO
+from pymongo import MongoClient
 from random import choice
 from datetime import datetime
 from utils import lists, permissions, http, default, argparser
