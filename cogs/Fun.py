@@ -11,7 +11,7 @@ class Fun(commands.Cog):
 		try:
 			r = await http.get(url, res_method="json", no_cache=True, headers={"Authorization": token})
 		except aiohttp.ClientConnectorError:
-			return await ctx.send(":no_entry_sign: The API is currently down, Try again later.")
+			return await ctx.send(f"{self.config.forbidden} The API is currently down, Try again later.")
 		except aiohttp.ContentTypeError:
 			return await ctx.send(":fire: API returned an error.")
 
@@ -27,7 +27,15 @@ class Fun(commands.Cog):
 			bio = BytesIO(req)
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
-	
+
+	@commands.command(aliases=["dice", "dise"])
+	async def roll(self, ctx):
+		dice = ["1", "2", "3", "4", "5", "6"]
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Dice has been rolled. The number is **{random.choice(dice)}**.", color=242424)
+		embed.set_author(name="Rolled a Dice", icon_url=ctx.author.avatar_url)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
+
 	@commands.command(name="8ball")
 	async def _8ball(self, ctx, *, input):
 		responces = ["It is certain", "Without a doubt", "You may rely on it", "Yes definitely", "It is decidedly so", "As I see it, yes", "Most likely", "Yes", "Outlook good", "Signs point to yes", "Reply hazy try again", "Better not tell you now", "Ask again later", "Cannot predict now", "Concentrate and ask again", "Don’t count on it", "Outlook not so good", "My sources say no", "Very doubtful", "My reply is no"]
@@ -47,7 +55,7 @@ class Fun(commands.Cog):
 		""" Posts a random dog """
 		await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file', token=self.alex_api_token)
 
-	@commands.command(aliases=["bird"])
+	@commands.command()
 	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
 	async def bird(self, ctx):
 		""" Posts a random birb """
@@ -100,17 +108,18 @@ class Fun(commands.Cog):
 
 	@commands.command(aliases=["dict", "dictionary", "meaning"])
 	@commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
+	@commands.is_nsfw()
 	async def urban(self, ctx, *, search: commands.clean_content):
 		""" Find the 'best' definition to your words """
 		try:
 			url = await http.get(f'https://api.urbandictionary.com/v0/define?term={search}', res_method="json")
 		except Exception:
-			return await ctx.send(":no_entry_sign: Urban API returned invalid data.")
+			return await ctx.send(f"{self.config.forbidden} Urban API returned invalid data.")
 		if not url:
 			return await ctx.send(":fire: an Error has occured.")
 
 		if not len(url['list']):
-			return await ctx.send(":no_entry_sign: Couldn't find your search in the dictionary.")
+			return await ctx.send(f"{self.config.forbidden} Couldn't find your search in the dictionary.")
 		result = sorted(url['list'], reverse=True, key=lambda g: int(g["thumbs_up"]))[0]
 		definition = result['definition']
 		if len(definition) >= 1000:
@@ -131,7 +140,7 @@ class Fun(commands.Cog):
 	@commands.command(aliases=['noticemesenpai'])
 	async def noticeme(self, ctx):
 		if not permissions.can_handle(ctx, "attach_files"):
-			return await ctx.send(":no_entry_sign: No image perms")
+			return await ctx.send(f"{self.config.forbidden} No image perms")
 
 		bio = BytesIO(await http.get("https://i.alexflipnote.dev/500ce4.gif", res_method="read"))
 		await ctx.send(file=discord.File(bio, filename="noticeme.gif"))

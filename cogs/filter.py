@@ -15,6 +15,9 @@ class Filter(commands.Cog):
 		if message.guild.id is None:
 			return
 
+		elif message.author.bot:
+			return
+
 		else:
 			guild = message.guild
 			user = message.author
@@ -23,7 +26,9 @@ class Filter(commands.Cog):
 			blocked_words = ["f**k", "fuk", "fuc", "fuck", "f*ck", "bitch", "b*tch", "n*gga", "ni**a", "nigga", "vegina", "fag", "f*g", "dick", "d*ck", "penis", "porn", "xnxx", "xxnx", "xxx", "sex", "s*x", "hentai", "henti", "pxrn", "p*rn", "a$$", "cunt", "c*nt", "boob", "tits", "cock", "f u c k", "s h i t", "b i t c h", "h e n t a i", "p o r n", "d!ck"]
 			
 			# Whitelists
-			
+			invite_whitelisted_channels = [""]
+			link_whitelisted_channels = [""]
+			word_whitelisted_channels = [""]
 			
 			for x in blocked_invites:
 				if x in message.content.lower():
@@ -33,7 +38,7 @@ class Filter(commands.Cog):
 						blocked_invite.set_footer(text='Discord.py For Beginners', icon_url=logo)
 						await user.send(embed=blocked_invite)
 
-			for x in blacklisted_links:
+			for x in blocked_links:
 				if x in message.content.lower():
 					if message.channel.id not in link_whitelisted_channels:
 						await message.delete()

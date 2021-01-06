@@ -12,28 +12,31 @@ class Help(commands.Cog):
 			if command is None:
 				embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 				embed.set_author(name="Numix Commands", icon_url=self.config.logo)
-				embed.add_field(name="General", value="``` invite, about, avatar, server ```")
-				embed.add_field(name="Fun", value="``` 8ball, urban, supreme, cat, dog, bird, duck, coffee, noticeme, coinflip, rate, slot ```")
-				embed.add_field(name="Moderation", value="``` warn, infractions ```")
-				embed.add_field(name="Setup", value="``` log ```")
-				await ctx.send(embed=embed)
+				embed.add_field(name="General", value="```invite, about, avatar, server```")
+				embed.add_field(name="Fun", value="```8ball, urban, supreme, cat, dog, bird, duck, coffee, noticeme, coinflip, rate, slot```")
+				embed.add_field(name="Moderation", value="```ban, warn, infractions, clear```")
+				embed.add_field(name="Setup", value="```log```")
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				return await ctx.send(embed=embed)
 
 		if ctx.author.guild_permissions.manage_messages:
 			if command is None:
 				embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 				embed.set_author(name="Numix Commands", icon_url=self.config.logo)
-				embed.add_field(name="General", value="``` invite, about, avatar, server ```")
-				embed.add_field(name="Fun", value="``` 8ball, urban, supreme, cat, dog, bird, duck, coffee, noticeme, coinflip, rate, slot ```")
-				embed.add_field(name="Moderation", value="``` warn, infractions ```")
-				await ctx.send(embed=embed)
+				embed.add_field(name="General", value="```invite, about, avatar, server```")
+				embed.add_field(name="Fun", value="```8ball, urban, supreme, cat, dog, bird, duck, coffee, noticeme, coinflip, rate, slot```")
+				embed.add_field(name="Moderation", value="```warn, infractions, clear```")
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				return await ctx.send(embed=embed)
 
 		else:
 			if command is None:
 				embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 				embed.set_author(name="Numix Commands", icon_url=self.config.logo)
-				embed.add_field(name="General", value="``` invite, about, avatar, server ```")
-				embed.add_field(name="Fun", value="``` 8ball, urban, supreme, cat, dog, bird, duck, coffee, noticeme, coinflip, rate, slot ```")
-				await ctx.send(embed=embed)
+				embed.add_field(name="General", value="```invite, about, avatar, server```")
+				embed.add_field(name="Fun", value="```8ball, urban, supreme, cat, dog, bird, duck, coffee, noticeme, coinflip, rate, slot ```")
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				return await ctx.send(embed=embed)
 
 def setup(bot):
 	bot.add_cog(Help(bot))

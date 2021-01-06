@@ -10,13 +10,21 @@ class Config(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
-	@commands.command(alisases=["set-logs", "audit-log"])
-	async def log(self, ctx, log: discord.Text_Channel):
-		collection = self.db1.DataBase_1.settings
+	@commands.command(alisases=["logs", "set-logs", "audit-log"])
+	async def log(self, ctx, log: discord.TextChannel):
+		await ctx.send(f'{self.config.success} Log Channel set to "<#{log.id}>"')
+		try:
+			collection = self.db1.DataBase_1.settings
+			
+			collection.insert_one({ "_id": int(ctx.guild.id), "log": int(log.id) })
 
-		update = {"_id": ctx.guild.id, "log": log.id}
+		except Exception as e:
+			print(e)
+			myquery = { "_id": int(ctx.guild.id) }
 
-		collection.update_one(update)
+			newvalues = { "$set": { "_id": int(ctx.guild.id), "log": int(log.id) } }
+
+			collection.update_one(myquery, newvalues)
 
 	@commands.command()
 	async def filter(self, ctx, type, *, enodi):

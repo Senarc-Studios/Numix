@@ -9,7 +9,7 @@ class Info(commands.Cog):
 		self.process = psutil.Process(os.getpid())
 		print('"Info" cog loaded')
 
-	@commands.command(aliases=["info", "dev"])
+	@commands.command(aliases=["info", "dev", "stat", "stats"])
 	async def about(self, ctx):
 		ram = self.process.memory_full_info().rss / 1024**2
 
@@ -20,14 +20,14 @@ class Info(commands.Cog):
 		embed.add_field(name="Bot Version:", value=f"{self.config.botversion}", inline=False)
 		embed.add_field(name="Support Server:", value=f"{self.config.supportserver}", inline=False)
 		embed.add_field(name="Invited Servers:", value=f"`{len(self.bot.guilds)}` Servers", inline=False)
-		embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", value=False)
+		embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
 		embed.add_field(name="Loaded Commands:", value=len([x.name for x in self.bot.commands]), inline=False)
 		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
 		await ctx.send(embed=embed)
 
-	@bot.command()
+	@commands.command()
 	@commands.has_permissions(manage_messages=True)
-	async def lookup(ctx, user: discord.Member = None):
+	async def lookup(self, ctx, user: discord.Member = None):
 		if user is None:
 			user = ctx.message.author
 		if user.activity is not None:
