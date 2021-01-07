@@ -200,13 +200,29 @@ class Moderation(commands.Cog, name='Moderation'):
 			for result in finder:
 				infractions = result[f'{user.id}']
 				count = result[f'{user.id}_count']
-				embed = discord.Embed(description=f"This user has **{count}** warns.\nTop ten warns of this user below.\n\n{infractions}", timestamp=ctx.message.created_at, color=242424)
-				embed.replace("['", "")
-				embed.replace("]'", "")
-				embed.replace("', '", "\n")
+				warns = f"{infractions}"
+				infraction_fix_1 = warns.replace("['", "")
+				infraction_fix_2 = infraction_fix_1.replace("']", "")
+				infraction = infraction_fix_2.replace("', '", "\n")
+				embed = discord.Embed(description=f"This user has **{count}** warns.\nTop ten warns of this user below.\n\n{infraction}", timestamp=ctx.message.created_at, color=242424)
 				embed.set_author(name=f"{user.name}'s Warns", icon_url=user.avatar_url)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
+
+	@commands.command()
+	@commands.guild_only()
+	async def wipe(self, ctx):
+		if ctx.author.id == ctx.guild.owner_id:
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f':warning: if you react to "{self.config.success}" You agree to Delete all channels and voice channels, and totaly reset the server.\nIf you want to cancel please react to "{self.config.forbidden}"', color=242424)
+			embed.set_author(name="Server Wipe", icon_url=ctx.guild.icon_url)
+			embed.set_footer(name="Numix", icon_url=self.config.logo)
+
+			msg = await ctx.send(embed=embed)
+			msg.add_reaction(self.config.success)
+			msg.add_reaction(self.config.success)
+
+		else:
+			await ctx.send(f"{self.config.forbidden} Only the owner can execute this command.")
 
 def setup(bot):
 	bot.add_cog(Moderation(bot))
