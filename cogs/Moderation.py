@@ -6,6 +6,22 @@ class Moderation(commands.Cog, name='Moderation'):
 		self.config = default.get("./config.json")
 		self.s = self.config.success
 		print('"Moderation" cog loaded')
+		
+	@commands.command()
+	async def report(self, ctx, user: discord.Member=None, *, reason=None):
+		if reason is None:
+			return await ctx.send(f"{self.config.forbidden} Specify a reason.")
+
+		elif user is None:
+			return await ctx.send(f"{self.config.forbidden} Specify a user.")
+
+		else:
+			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			embed.set_author(name=f"New Report", icon_url=ctx.author.avatar_url)
+			embed.add_field(name="Reporter:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)")
+			embed.add_field(name="Reported User:", value=f"{user.name}#{user.discriminator}(`{user.id}`)")
+			embed.add_field(name="Reason:", value=f"{reason}")
 
 	@commands.command()
 	@commands.has_permissions(kick_members=True)
@@ -20,11 +36,11 @@ class Moderation(commands.Cog, name='Moderation'):
 		elif user is None:
 			await ctx.send(f"{self.config.forbidden} Specify a user.")
 		
-		#elif user.top_role >= ctx.author.top_role:
-		#	await ctx.send(f"{self.config.forbidden} Unable to warn user.")
+		elif user.top_role >= ctx.author.top_role:
+			await ctx.send(f"{self.config.forbidden} Unable to warn user.")
 
-		#elif user.top_role > guild.me.top_role:
-		#	await ctx.send(f"{self.config.forbidden} Unable to warn user.")
+		elif user.top_role > guild.me.top_role:
+			await ctx.send(f"{self.config.forbidden} Unable to warn user.")
 
 		else:
 			try:
@@ -208,21 +224,6 @@ class Moderation(commands.Cog, name='Moderation'):
 				embed.set_author(name=f"{user.name}'s Warns", icon_url=user.avatar_url)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
-
-	@commands.command()
-	@commands.guild_only()
-	async def wipe(self, ctx):
-		if ctx.author.id == ctx.guild.owner_id:
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f':warning: if you react to "{self.config.success}" You agree to Delete all channels and voice channels, and totaly reset the server.\nIf you want to cancel please react to "{self.config.forbidden}"', color=242424)
-			embed.set_author(name="Server Wipe", icon_url=ctx.guild.icon_url)
-			embed.set_footer(name="Numix", icon_url=self.config.logo)
-
-			msg = await ctx.send(embed=embed)
-			msg.add_reaction(self.config.success)
-			msg.add_reaction(self.config.success)
-
-		else:
-			await ctx.send(f"{self.config.forbidden} Only the owner can execute this command.")
 
 def setup(bot):
 	bot.add_cog(Moderation(bot))

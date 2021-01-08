@@ -1,10 +1,10 @@
 {
     "owners": [
-        635838945862746113, 529499034495483926
+        529499034495483926, 727365670395838626
     ],
     "token": "NTQ1MjMwMTM2NjY5MjQxMzY1.XGQXIg.7IhtPNKUJjMm3B7cfHCpRO1VHD8",
     "botversion": "0.2.0",
-    "devs": "Benitz Original#1317",
+    "devs": "`Benitz Original#1317` and `Mini.py#5183`",
     "logo": "https://cdn.discordapp.com/avatars/744865990810271785/d4da704d65f395fbb51122d70f7731f6.png?size=1024",
 	"supportserver": "https://numix.xyz/discord",
     "alexflipnote_api": "nice_token_you_got_here",

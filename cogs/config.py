@@ -11,6 +11,24 @@ class Config(commands.Cog):
 		print('"Config" cog loaded')
 
 	@commands.command(alisases=["logs", "set-logs", "audit-log"])
+	@commands.has_permissions(administrator=True)
+	async def reports(self, ctx, log: discord.TextChannel):
+		await ctx.send(f'{self.config.success} Report Channel set to "<#{log.id}>"')
+		try:
+			collection = self.db1.DataBase_1.settings
+			
+			collection.insert_one({ "_id": int(ctx.guild.id), "report": int(log.id) })
+
+		except Exception as e:
+			print(e)
+			myquery = { "_id": int(ctx.guild.id) }
+
+			newvalues = { "$set": { "_id": int(ctx.guild.id), "report": int(log.id) } }
+
+			collection.update_one(myquery, newvalues)
+
+	@commands.command(alisases=["logs", "set-logs", "audit-log"])
+	@commands.has_permissions(administrator=True)
 	async def log(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Log Channel set to "<#{log.id}>"')
 		try:
