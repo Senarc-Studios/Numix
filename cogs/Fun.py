@@ -133,7 +133,7 @@ class Fun(commands.Cog):
 	@commands.command()
 	async def rate(self, ctx, *, thing: commands.clean_content):
 		rate_amount = random.uniform(0.0, 100.0)
-		embed = discord.Embed(timestamp=ctx.message.created_at, title="Random Rate", description=f"Rating for `{thing}` is **{round(rate_amount, 4)} / 100**")
+		embed = discord.Embed(timestamp=ctx.message.created_at, title="Random Rate", description=f"Rating for `{thing}` is **{round(rate_amount, 4)} / 100**", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
