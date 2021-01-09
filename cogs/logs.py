@@ -129,7 +129,7 @@ class Logs(commands.Cog):
 				return
 
 			else:
-				embed = discord.Embed(timestamp=a.created_at, description=f'**Message Author:** \n<@!{a.author.id}>(`{message.author.id}`) \n\n**Message Channel:**\n<#{a.channel.id}> \n\n**Before Edit:**```{a.content}```\n\n**After Edit:**{b.content}```', color=242424)
+				embed = discord.Embed(timestamp=a.created_at, description=f'**Message Author:** \n<@!{a.author.id}>(`{a.author.id}`) \n\n**Message Channel:**\n<#{a.channel.id}> \n\n**Before Edit:**```{a.content}```\n\n**After Edit:**```{b.content}```', color=242424)
 				embed.set_author(name=f"Message Edited", icon_url=a.author.avatar_url)
 				embed.set_footer(text='Numix', icon_url=self.config.logo)
 				await log.send(embed=embed)
