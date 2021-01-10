@@ -28,7 +28,7 @@ class ADS_Plugin(commands.Cog):
 		else:
 			return
 
-	@commands.command()
+	@commands.command(aliases=["run ads"])
 	@commands.is_owner()
 	async def run_ads(self, ctx):
 		await ctx.send("Running ADS Script.")

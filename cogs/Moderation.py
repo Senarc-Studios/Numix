@@ -27,6 +27,7 @@ class Moderation(commands.Cog, name='Moderation'):
 	@commands.has_permissions(kick_members=True)
 	async def warn(self, ctx, user: discord.Member=None, *, reason=None):
 		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/Moderation?retryWrites=true&w=majority')
+  #ok but how to fix this
 		collection = cluster.Moderation.warns
 		guild = ctx.guild
 		

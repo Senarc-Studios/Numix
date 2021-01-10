@@ -45,12 +45,6 @@ class Fun(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-	async def cat(self, ctx):
-		""" Posts a random cat """
-		await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/cats', 'file', token=self.alex_api_token)
-
-	@commands.command()
-	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
 	async def dog(self, ctx):
 		""" Posts a random dog """
 		await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file', token=self.alex_api_token)

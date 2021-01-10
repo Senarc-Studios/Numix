@@ -1,3 +1,4 @@
+import webserver # after this code
 from numix_imports import *
 
 cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
@@ -162,6 +163,8 @@ for file in os.listdir("./cogs"):
 	if file.endswith(".py"):
 		name = file[:-3]
 		bot.load_extension(f"cogs.{name}")
+
+webserver.keep_alive() # before token 
 
 # Run Bot
 
