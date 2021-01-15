@@ -10,6 +10,37 @@ class Config(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
+	@commands.command(aliases=["add-dj"])
+	@commands.has_permissions(administrator=True)
+	async def dj(self, ctx, *, role: discord.Role):
+		await ctx.send(f'{self.config.success} Added <@&{role.id}> to DJ roles.')
+		try:
+			collection = self.db1.DataBase_1.settings
+			
+			collection.insert_one({ "_id": int(ctx.guild.id), "dj": [ int(role.id) ] })
+
+		except Exception as e:
+			print(e)
+			myquery = { "_id": int(ctx.guild.id) }
+
+			newvalues = { "$addToSet": { "_id": int(ctx.guild.id), "dj": int(role.id) } }
+
+			collection.update_one(myquery, newvalues)
+
+	@commands.command(aliases=["remove-dj"])
+	@commands.has_permissions(administrator=True)
+	async def rdj(self, ctx, *, role: discord.Role):
+		try:
+			myquery = { "_id": int(ctx.guild.id) }
+
+			newvalues = { "$removeFromSet": { "_id": int(ctx.guild.id), "dj": role.id } }
+
+			collection.update_one(myquery, newvalues)
+			await ctx.send(f'{self.config.success} Removed <@&{role.id}> from DJ roles.')
+		except Exception as e:
+			print(e)
+			await ctx.send(f"{self.config.forbidden} <@&{role.id}> is not a DJ role.")
+
 	@commands.command(alisases=["logs", "set-logs", "audit-log"])
 	@commands.has_permissions(administrator=True)
 	async def reports(self, ctx, log: discord.TextChannel):

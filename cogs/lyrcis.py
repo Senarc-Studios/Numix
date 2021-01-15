@@ -4,64 +4,65 @@ import discord
 from discord.ext.commands import cooldown, BucketType
 
 class Lyrics(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+	def __init__(self, bot):
+		self.bot = bot
+		self.config = default.get("./config.json")
+		print('"Lyrics" cog loaded')
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Lyrics cog loaded successfully')
+	@commands.Cog.listener()
+	async def on_ready(self):
+		print('Lyrics cog loaded successfully')
 
-    @commands.command(
-        cooldown_after_parsing=True,
-        aliases=['lyrics'],
-        description="Shows the lyrics of given song")
-    @cooldown(1, 30, BucketType.user)
-    async def ly(self, ctx, *, lyrics):
-        if lyrics == None:
-            await ctx.send('You forgot lyrcis')
-        else:
-            words = "+".join(lyrics.split(' '))
-            print(words)
-            URL = f'https://some-random-api.ml/lyrics?title={words}'
+	@commands.command(
+		cooldown_after_parsing=True,
+		aliases=['lyrics'],
+		description="Shows the lyrics of given song")
+	@cooldown(1, 30, BucketType.user)
+	async def ly(self, ctx, *, lyrics):
+		if lyrics == None:
+			await ctx.send(f'{}You forgot lyrcis')
+		else:
+			words = "+".join(lyrics.split(' '))
+			print(words)
+			URL = f'https://some-random-api.ml/lyrics?title={words}'
 
-            def check_valid_status_code(request):
-                if request.status_code == 200:
-                    return request.json()
+			def check_valid_status_code(request):
+				if request.status_code == 200:
+					return request.json()
 
-                return False
+				return False
 
-            def get_song():
-                request = requests.get(URL)
-                data = check_valid_status_code(request)
+			def get_song():
+				request = requests.get(URL)
+				data = check_valid_status_code(request)
 
-                return data
+				return data
 
-            song = get_song()
-            if not song:
-                await ctx.channel.send(
-                    "Couldn't get lyrcis from API. Try again later.")
+			song = get_song()
+			if not song:
+				await ctx.channel.send(f"{self.config.forbidden} Couldn't get lyrcis from API. Try again later.")
 
-            else:
-                music = song['lyrics']
-                ti = song['title']
-                au = song['author']
+			else:
+				music = song['lyrics']
+				ti = song['title']
+				au = song['author']
 
-                embed = discord.Embed(Title=f'Title: Song', color=0xff0000)
+				embed = discord.Embed(timestamp=ctx.message.created_at, Title=f'Title: Song', color=242424)
 
-                embed.add_field(name=f'Title: {ti}', value=f'Author: {au}')
+				embed.add_field(name=f'Title: {ti}', value=f'Author: {au}')
 
-                chunks = [
-                    music[i:i + 1024] for i in range(0, len(music), 2000)
-                ]
-                for chunk in chunks:
-                    embed.add_field(name="\u200b", value=chunk, inline=False)
+				chunks = [
+					music[i:i + 1024] for i in range(0, len(music), 2000)
+				]
+				for chunk in chunks:
+					embed.add_field(name="\u200b", value=chunk, inline=False)
 
-                #embed.add_field(name='Song',value=f'{music}', inline=True)
-                embed.set_footer(
-                    text=f'Requested By: {ctx.author.name}',
-                    icon_url=f'{ctx.author.avatar_url}')
-                await ctx.send(embed=embed)
+				#embed.add_field(name='Song',value=f'{music}', inline=True)
+				embed.set_footer(
+					text="Numix",
+					icon_url=self.config.logo)
+				await ctx.send(embed=embed)
 
 
 def setup(bot):
-    bot.add_cog(Lyrics(bot))
+	bot.add_cog(Lyrics(bot))

@@ -6,7 +6,7 @@ collection = cluster.DataBase_1.prefixes
 
 print("Bot Starting.")
 
-# Intents
+# Intents 
 
 intents = discord.Intents.default()
 intents.members = True
@@ -174,3 +174,5 @@ try:
 	bot.run(token, reconnect=True)
 except Exception as e:
 	print(e)
+# wait seeing uptimerobot
+# Numix premium is online though 

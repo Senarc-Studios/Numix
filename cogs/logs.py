@@ -125,7 +125,10 @@ class Logs(commands.Cog):
 			guild = get(self.bot.guilds, id=guild.id)
 			log = get(guild.text_channels, id=logid)
 
-			if b.content == "":
+			if a.content == b.content:
+				return
+
+			elif b.content == "":
 				return
 
 			else:

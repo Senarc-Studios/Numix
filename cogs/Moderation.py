@@ -27,7 +27,6 @@ class Moderation(commands.Cog, name='Moderation'):
 	@commands.has_permissions(kick_members=True)
 	async def warn(self, ctx, user: discord.Member=None, *, reason=None):
 		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/Moderation?retryWrites=true&w=majority')
-  #ok but how to fix this
 		collection = cluster.Moderation.warns
 		guild = ctx.guild
 		
@@ -64,18 +63,24 @@ class Moderation(commands.Cog, name='Moderation'):
 
 				collection.update_one(myquery, newvalues)
 
-				for count in collection.find({ "_id": ctx.guild.id }):
-					warns = count[f'{user.id}_count']
-				
-				addition = 1
+				try:
+					add_count = { f"{user.id}_count": 1 }
+					collection.insert_one(add_count)
 
-				warn_count = warns + addition
+				except Exception as e:
+					print(e)
 
-				old_count = { "_id": (ctx.guild.id) }
+					for count in collection.find({ "_id": ctx.guild.id }):
+						warns = count[f'{user.id}_count']
 
-				new_count = { "$set": { f"{user.id}_count": warn_count } }
+						addition = 1
 
-				collection.update_one(old_count, new_count)
+						warn_count = warns + addition
+						
+						old_count = { "_id": (ctx.guild.id) }
+						new_count = { "$set": { f"{user.id}_count": warn_count } }
+
+						collection.update_one(old_count, new_count)
 
 			try:
 				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Type:** Warn\n**Reason:**{reason}", color=0xFC6700)
