@@ -10,6 +10,14 @@ class Config(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
+		' Raid Config '
+
+	@commands.command(aliases=["raid-prevention"])
+	@commands.has_permissions(administrator=True)
+	async def raid(self, ctx, *, option)
+
+		' Add DJ Command '
+
 	@commands.command(aliases=["add-dj"])
 	@commands.has_permissions(administrator=True)
 	async def dj(self, ctx, *, role: discord.Role):
@@ -27,6 +35,8 @@ class Config(commands.Cog):
 
 			collection.update_one(myquery, newvalues)
 
+		' Remove DJ Command '
+
 	@commands.command(aliases=["remove-dj"])
 	@commands.has_permissions(administrator=True)
 	async def rdj(self, ctx, *, role: discord.Role):
@@ -40,6 +50,8 @@ class Config(commands.Cog):
 		except Exception as e:
 			print(e)
 			await ctx.send(f"{self.config.forbidden} <@&{role.id}> is not a DJ role.")
+
+		' Reports Config '
 
 	@commands.command(alisases=["logs", "set-logs", "audit-log"])
 	@commands.has_permissions(administrator=True)
@@ -58,6 +70,8 @@ class Config(commands.Cog):
 
 			collection.update_one(myquery, newvalues)
 
+		' Log Config '
+
 	@commands.command(alisases=["logs", "set-logs", "audit-log"])
 	@commands.has_permissions(administrator=True)
 	async def log(self, ctx, log: discord.TextChannel):
@@ -74,6 +88,8 @@ class Config(commands.Cog):
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "log": int(log.id) } }
 
 			collection.update_one(myquery, newvalues)
+
+		' Filter Setting '
 
 	@commands.command()
 	async def filter(self, ctx, type=None, *, option=None):

@@ -12,6 +12,7 @@
     "forbidden": "<:F:795909145760104480>",
     "mongo1": "mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/",
     "mongo2": "?retryWrites=true&w=majority",
+    "discordrep_api_token": "D-REP.0DRYPKZPTZ.Q3GIV3Z986V910H3Y6GIM.O29TTXJEJP7ZPGGRLRUCSH41Z",
     "ads": [
         738356303595831416, 259875936852246528, 729189625754550352, 755662384751968286
     ]

@@ -6,6 +6,8 @@ class Moderation(commands.Cog, name='Moderation'):
 		self.config = default.get("./config.json")
 		self.s = self.config.success
 		print('"Moderation" cog loaded')
+
+		' Report Command '
 		
 	@commands.command()
 	async def report(self, ctx, user: discord.Member=None, *, reason=None):
@@ -22,6 +24,8 @@ class Moderation(commands.Cog, name='Moderation'):
 			embed.add_field(name="Reporter:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)")
 			embed.add_field(name="Reported User:", value=f"{user.name}#{user.discriminator}(`{user.id}`)")
 			embed.add_field(name="Reason:", value=f"{reason}")
+
+		' Warn Command '
 
 	@commands.command()
 	@commands.has_permissions(kick_members=True)
@@ -91,6 +95,8 @@ class Moderation(commands.Cog, name='Moderation'):
 			except discord.Forbidden:
 				await ctx.send(f"{self.s} {user.name}#{user.discriminator} warned *User was not notified*")
 
+		' Clear Command '
+
 	@commands.command()
 	@commands.guild_only()
 	@commands.has_permissions(manage_messages=True)
@@ -102,6 +108,8 @@ class Moderation(commands.Cog, name='Moderation'):
 			await ctx.message.delete()
 			await ctx.channel.purge(limit=int(amount))
 			await ctx.send(f"{self.config.s} Deleted **{int(amount)}** Messages.", delete_after=3)
+
+		' Ban Command '
 
 	@commands.command()
 	@commands.guild_only()
@@ -155,6 +163,8 @@ class Moderation(commands.Cog, name='Moderation'):
 					log_message.set_footer(text="Numix", icon_url=self.config.logo)
 					await log.send(embed=log_message)
 
+		' Kick Command '
+
 	@commands.command()
 	@commands.guild_only()
 	@commands.has_permissions(kick_members=True)
@@ -206,6 +216,8 @@ class Moderation(commands.Cog, name='Moderation'):
 					log_message.add_field(name='Joined At:', value=user.joined_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
 					log_message.set_footer(text="Numix", icon_url=self.config.logo)
 					await log.send(embed=log_message)
+
+		' Infractions Command '
 
 	@commands.command()
 	@commands.guild_only()

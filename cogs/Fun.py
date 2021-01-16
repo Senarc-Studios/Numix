@@ -5,7 +5,18 @@ class Fun(commands.Cog):
 		self.bot = bot
 		self.config = default.get("./config.json")
 		self.alex_api_token = self.config.alexflipnote_api
+		self.discordrep_api = self.config.discordrep_api_token
 		print('"Fun" cog loaded')
+
+	async def rep(self, ctx, url: str, endpoint: str):
+		try:
+			r = await http.get(url, res_method="json", no_cache=True, headers={"Authorization": self.discordrep_api})
+		except aiohttp.ClientConnectorError:
+			return await ctx.send(f"{self.config.forbidden} The API is currently down, Try again later.")
+		except aiohttp.ContentTypeError:
+			return await ctx.send(":fire: API returned an error.")
+
+		await ctx.send(r[endpoint])
 
 	async def randomimageapi(self, ctx, url: str, endpoint: str, token: str = None):
 		try:
@@ -27,6 +38,10 @@ class Fun(commands.Cog):
 			bio = BytesIO(req)
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
+
+	@commands.command(aliases=["discord-rep", "reputation"])
+	async def rep(self, ctx, user: discord.Member):
+		await self.rep(ctx, f'https://discordrep.com/api/v3/rep/:{user.id}')
 
 	@commands.command(aliases=["dice", "dise"])
 	async def roll(self, ctx):
