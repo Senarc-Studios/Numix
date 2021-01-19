@@ -10,12 +10,6 @@ class Config(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
-		' Raid Config '
-
-	@commands.command(aliases=["raid-prevention"])
-	@commands.has_permissions(administrator=True)
-	async def raid(self, ctx, *, option)
-
 		' Add DJ Command '
 
 	@commands.command(aliases=["add-dj"])
@@ -53,10 +47,10 @@ class Config(commands.Cog):
 
 		' Reports Config '
 
-	@commands.command(alisases=["logs", "set-logs", "audit-log"])
+	@commands.command(alisases=["set-report", "report-channel"])
 	@commands.has_permissions(administrator=True)
 	async def reports(self, ctx, log: discord.TextChannel):
-		await ctx.send(f'{self.config.success} Report Channel set to "<#{log.id}>"')
+		await ctx.send(f'{self.config.success} Report Channel set to <#{log.id}>')
 		try:
 			collection = self.db1.DataBase_1.settings
 			
@@ -75,7 +69,7 @@ class Config(commands.Cog):
 	@commands.command(alisases=["logs", "set-logs", "audit-log"])
 	@commands.has_permissions(administrator=True)
 	async def log(self, ctx, log: discord.TextChannel):
-		await ctx.send(f'{self.config.success} Log Channel set to "<#{log.id}>"')
+		await ctx.send(f'{self.config.success} Log Channel set to <#{log.id}>')
 		try:
 			collection = self.db1.DataBase_1.settings
 			

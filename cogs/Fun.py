@@ -1,4 +1,5 @@
 from numix_imports import *
+import numix_encrypt
 
 class Fun(commands.Cog):
 	def __init__(self, bot):
@@ -43,6 +44,98 @@ class Fun(commands.Cog):
 	async def rep(self, ctx, user: discord.Member):
 		await self.rep(ctx, f'https://discordrep.com/api/v3/rep/:{user.id}')
 
+	@commands.command(aliases=["numix-encrypt", "encrypt"])
+	@commands.cooldown(1, 5, commands.BucketType.user)
+	async def nucrypt(self, ctx, *, body=None):
+		if body is None:
+			await ctx.send(f"{self.config.forbidden} Provide some text that you want to be encrypted.")
+		
+		else:
+			await ctx.message.delete()
+			if ctx.message.content.endswith("--s"):
+				if ctx.author.id == ctx.guild.owner_id:
+
+					Author = ctx.author
+					text = body.replace("--s", "")
+					cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+					collection = cluster.DataBase_1.nucrypt
+
+					key = numix_encrypt.encrypt()
+					key_in_plain_text = f"{key}"
+
+					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*" })
+
+					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
+					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.avatar_url)
+					embed.set_footer(text="Numix", icon_url=self.config.logo)
+					await Author.send(embed=embed)
+					await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
+
+				else:
+					await ctx.send(f"{self.config.forbidden} Only server owners can do `--s`.")
+
+			elif ctx.message.content.endswith("-s"):
+				if ctx.author.guild_permissions.administrator:
+
+					text = body.replace("-s", "")
+					Author = ctx.author
+					cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+					collection = cluster.DataBase_1.nucrypt
+
+					key = numix_encrypt.encrypt()
+					key_in_plain_text = f"{key}"
+
+					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"{ctx.guild.name}(`{ctx.guild.id}`)" })
+
+					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
+					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.avatar_url)
+					embed.set_footer(text="Numix", icon_url=self.config.logo)
+					await Author.send(embed=embed)
+					await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
+
+				else:
+					await ctx.send(f"{self.config.forbidden} Only server administrators can do `-s`.")
+
+			else:
+				text = body
+				Author = ctx.author
+				cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+				collection = cluster.DataBase_1.nucrypt
+
+				key = numix_encrypt.encrypt()
+				key_in_plain_text = f"{key}"
+
+				collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "server": f"{ctx.guild.name}(`{ctx.guild.id}`)" })
+
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
+				embed.set_author(name=f"Encrypted", icon_url=ctx.author.avatar_url)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await Author.send(embed=embed)
+				await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
+
+	@commands.command(aliases=["Nu-Decrypt", "nu-decrypt", "decrypt"])
+	async def nudecrypt(self, ctx, *, key=None):
+		Author = ctx.author
+		if key is None:
+			await ctx.send(f"{self.config.forbidden} Provide a Key to decrypt text.")
+
+		else:
+			cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+			collection = cluster.DataBase_1.nucrypt
+			await ctx.message.delete()
+			for key in collection.find({ "_id": f"{key}" }):
+				text = key['decrypted']
+				author_discord = key['author']
+				server_discord = key['server']
+
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Decrypted Text:**\n{text}\n\n**Author:**\n{author_discord}\n\n**Server:**\n{server_discord}", color=242424)
+				embed.set_author(name="Decrypted", icon_url=ctx.author.avatar_url)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await Author.send(embed=embed)
+				await ctx.send(f"{self.config.success} Your key has been decrypted and sent in DMs.")
+				if text == "":
+					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
+
 	@commands.command(aliases=["dice", "dise"])
 	async def roll(self, ctx):
 		dice = ["1", "2", "3", "4", "5", "6"]
@@ -57,12 +150,6 @@ class Fun(commands.Cog):
 		embed = discord.Embed(timestamp=ctx.message.created_at, title="8Ball", description=f"**Question:** {input}\n\n**Answer:** {choice(responces)}", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
-
-	@commands.command()
-	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-	async def dog(self, ctx):
-		""" Posts a random dog """
-		await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/dogs', 'file', token=self.alex_api_token)
 
 	@commands.command()
 	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)

@@ -12,12 +12,19 @@ class ErrorHandler(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, err):
+			' Command on Cooldown '
 		if isinstance(err, errors.CommandOnCooldown):
 			await ctx.send(f":stopwatch: Command is on Cooldown for **{err.retry_after:.2f}** seconds.")
+			' Missing Permissions '
 		elif isinstance(err, errors.MissingPermissions):
-			await ctx.send(f":no_entry_sign: You can't use that command.")
+			await ctx.send(f"{self.config.forbidden} You can't use that command.")
+			' Missing Arguments '
+		elif isinstance(err, commands.MissingRequiredArgument):
+			await ctx.send(f"{self.config.forbidden} Required arguments aren't passed.")
+			' Command not found '
 		elif isinstance(err, errors.CommandNotFound):
 			pass
+			' Any Other Error '
 		else:
 			ss = get(self.bot.guilds, id=791553406266245121)
 			report = get(ss.text_channels, id=791556612715708448)

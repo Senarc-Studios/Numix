@@ -10,20 +10,29 @@ class Moderation(commands.Cog, name='Moderation'):
 		' Report Command '
 		
 	@commands.command()
+	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def report(self, ctx, user: discord.Member=None, *, reason=None):
 		if reason is None:
-			return await ctx.send(f"{self.config.forbidden} Specify a reason.")
+			return await ctx.send(f"{self.config.forbidden} Specify a reason for report.")
 
 		elif user is None:
-			return await ctx.send(f"{self.config.forbidden} Specify a user.")
+			return await ctx.send(f"{self.config.forbidden} Specify a user to report.")
 
 		else:
-			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			embed.set_author(name=f"New Report", icon_url=ctx.author.avatar_url)
-			embed.add_field(name="Reporter:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)")
-			embed.add_field(name="Reported User:", value=f"{user.name}#{user.discriminator}(`{user.id}`)")
-			embed.add_field(name="Reason:", value=f"{reason}")
+			cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+			collection = cluster.DataBase_1.settings
+
+			for channel in collection.find({ "_id": f"{ctx.guild.id}" }):
+				reports = channel['report']
+
+				embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+				embed.set_thumbnail(url=f"{ctx.author.avatar_url}")
+				embed.set_author(name=f"New Report", icon_url=ctx.author.avatar_url)
+				embed.add_field(name="Reporter:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)")
+				embed.add_field(name="Reported User:", value=f"{user.name}#{user.discriminator}(`{user.id}`)")
+				embed.add_field(name="Reason:", value=f"{reason}")
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				channel.send(embed=embed)
 
 		' Warn Command '
 
@@ -35,10 +44,10 @@ class Moderation(commands.Cog, name='Moderation'):
 		guild = ctx.guild
 		
 		if reason is None:
-			await ctx.send(f"{self.config.forbidden} Specify a reason.")
+			await ctx.send(f"{self.config.forbidden} Specify a reason for warn.")
 
 		elif user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user.")
+			await ctx.send(f"{self.config.forbidden} Specify a user to warn.")
 		
 		elif user.top_role >= ctx.author.top_role:
 			await ctx.send(f"{self.config.forbidden} Unable to warn user.")
@@ -68,7 +77,7 @@ class Moderation(commands.Cog, name='Moderation'):
 				collection.update_one(myquery, newvalues)
 
 				try:
-					add_count = { f"{user.id}_count": 1 }
+					add_count = { "_id": ctx.guild.id, f"{user.id}_count": 1 }
 					collection.insert_one(add_count)
 
 				except Exception as e:
@@ -79,7 +88,7 @@ class Moderation(commands.Cog, name='Moderation'):
 
 						addition = 1
 
-						warn_count = warns + addition
+						warn_count = int(warns) + int(addition)
 						
 						old_count = { "_id": (ctx.guild.id) }
 						new_count = { "$set": { f"{user.id}_count": warn_count } }
@@ -116,10 +125,10 @@ class Moderation(commands.Cog, name='Moderation'):
 	@commands.has_permissions(ban_members=True)
 	async def ban(self, ctx, user:discord.Member=None, *, reason=None):
 		if user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user.")
+			await ctx.send(f"{self.config.forbidden} Specify a user to ban.")
 
 		elif reason is None:
-			await ctx.send(f"{self.config.forbidden} Specify a reason.")
+			await ctx.send(f"{self.config.forbidden} Specify a reason for ban.")
 
 		else:
 			guild = ctx.guild
@@ -170,10 +179,10 @@ class Moderation(commands.Cog, name='Moderation'):
 	@commands.has_permissions(kick_members=True)
 	async def kick(self, ctx, user: discord.Member=None, *, reason=None):
 		if user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user.")
+			await ctx.send(f"{self.config.forbidden} Specify a user to kick.")
 
 		elif reason is None:
-			await ctx.send(f"{self.config.forbidden} Specify a reason.")
+			await ctx.send(f"{self.config.forbidden} Specify a reason for kick.")
 
 		else:
 			guild = ctx.guild
@@ -227,7 +236,7 @@ class Moderation(commands.Cog, name='Moderation'):
 		collection = cluster.Moderation.warns
 
 		if user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user.")
+			await ctx.send(f"{self.config.forbidden} Specify a user to check.")
 	
 		else:
 			finder = collection.find({"_id": ctx.guild.id})

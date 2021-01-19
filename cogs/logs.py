@@ -64,7 +64,7 @@ class Logs(commands.Cog):
 			guild = get(self.bot.guilds, id=member.guild.id)
 			log = get(guild.text_channels, id=int(logid))
 
-			log_message = discord.Embed(timestamp=message.created_at, color=242424)
+			log_message = discord.Embed(timestamp=member.joined_at, color=242424)
 			log_message.set_author(name=f"{member.name} Joined", icon_url=member.avatar_url)
 			log_message.add_field(name="User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)")
 			log_message.add_field(name='Account Creation:', value=member.created_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
@@ -83,7 +83,7 @@ class Logs(commands.Cog):
 			guild = get(self.bot.guilds, id=guild.id)
 			log = get(guild.text_channels, id=logid)
 
-			log_message = discord.Embed(timestamp=message.created_at, color=242424)
+			log_message = discord.Embed(color=242424)
 			log_message.set_author(name=f"{member.name} Left", icon_url=member.avatar_url)
 			log_message.add_field(name="User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)")
 			log_message.add_field(name='Account Creation:', value=member.created_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
@@ -102,6 +102,7 @@ class Logs(commands.Cog):
 			print(logid)
 			guild = get(self.bot.guilds, id=message.guild.id)
 			log = get(guild.text_channels, id=logid)
+
 
 			if message.content == "":
 				return
