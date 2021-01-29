@@ -322,7 +322,7 @@ class Music(commands.Cog):
 	async def leave(self, ctx: commands.Context):
 		"""Clears the queue and leaves the voice channel."""
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":ctx.guild.id}):
@@ -352,7 +352,7 @@ class Music(commands.Cog):
 	async def pause(self, ctx: commands.Context):
 		"""Pauses the currently playing song."""
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":ctx.guild.id}):
@@ -376,7 +376,7 @@ class Music(commands.Cog):
 	async def resume(self, ctx: commands.Context):
 		"""Resumes a currently paused song."""
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":ctx.guild.id}):
@@ -399,7 +399,7 @@ class Music(commands.Cog):
 	async def stop(self, ctx: commands.Context):
 		"""Stops playing song and clears the queue."""
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":ctx.guild.id}):
@@ -425,7 +425,7 @@ class Music(commands.Cog):
 		3 skip votes are needed for the song to be skipped.
 		"""
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":ctx.guild.id}):

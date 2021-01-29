@@ -57,7 +57,7 @@ class Fun(commands.Cog):
 
 					Author = ctx.author
 					text = body.replace("--s", "")
-					cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+					cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 					collection = cluster.DataBase_1.nucrypt
 
 					key = numix_encrypt.encrypt()
@@ -79,7 +79,7 @@ class Fun(commands.Cog):
 
 					text = body.replace("-s", "")
 					Author = ctx.author
-					cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+					cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 					collection = cluster.DataBase_1.nucrypt
 
 					key = numix_encrypt.encrypt()
@@ -99,7 +99,7 @@ class Fun(commands.Cog):
 			else:
 				text = body
 				Author = ctx.author
-				cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+				cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 				collection = cluster.DataBase_1.nucrypt
 
 				key = numix_encrypt.encrypt()
@@ -120,7 +120,7 @@ class Fun(commands.Cog):
 			await ctx.send(f"{self.config.forbidden} Provide a Key to decrypt text.")
 
 		else:
-			cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+			cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 			collection = cluster.DataBase_1.nucrypt
 			await ctx.message.delete()
 			for key in collection.find({ "_id": f"{key}" }):

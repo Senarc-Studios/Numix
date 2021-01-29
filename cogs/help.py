@@ -13,10 +13,9 @@ class Help(commands.Cog):
 				embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 				embed.set_author(name="Numix Commands", icon_url=self.config.logo)
 				embed.add_field(name="General", value="```invite, about, avatar, serverinfo, report```")
-				embed.add_field(name="Music", value="```play, shuffle, join, queue, skip, stop, resume, volume, pause, np, leave")
 				embed.add_field(name="Fun", value="```8ball, urban, supreme, cat, dog, bird, duck, coffee, noticeme, coinflip, rate, slot```")
 				embed.add_field(name="Moderation", value="```ban, warn, infractions, clear```")
-				embed.add_field(name="Admin", value="```dj, log, reports, bug```")
+				embed.add_field(name="Admin", value="```log, reports, bug```")
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				return await ctx.send(embed=embed)
 

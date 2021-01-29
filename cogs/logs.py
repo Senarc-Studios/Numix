@@ -56,7 +56,7 @@ class Logs(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_join(self, member):
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":int(member.guild.id)}):
@@ -74,7 +74,7 @@ class Logs(commands.Cog):
 	@commands.Cog.listener()
 	async def on_member_remove(self, member, guild):
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":guild.id}):
@@ -94,7 +94,7 @@ class Logs(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message_delete(self, message):
 
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		for x in collection.find({"_id":message.guild.id}):
@@ -116,7 +116,7 @@ class Logs(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message_edit(self, a, b):
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
 		guild = get(self.bot.guilds, id=a.guild.id)
@@ -126,7 +126,7 @@ class Logs(commands.Cog):
 			guild = get(self.bot.guilds, id=guild.id)
 			log = get(guild.text_channels, id=logid)
 
-			if a.content == b.content:
+			if a.content == b.content + "":
 				return
 
 			elif b.content == "":

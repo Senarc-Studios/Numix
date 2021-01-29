@@ -7,9 +7,9 @@ from discord.utils import get
 
 class rough(commands.Cog):
 		def __init__(self, bot):
-				self.bot = bot
-				self.config = default.get("./config.json")
-				print('"Rough" cog loaded')
+			self.bot = bot
+			self.config = default.get("./config.json")
+			print('"Rough" cog loaded')
 		
 		@commands.command()
 		async def serverinfo(self, ctx):
@@ -45,9 +45,9 @@ class rough(commands.Cog):
 				embed.add_field(name="Server Region:", value=f"`{ctx.guild.region}`", inline=False)
 				embed.add_field(name="Owner:", value=f"{owner.name}#{owner.discriminator}(`{owner.id}`)", inline=True)
 				embed.add_field(name = "Server ID:", value=f"`{ctx.guild.id}`", inline=False)
-				embed.add_field(name="Verification Level:", value=f"{ctx.guild.verification_level}", inline=True)
-				embed.add_field(name="Server 2FA:", value=f"Disabled", inline=False)
-				embed.add_field(name="Default Notification Level:", value=f"{default_notification}", inline=True)
+				embed.add_field(name="Verification Level:", value=f"`{ctx.guild.verification_level}`", inline=True)
+				embed.add_field(name="2FA requirement for mods:", value=f"`Disabled`", inline=False)
+				embed.add_field(name="Default Notification Level:", value=f"`{default_notification}`", inline=True)
 				embed.add_field(name="Boosts:", value=f"`{(ctx.guild.premium_subscription_count)}`", inline=False)
 				embed.add_field(name="Boost Tier:", value=f"`{ctx.guild.premium_tier}`", inline=True)
 				embed.add_field(name="Guild Creation Time:", value=f"`{creation_date}`", inline=False)
@@ -86,13 +86,6 @@ class rough(commands.Cog):
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
 		
-		@commands.command()
-		async def invite(self, ctx):
-			embed=discord.Embed(timestamp=ctx.message.created_at,title="Numix Invite [Click Here For The Link]", url="https://discord.com/oauth2/authorize?client_id=744865990810271785&scope=bot&permissions=2147483639", color=0x308acf)
-			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			embed.set_author(name="Numix")
-			await ctx.send(embed=embed)
-		
 		@commands.command(aliases=["av"])
 		async def avatar(self, ctx, member: discord.User = None):
 				if member is None:
@@ -100,10 +93,8 @@ class rough(commands.Cog):
 				else:
 					pass
 				a = member.avatar_url
-				embed = discord.Embed(timestamp=ctx.message.created_at, title="Avatar", color=0x3df08a)
-				embed.set_author(
-						name=f"{member.name}#{member.discriminator}'s avatar",
-						icon_url=f"{a}")
+				embed = discord.Embed(timestamp=ctx.message.created_at, color=0x3df08a)
+				embed.set_author(name=f"{member.name}#{member.discriminator}'s avatar", icon_url=f"{a}")
 				embed.set_image(url=f"{a}")
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)

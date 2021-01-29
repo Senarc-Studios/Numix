@@ -6,48 +6,35 @@ class Moderation(commands.Cog, name='Moderation'):
 		self.config = default.get("./config.json")
 		self.s = self.config.success
 		print('"Moderation" cog loaded')
-
-		' Report Command '
 		
 	@commands.command()
-	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def report(self, ctx, user: discord.Member=None, *, reason=None):
 		if reason is None:
-			return await ctx.send(f"{self.config.forbidden} Specify a reason for report.")
+			return await ctx.send(f"{self.config.forbidden} Specify a reason.")
 
 		elif user is None:
-			return await ctx.send(f"{self.config.forbidden} Specify a user to report.")
+			return await ctx.send(f"{self.config.forbidden} Specify a user.")
 
 		else:
-			cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
-			collection = cluster.DataBase_1.settings
-
-			for channel in collection.find({ "_id": f"{ctx.guild.id}" }):
-				reports = channel['report']
-
-				embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-				embed.set_thumbnail(url=f"{ctx.author.avatar_url}")
-				embed.set_author(name=f"New Report", icon_url=ctx.author.avatar_url)
-				embed.add_field(name="Reporter:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)")
-				embed.add_field(name="Reported User:", value=f"{user.name}#{user.discriminator}(`{user.id}`)")
-				embed.add_field(name="Reason:", value=f"{reason}")
-				embed.set_footer(text="Numix", icon_url=self.config.logo)
-				channel.send(embed=embed)
-
-		' Warn Command '
+			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			embed.set_author(name=f"New Report", icon_url=ctx.author.avatar_url)
+			embed.add_field(name="Reporter:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)")
+			embed.add_field(name="Reported User:", value=f"{user.name}#{user.discriminator}(`{user.id}`)")
+			embed.add_field(name="Reason:", value=f"{reason}")
 
 	@commands.command()
 	@commands.has_permissions(kick_members=True)
 	async def warn(self, ctx, user: discord.Member=None, *, reason=None):
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/Moderation?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/Moderation?retryWrites=true&w=majority')
 		collection = cluster.Moderation.warns
 		guild = ctx.guild
 		
 		if reason is None:
-			await ctx.send(f"{self.config.forbidden} Specify a reason for warn.")
+			await ctx.send(f"{self.config.forbidden} Specify a reason.")
 
 		elif user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user to warn.")
+			await ctx.send(f"{self.config.forbidden} Specify a user.")
 		
 		elif user.top_role >= ctx.author.top_role:
 			await ctx.send(f"{self.config.forbidden} Unable to warn user.")
@@ -77,7 +64,7 @@ class Moderation(commands.Cog, name='Moderation'):
 				collection.update_one(myquery, newvalues)
 
 				try:
-					add_count = { "_id": ctx.guild.id, f"{user.id}_count": 1 }
+					add_count = { f"{user.id}_count": 1 }
 					collection.insert_one(add_count)
 
 				except Exception as e:
@@ -88,7 +75,7 @@ class Moderation(commands.Cog, name='Moderation'):
 
 						addition = 1
 
-						warn_count = int(warns) + int(addition)
+						warn_count = warns + addition
 						
 						old_count = { "_id": (ctx.guild.id) }
 						new_count = { "$set": { f"{user.id}_count": warn_count } }
@@ -104,8 +91,6 @@ class Moderation(commands.Cog, name='Moderation'):
 			except discord.Forbidden:
 				await ctx.send(f"{self.s} {user.name}#{user.discriminator} warned *User was not notified*")
 
-		' Clear Command '
-
 	@commands.command()
 	@commands.guild_only()
 	@commands.has_permissions(manage_messages=True)
@@ -118,17 +103,15 @@ class Moderation(commands.Cog, name='Moderation'):
 			await ctx.channel.purge(limit=int(amount))
 			await ctx.send(f"{self.config.s} Deleted **{int(amount)}** Messages.", delete_after=3)
 
-		' Ban Command '
-
 	@commands.command()
 	@commands.guild_only()
 	@commands.has_permissions(ban_members=True)
 	async def ban(self, ctx, user:discord.Member=None, *, reason=None):
 		if user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user to ban.")
+			await ctx.send(f"{self.config.forbidden} Specify a user.")
 
 		elif reason is None:
-			await ctx.send(f"{self.config.forbidden} Specify a reason for ban.")
+			await ctx.send(f"{self.config.forbidden} Specify a reason.")
 
 		else:
 			guild = ctx.guild
@@ -154,7 +137,7 @@ class Moderation(commands.Cog, name='Moderation'):
 				except discord.Forbidden:
 					return await ctx.send(f"{self.config.forbidden} Unable to ban user.")
 
-				cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+				cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 				collection = cluster.DataBase_1.settings
 
 				for x in collection.find({"_id":ctx.guild.id}):
@@ -172,17 +155,15 @@ class Moderation(commands.Cog, name='Moderation'):
 					log_message.set_footer(text="Numix", icon_url=self.config.logo)
 					await log.send(embed=log_message)
 
-		' Kick Command '
-
 	@commands.command()
 	@commands.guild_only()
 	@commands.has_permissions(kick_members=True)
 	async def kick(self, ctx, user: discord.Member=None, *, reason=None):
 		if user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user to kick.")
+			await ctx.send(f"{self.config.forbidden} Specify a user.")
 
 		elif reason is None:
-			await ctx.send(f"{self.config.forbidden} Specify a reason for kick.")
+			await ctx.send(f"{self.config.forbidden} Specify a reason.")
 
 		else:
 			guild = ctx.guild
@@ -208,7 +189,7 @@ class Moderation(commands.Cog, name='Moderation'):
 				except discord.Forbidden:
 					return await ctx.send(f"{self.config.forbidden} Unable to kick user.")
 
-				cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+				cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 				collection = cluster.DataBase_1.settings
 
 				for x in collection.find({"_id":ctx.guild.id}):
@@ -226,17 +207,15 @@ class Moderation(commands.Cog, name='Moderation'):
 					log_message.set_footer(text="Numix", icon_url=self.config.logo)
 					await log.send(embed=log_message)
 
-		' Infractions Command '
-
 	@commands.command()
 	@commands.guild_only()
 	@commands.has_permissions(manage_messages=True)
 	async def infractions(self, ctx, user: discord.Member=None):
-		cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/Moderation?retryWrites=true&w=majority')
+		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/Moderation?retryWrites=true&w=majority')
 		collection = cluster.Moderation.warns
 
 		if user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user to check.")
+			await ctx.send(f"{self.config.forbidden} Specify a user.")
 	
 		else:
 			finder = collection.find({"_id": ctx.guild.id})

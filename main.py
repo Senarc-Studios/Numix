@@ -1,7 +1,7 @@
 import webserver # after this code
 from numix_imports import *
 
-cluster = MongoClient('mongodb+srv://Benitz:6vsdPiReMc2nTukr@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 collection = cluster.DataBase_1.prefixes
 
 print("Bot Starting.")
@@ -169,9 +169,7 @@ webserver.keep_alive() # before token
 # Run Bot
 
 try:
-	with open('./config.json') as f:
-		token = json.load(f).get('token') or os.environ.get('token')
-	bot.run(token, reconnect=True)
+	bot.run(config.token, reconnect=True)
 except Exception as e:
 	print(e)
 # wait seeing uptimerobot

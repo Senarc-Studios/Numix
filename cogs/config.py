@@ -10,6 +10,73 @@ class Config(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
+		' Change Prefixes '
+	@commands.command()
+	@commands.has_permissions(administrator=True)
+	async def prefix(self, ctx, command=None, *, prefix=None):
+		if command is None:
+			return
+
+		elif command == "set":
+			date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y @ %H:%M:%S')}"
+			date_2 = date_1.replace("January", "1")
+			date_3 = date_2.replace("February", "2")
+			date_4 = date_3.replace("March", "3")
+			date_5 = date_4.replace("April", "4")
+			date_6 = date_5.replace("May", "5")
+			date_7 = date_6.replace("June", "6")
+			date_8 = date_7.replace("July", "7")
+			date_9 = date_8.replace("August", "8")
+			date_10 = date_9.replace("September", "9")
+			date_11 = date_10.replace("October", "10")
+			date_12 = date_11.replace("November", "11")
+			date_13 = date_12.replace("December", "12")
+			Today = date_13
+
+			await ctx.send(f'{self.config.success} Prefix set to `{prefix}`.')
+			try:
+				collection = self.db1.DataBase_1.prefixes
+				
+				collection.insert_one({ "_id": int(ctx.guild.id), "prefix": str(prefix), "admin": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "time": str(Today) })
+
+			except Exception as e:
+				print(e)
+				collection = self.db1.DataBase_1.prefixes
+
+				myquery = { "_id": int(ctx.guild.id) }
+
+				newvalues = { "$set": { "_id": int(ctx.guild.id), "prefix": str(prefix), "admin": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "time": str(Today) } }
+
+				collection.update_one(myquery, newvalues)
+
+		elif command == "info" or "log":
+			collection = self.db1.DataBase_1.prefixes
+
+			guild_prefix = { "_id": int(ctx.guild.id) }
+
+			prefix_validation_check = collection.count_documents(guild_prefix)
+
+			if prefix_validation_check == 0:
+				embed = discord.Embed(timestamp=ctx.message.created_at, description="You're currently using the Default Prefix which is `n!` you can change the prefix with `n!prefix set <new prefix>`", color=242424)
+				embed.set_author(name="Prefix Information", icon_url=self.config.logo)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				return await ctx.send(embed=embed)
+
+			for info in collection.find(guild_prefix):
+				prefix = info['prefix']
+				admin = info['admin']
+				time = info['time']
+
+			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+			embed.set_author(name="Prefix Information", icon_url=self.config.logo)
+			embed.add_field(name="Prefix:", value=f"`{prefix}`", inline=False)
+			embed.add_field(name="Last Updated By:", value=admin, inline=False)
+			embed.add_field(name="Last Updated At:", value=time, inline=False)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			await ctx.send(embed=embed)
+				
+
 		' Add DJ Command '
 
 	@commands.command(aliases=["add-dj"])
@@ -23,6 +90,8 @@ class Config(commands.Cog):
 
 		except Exception as e:
 			print(e)
+			collection = self.db1.DataBase_1.settings
+
 			myquery = { "_id": int(ctx.guild.id) }
 
 			newvalues = { "$addToSet": { "_id": int(ctx.guild.id), "dj": int(role.id) } }
@@ -35,6 +104,8 @@ class Config(commands.Cog):
 	@commands.has_permissions(administrator=True)
 	async def rdj(self, ctx, *, role: discord.Role):
 		try:
+			collection = self.db1.DataBase_1.settings
+
 			myquery = { "_id": int(ctx.guild.id) }
 
 			newvalues = { "$removeFromSet": { "_id": int(ctx.guild.id), "dj": role.id } }
@@ -105,8 +176,8 @@ class Config(commands.Cog):
 				embed.set_footer(text="Numix Premium", icon_url=f"{self.config.logo}")
 				await ctx.send(embed=embed)
 
-			elif type == "profanity" or "Profanity":
-				if option == "enable" or "Enable":
+			elif type in ("profanity","Profanity"):
+				if option in ('Enable','enable'):
 
 					try:
 						collection = self.db1.DataBase_1.filter
@@ -121,11 +192,11 @@ class Config(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"Your Profanity filter has been `Enabled` for {ctx.guild.name}, all messages that contain profanity will be filtered on **non-NSFW** channels.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					profanity_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"Your Profanity filter has been `Enabled` for {ctx.guild.name}, all messages that contain profanity will be filtered on **non-NSFW** channels.", color=242424)
+					profanity_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=profanity_success)
 
-				elif option == "Disable" or "disable":
+				elif option in ("Disable","disable"):
 					try:
 						collection = self.db1.DataBase_1.filter
 			
@@ -138,18 +209,18 @@ class Config(commands.Cog):
 						newvalues = { "$set": { "_id": int(ctx.guild.id), "Profanity": "False" } }
 
 						collection.update_one(myquery, newvalues)
-					success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Links Filter", description=f"Your Profanity filter has been `Disabled` for {ctx.guild.name}, all messages that contain Profanity will be allowed on every channel.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					pro_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"Your Profanity filter has been `Disabled` for {ctx.guild.name}, all messages that contain Profanity will be allowed on every channel.", color=242424)
+					pro_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=pro_success)
 
 				else:
 					collection = self.db1.DataBase_1.filter
-					success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Profanity Filter.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					pron_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Profanity Filter.", color=242424)
+					pron_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=pron_success)
 
-			elif type == "link" or "Link":
-				if option == "Enable" or "enable":
+			elif type in links:
+				if option in ("Enable","enable"):
 					
 					try:
 						collection = self.db1.DataBase_1.filter
@@ -168,7 +239,7 @@ class Config(commands.Cog):
 					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=success)
 
-				elif option == "Disable" or "disable":
+				elif option in ("Disable","disable"):
 					try:
 						collection = self.db1.DataBase_1.filter
 			
@@ -181,18 +252,18 @@ class Config(commands.Cog):
 						newvalues = { "$set": { "_id": int(ctx.guild.id), "Link": "False" } }
 
 						collection.update_one(myquery, newvalues)
-					success = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Links will be allowed on every channel.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					ssuccess = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Links will be allowed on every channel.", color=242424)
+					ssuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=ssuccess)
 
 				else:
 					collection = self.db1.DataBase_1.filter
-					success = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Link Filter.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					nsuccess = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Link Filter.", color=242424)
+					nsuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=nsuccess)
 
-			elif type == "invite" or "Invite":
-				if option == "Enable" or "enable":
+			elif type in invites:
+				if option in ("Enable","enable"):
 					try:
 						collection = self.db1.DataBase_1.filter
 			
@@ -206,11 +277,11 @@ class Config(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					success = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Invites will be filtered on every channel.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					msuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Invites will be filtered on every channel.", color=242424)
+					msuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=msuccess)
 
-				elif option == "Disable" or "disable":
+				elif option in ("Disable","disable"):
 
 					try:
 						collection = self.db1.DataBase_1.filter
@@ -225,14 +296,14 @@ class Config(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					success = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Invites will be allowed on every channel.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					gsuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Invites will be allowed on every channel.", color=242424)
+					gsuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=gsuccess)
 
 				else:
-					success = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Invite Filter.", color=242424)
-					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
-					await ctx.send(embed=success)
+					osuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Invite Filter.", color=242424)
+					osuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
+					await ctx.send(embed=osuccess)
 
 		else:
 			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
