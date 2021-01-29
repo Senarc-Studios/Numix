@@ -10,6 +10,7 @@ class Filter(commands.Cog):
 		self.moderation_db = MongoClient(self.mongo_moderation_url)
 		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
 		self.db1 = MongoClient(self.mongo_DB1_url)
+		self.pf = ProfanityFilter()
 		print('"Filter" cog loaded')
 
 	@commands.Cog.listener()
@@ -42,7 +43,7 @@ class Filter(commands.Cog):
 				# Checks active filters
 				filter = self.db1.DataBase_1.filter
 
-				profanity_pre = predict([f"{message.content}"])
+				#profanity_pre = predict([f"{message.content}"])
 
 				for modules in filter.find({ "_id": f"{message.guild.id}" }):
 					invite_filter = modules["Invite"]
@@ -73,12 +74,16 @@ class Filter(commands.Cog):
 									await user.send(embed=blocked_word)
 
 					if profanity_filter == "True":
-						if profanity_pre >= 1:
-								if message.channel.id not in word_whitelisted_channels:
-									await message.delete()
-									blocked_word = discord.Embed(title='Blocked Message', description='Your message has been blocked because it contained Blocked Words, you may delete the blocked word and send the message again.', color=242424)
-									blocked_word.set_footer(text='Numix Premium', icon_url=self.config.logo)
-									await user.send(embed=blocked_word)
+						#with open("profanity.txt") as file: # bad-words.txt contains one blacklisted phrase per line
+						#	bad_words = file.split("\n")
+						#
+						#for bad_word in bad_words:
+						#	if bad_word in message.content:
+						if self.pf.is_profane(f"{message.content}"):
+							await message.delete()
+							blocked_word = discord.Embed(title='Blocked Message', description='Your message has been blocked because it contained Blocked Words, you may delete the blocked word and send the message again.', color=242424)
+							blocked_word.set_footer(text='Numix Premium', icon_url=self.config.logo)
+							await user.send(embed=blocked_word)
 
 			else:
 				return

@@ -19,6 +19,7 @@ import random
 import pymongo
 import requests
 
+from profanityfilter import ProfanityFilter
 from io import BytesIO
 from pymongo import MongoClient
 from random import choice

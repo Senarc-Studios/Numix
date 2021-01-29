@@ -109,7 +109,7 @@ class Logs(commands.Cog):
 
 			else:
 				print(message.content)
-				embed = discord.Embed(timestamp=message.created_at, description=f'**Message Author:** \n<@!{message.author.id}>(`{message.author.id}`) \n\n**Message Channel:**\n<#{message.channel.id}> \n\n**Message Content:**\n```{message.content}```', color=242424)
+				embed = discord.Embed(timestamp=message.created_at, description=f'**Message Author:** \n<@!{message.author.id}>(`{message.author.id}`) \n\n**Message Channel:**\n<#{message.channel.id}> \n\n**Message Content:**\n```{message.content.replace("`", "")}```', color=242424)
 				embed.set_author(name=f"Message Deleted", icon_url=message.author.avatar_url)
 				embed.set_footer(text='Numix', icon_url=self.config.logo)
 				await log.send(embed=embed)
@@ -133,7 +133,9 @@ class Logs(commands.Cog):
 				return
 
 			else:
-				embed = discord.Embed(timestamp=a.created_at, description=f'**Message Author:** \n<@!{a.author.id}>(`{a.author.id}`) \n\n**Message Channel:**\n<#{a.channel.id}> \n\n**Before Edit:**```{a.content}```\n\n**After Edit:**```{b.content}```', color=242424)
+				before = a.content.replace("`", "")
+				after = b.content.replace("`", "")
+				embed = discord.Embed(timestamp=a.created_at, description=f'**Message Author:** \n<@!{a.author.id}>(`{a.author.id}`) \n\n**Message Channel:**\n<#{a.channel.id}> \n\n**Before Edit:**```{before}```\n\n**After Edit:**```{after}```', color=242424)
 				embed.set_author(name=f"Message Edited", icon_url=a.author.avatar_url)
 				embed.set_footer(text='Numix', icon_url=self.config.logo)
 				await log.send(embed=embed)
