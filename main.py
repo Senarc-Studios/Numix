@@ -6,7 +6,7 @@ collection = cluster.DataBase_1.prefixes
 
 print("Bot Starting.")
 
-# Intents 
+# Intents For Numix
 
 intents = discord.Intents.default()
 intents.members = True
