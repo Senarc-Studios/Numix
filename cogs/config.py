@@ -10,6 +10,23 @@ class Config(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
+	@commands.Cog.listener()
+	async def on_message(self, message):
+		for word in message.content:
+			if word == "<@!744865990810271785>":
+				collection = self.db1.DataBase_1.prefixes
+
+				guild_prefix = { "_id": int(ctx.guild.id) }
+
+				prefix_validation_check = collection.count_documents(guild_prefix)
+
+				if prefix_validation_check == 0:
+					return await ctx.send("The assigned prefix for this Server is `n!`")
+
+				for info in collection.find(guild_prefix):
+					prefix = info['prefix']
+					await ctx.send(f"The assigned prefix for this Server is `{prefix}`")
+
 		' Change Prefixes '
 	@commands.command()
 	@commands.has_permissions(administrator=True)
