@@ -15,7 +15,7 @@ class ErrorHandler(commands.Cog):
 		if isinstance(err, errors.CommandOnCooldown):
 			await ctx.send(f":stopwatch: Command is on Cooldown for **{err.retry_after:.2f}** seconds.")
 		elif isinstance(err, errors.MissingPermissions):
-			await ctx.send(f":no_entry_sign: You can't use that command.")
+			await ctx.send(f"{self.config.forbidden} You can't use that command.")
 		elif isinstance(err, errors.CommandNotFound):
 			pass
 		else:
