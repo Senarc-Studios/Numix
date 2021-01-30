@@ -26,8 +26,17 @@ def prefix(bot, message):
 		prefix=x["prefix"]
 	return commands.when_mentioned_or(prefix)(bot, message)
 
-bot = commands.Bot(command_prefix=prefix, intents=intents)
+bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
+
+class MyBot(commands.Bot):
+	async def is_owner(self, user: discord.User):
+		dev = [727365670395838626, 529499034495483926, 709310923130667012]
+		if user.id in dev:  # Implement your own conditions here
+			return True
+		else:
+			await ctc.send(f"{config.forbidden} You can't use that command.")
+			return False
 
 # Eval
 
@@ -163,6 +172,8 @@ for file in os.listdir("./cogs"):
 	if file.endswith(".py"):
 		name = file[:-3]
 		bot.load_extension(f"cogs.{name}")
+
+bot.load_extension("jishaku")
 
 webserver.keep_alive() # before token 
 
