@@ -1,4 +1,5 @@
 from numix_imports import *
+import datetime
 
 # Define Cogs
 
@@ -14,16 +15,16 @@ class Logs(commands.Cog):
 	async def on_guild_join(self, guild):
 		support_server = get(self.bot.guilds, id=791553406266245121)
 		join_log_channel = get(support_server.text_channels, id=791556611151626261)
-		log_message = discord.Embed(title=f"Joined **{guild.name}**", color=242424)
+		log_message = discord.Embed(timestamp=datetime.datetime.utcnow(), color=242424)
+		log_message.set_author(name=f"Joined {guild.name}", icon_url=guild.icon_url)
 		log_message.add_field(name="Server ID:", value=f"{guild.id}", inline=False)
 		log_message.add_field(name="Owner's ID:", value=f"{guild.owner_id}", inline=False)
 		log_message.add_field(name="Owner Mention:", value=f"<@!{guild.owner_id}>", inline=False)
 		log_message.set_footer(text="Numix Developers", icon_url=self.config.logo)
 		log_message.set_thumbnail(url=guild.avatar_url)
 		await join_log_channel.send(embed=log_message)
-		success = False
-		i = 0
-		while not success:
+
+		for channel in guild.text_channels:
 			try:
 				embed = discord.Embed(description="Thank You for inviting **Numix**.\nDefault Prefix `n!`", color=242424)
 				embed.set_author(name="Numix Bot", icon_url=self.config.logo)
@@ -32,14 +33,10 @@ class Logs(commands.Cog):
 				embed.add_field(name="All Servers:", value=f"`{len(self.bot.guilds)}` Servers", inline=False)
 				embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
-				await g.channels[i].send(embed=embed)
-			except (discord.Forbidden, AttributeError):
-				i += 1
-			except IndexError:
-				# if the server has no channels, doesn't let the bot talk, or all vc/categories
-				pass
-			else:
-				success = True
+				await channel.send(embed=embed)
+				return
+			except discord.Forbidden:
+				print("")
 
 	@commands.Cog.listener()
 	async def on_guild_remove(self, guild):
@@ -83,7 +80,7 @@ class Logs(commands.Cog):
 			guild = get(self.bot.guilds, id=guild.id)
 			log = get(guild.text_channels, id=logid)
 
-			log_message = discord.Embed(color=242424)
+			log_message = discord.Embed(timestamp=datetime.datetime.utcnow(), color=242424)
 			log_message.set_author(name=f"{member.name} Left", icon_url=member.avatar_url)
 			log_message.add_field(name="User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)")
 			log_message.add_field(name='Account Creation:', value=member.created_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
@@ -108,8 +105,7 @@ class Logs(commands.Cog):
 				return
 
 			else:
-				print(message.content)
-				embed = discord.Embed(timestamp=message.created_at, description=f'**Message Author:** \n<@!{message.author.id}>(`{message.author.id}`) \n\n**Message Channel:**\n<#{message.channel.id}> \n\n**Message Content:**\n```{message.content.replace("`", "")}```', color=242424)
+				embed = discord.Embed(timestamp=datetime.datetime.utcnow(), description=f'**Message Author:** \n<@!{message.author.id}>(`{message.author.id}`) \n\n**Message Channel:**\n<#{message.channel.id}> \n\n**Message Content:**\n```{message.content.replace("`", "")}```', color=242424)
 				embed.set_author(name=f"Message Deleted", icon_url=message.author.avatar_url)
 				embed.set_footer(text='Numix', icon_url=self.config.logo)
 				await log.send(embed=embed)
