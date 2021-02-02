@@ -21,7 +21,7 @@ class Logs(commands.Cog):
 		log_message.add_field(name="Owner's ID:", value=f"{guild.owner_id}", inline=False)
 		log_message.add_field(name="Owner Mention:", value=f"<@!{guild.owner_id}>", inline=False)
 		log_message.set_footer(text="Numix Developers", icon_url=self.config.logo)
-		log_message.set_thumbnail(url=guild.avatar_url)
+		log_message.set_thumbnail(url=guild.icon_url)
 		await join_log_channel.send(embed=log_message)
 
 		for channel in guild.text_channels:
@@ -47,7 +47,7 @@ class Logs(commands.Cog):
 		log_message.add_field(name="Owner's ID:", value=f"{guild.owner_id}", inline=False)
 		log_message.add_field(name="Owner Mention:", value=f"<@!{guild.owner_id}>", inline=False)
 		log_message.set_footer(text="Numix Developers", icon_url=self.config.logo)
-		log_message.set_thumbnail(url=guild.avatar_url)
+		log_message.set_thumbnail(url=guild.icon_url)
 		await leave_log_channel.send(embed=log_message)
 
 	@commands.Cog.listener()
