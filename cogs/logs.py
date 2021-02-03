@@ -13,17 +13,6 @@ class Logs(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_guild_join(self, guild):
-		support_server = get(self.bot.guilds, id=791553406266245121)
-		join_log_channel = get(support_server.text_channels, id=791556611151626261)
-		log_message = discord.Embed(timestamp=datetime.datetime.utcnow(), color=242424)
-		log_message.set_author(name=f"Joined {guild.name}", icon_url=guild.icon_url)
-		log_message.add_field(name="Server ID:", value=f"{guild.id}", inline=False)
-		log_message.add_field(name="Owner's ID:", value=f"{guild.owner_id}", inline=False)
-		log_message.add_field(name="Owner Mention:", value=f"<@!{guild.owner_id}>", inline=False)
-		log_message.set_footer(text="Numix Developers", icon_url=self.config.logo)
-		log_message.set_thumbnail(url=guild.icon_url)
-		await join_log_channel.send(embed=log_message)
-
 		for channel in guild.text_channels:
 			try:
 				embed = discord.Embed(description="Thank You for inviting **Numix**.\nDefault Prefix `n!`", color=242424)
@@ -34,15 +23,29 @@ class Logs(commands.Cog):
 				embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await channel.send(embed=embed)
+				
+				link = await channel.create_invite(max_age = 300)
+				support_server = get(self.bot.guilds, id=791553406266245121)
+				join_log_channel = get(support_server.text_channels, id=791556611151626261)
+				log_message = discord.Embed(color=242424)
+				log_message.set_author(name=f"Joined {guild.name}", icon_url=guild.icon_url)
+				log_message.add_field(name="Server ID:", value=f"{guild.id}", inline=False)
+				log_message.add_field(name="Owner's ID:", value=f"{guild.owner_id}", inline=False)
+				log_message.add_field(name="Owner Mention:", value=f"<@!{guild.owner_id}>", inline=False)
+				log_message.add_field(name="Server Invite:", value=f"{link}", inline=False)
+				log_message.set_footer(text="Numix Developers", icon_url=self.config.logo)
+				log_message.set_thumbnail(url=f"{guild.icon_url}")
+				await join_log_channel.send(embed=log_message)
 				return
 			except discord.Forbidden:
-				print("")
+				print("")			
 
 	@commands.Cog.listener()
 	async def on_guild_remove(self, guild):
 		support_server = get(self.bot.guilds, id=791553406266245121)
-		leave_log_channel = get(support_server.text_channels, id=791556611151626261)
-		log_message = discord.Embed(title=f"Joined **{guild.name}**", color=242424)
+		leave_log_channel = get(support_server.text_channels, id=791556611951820801)
+		log_message = discord.Embed(color=242424)
+		log_message.set_author(name=f"Left {guild.name}", icon_url=guild.icon_url)
 		log_message.add_field(name="Server ID:", value=f"{guild.id}", inline=False)
 		log_message.add_field(name="Owner's ID:", value=f"{guild.owner_id}", inline=False)
 		log_message.add_field(name="Owner Mention:", value=f"<@!{guild.owner_id}>", inline=False)

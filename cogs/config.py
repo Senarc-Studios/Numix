@@ -21,11 +21,11 @@ class Config(commands.Cog):
 				prefix_validation_check = collection.count_documents(guild_prefix)
 
 				if prefix_validation_check == 0:
-					return await ctx.send("The assigned prefix for this Server is `n!`.")
+					return await ctx.send("The assigned prefix for this Server is `n!`")
 
 				for info in collection.find(guild_prefix):
 					prefix = info['prefix']
-					await ctx.send(f"The assigned prefix for this Server is `{prefix}`.")
+					await ctx.send(f"The assigned prefix for this Server is `{prefix}`")
 
 		' Change Prefixes '
 	@commands.command()

@@ -27,3 +27,5 @@ better-profanity
 mysql-connector-python
 flask
 flask-discord
+psutil
+profanityfilter

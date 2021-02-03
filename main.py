@@ -173,8 +173,6 @@ for file in os.listdir("./cogs"):
 		name = file[:-3]
 		bot.load_extension(f"cogs.{name}")
 
-bot.load_extension("jishaku")
-
 webserver.keep_alive() # before token 
 
 # Run Bot
