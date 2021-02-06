@@ -12,61 +12,63 @@ class Config(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
-		for word in message.content:
-			if word == "<@!744865990810271785>":
-				collection = self.db1.DataBase_1.prefixes
+		if message.content == "<@!744865990810271785>":
+			collection = self.db1.DataBase_1.prefixes
 
-				guild_prefix = { "_id": int(ctx.guild.id) }
+			guild_prefix = { "_id": int(message.guild.id) }
 
-				prefix_validation_check = collection.count_documents(guild_prefix)
+			prefix_validation_check = collection.count_documents(guild_prefix)
 
-				if prefix_validation_check == 0:
-					return await ctx.send("The assigned prefix for this Server is `n!`")
+			if prefix_validation_check == 0:
+				return await message.channel.send("The assigned prefix for this Server is `n!`")
 
-				for info in collection.find(guild_prefix):
-					prefix = info['prefix']
-					await ctx.send(f"The assigned prefix for this Server is `{prefix}`")
+			for info in collection.find(guild_prefix):
+				prefix = info['prefix']
+				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
 		' Change Prefixes '
 	@commands.command()
-	@commands.has_permissions(administrator=True)
 	async def prefix(self, ctx, command=None, *, prefix=None):
 		if command is None:
 			return
 
 		elif command == "set":
-			date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y @ %H:%M:%S')}"
-			date_2 = date_1.replace("January", "1")
-			date_3 = date_2.replace("February", "2")
-			date_4 = date_3.replace("March", "3")
-			date_5 = date_4.replace("April", "4")
-			date_6 = date_5.replace("May", "5")
-			date_7 = date_6.replace("June", "6")
-			date_8 = date_7.replace("July", "7")
-			date_9 = date_8.replace("August", "8")
-			date_10 = date_9.replace("September", "9")
-			date_11 = date_10.replace("October", "10")
-			date_12 = date_11.replace("November", "11")
-			date_13 = date_12.replace("December", "12")
-			Today = date_13
+			if ctx.author.guild_permissions.administrator:
+				date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y @ %H:%M:%S')}"
+				date_2 = date_1.replace("January", "01")
+				date_3 = date_2.replace("February", "02")
+				date_4 = date_3.replace("March", "03")
+				date_5 = date_4.replace("April", "04")
+				date_6 = date_5.replace("May", "05")
+				date_7 = date_6.replace("June", "06")
+				date_8 = date_7.replace("July", "07")
+				date_9 = date_8.replace("August", "08")
+				date_10 = date_9.replace("September", "09")
+				date_11 = date_10.replace("October", "10")
+				date_12 = date_11.replace("November", "11")
+				date_13 = date_12.replace("December", "12")
+				Today = date_13
 
-			await ctx.send(f'{self.config.success} Prefix set to `{prefix}`.')
-			try:
-				collection = self.db1.DataBase_1.prefixes
-				
-				collection.insert_one({ "_id": int(ctx.guild.id), "prefix": str(prefix), "admin": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "time": str(Today) })
+				await ctx.send(f'{self.config.success} Prefix set to `{prefix}`.')
+				try:
+					collection = self.db1.DataBase_1.prefixes
+					
+					collection.insert_one({ "_id": int(ctx.guild.id), "prefix": str(prefix), "admin": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "time": str(Today) })
 
-			except Exception as e:
-				print(e)
-				collection = self.db1.DataBase_1.prefixes
+				except Exception as e:
+					print(e)
+					collection = self.db1.DataBase_1.prefixes
 
-				myquery = { "_id": int(ctx.guild.id) }
+					myquery = { "_id": int(ctx.guild.id) }
 
-				newvalues = { "$set": { "_id": int(ctx.guild.id), "prefix": str(prefix), "admin": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "time": str(Today) } }
+					newvalues = { "$set": { "_id": int(ctx.guild.id), "prefix": str(prefix), "admin": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "time": str(Today) } }
 
-				collection.update_one(myquery, newvalues)
+					collection.update_one(myquery, newvalues)
+			
+			else:
+				await ctx.send(f"{self.config.forbidden} You can't use that command.")
 
-		elif command == "info" or "log":
+		elif command in ("info","log"):
 			collection = self.db1.DataBase_1.prefixes
 
 			guild_prefix = { "_id": int(ctx.guild.id) }
@@ -181,8 +183,15 @@ class Config(commands.Cog):
 
 		premium = self.db1.DataBase_1.premium
 
+		premium_list = premium
+		premium_validation_check = premium_list.count_documents({ "_id": ctx.guild.id })
+
+		if premium_validation_check == 0:
+			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
+
 		for guilds in premium.find({ "_id": f"{ctx.guild.id}" }):
 			trf = guilds["premium"]
+			trf = f"{trf}"
 
 		if trf == "False":
 			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")

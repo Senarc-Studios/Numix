@@ -35,7 +35,7 @@ class MyBot(commands.Bot):
 		if user.id in dev:  # Implement your own conditions here
 			return True
 		else:
-			await ctc.send(f"{config.forbidden} You can't use that command.")
+			await ctx.send(f"{config.forbidden} You can't use that command.")
 			return False
 
 # Eval
