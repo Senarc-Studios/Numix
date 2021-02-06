@@ -1,4 +1,3 @@
-import webserver # after this code
 from numix_imports import *
 
 cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
@@ -173,7 +172,6 @@ for file in os.listdir("./cogs"):
 		name = file[:-3]
 		bot.load_extension(f"cogs.{name}")
 
-webserver.keep_alive() # before token 
 
 # Run Bot
 
@@ -181,5 +179,3 @@ try:
 	bot.run(config.token, reconnect=True)
 except Exception as e:
 	print(e)
-# wait seeing uptimerobot
-# Numix premium is online though 
