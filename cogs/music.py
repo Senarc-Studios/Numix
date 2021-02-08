@@ -355,6 +355,15 @@ class Music(commands.Cog):
 		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
+		if ctx.author.guild_permissions.manage_message:
+			guild = ctx.guild
+
+			if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
+				ctx.voice_state.voice.pause()
+				await ctx.message.add_reaction('⏯')
+			else:
+				await ctx.send(f"{config.forbidden} No music playing.")
+
 		for x in collection.find({"_id":ctx.guild.id}):
 			dj_roles = x["dj"]
 
