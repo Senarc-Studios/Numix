@@ -29,31 +29,23 @@ class Moderation(commands.Cog, name='Moderation'):
 		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/Moderation?retryWrites=true&w=majority')
 		collection = cluster.Moderation.warns
 		guild = ctx.guild
-		
-		if reason is None:
-			await ctx.send(f"{self.config.forbidden} Specify a reason.")
 
-		elif user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user.")
+		if user is None:
+			await ctx.send(f"{self.config.forbidden} You have to specify a user to warn them.")
 		
-		elif user.top_role >= ctx.author.top_role:
-			await ctx.send(f"{self.config.forbidden} Unable to warn user.")
+		elif reason is None:
+			await ctx.send(f"{self.config.forbidden} You have to specify a reason to warn the user.")
 
-		elif user.top_role > guild.me.top_role:
-			await ctx.send(f"{self.config.forbidden} Unable to warn user.")
+		elif ctx.author.top_role <= user.top_role:
+			return await ctx.send(f"{self.config.forbidden} You can't warn a user higher than you.")
 
 		else:
 			try:
-				count = { "_id": ctx.guild.id, f"{user.id}_count": 1 }
 
 				warn = {"_id":ctx.guild.id, f"{user.id}":[reason]}
 
-				myquery = { "_id": (ctx.guild.id) }
-
-				newvalues = { "$set": { f"{user.id}_count": 1 } }
-
 				collection.insert_one(warn)
-				collection.update_one(myquery, newvalues)
+				collection.insert_one(count)
 				
 			except Exception as e:
 				print(e)
@@ -83,7 +75,7 @@ class Moderation(commands.Cog, name='Moderation'):
 						collection.update_one(old_count, new_count)
 
 			try:
-				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Type:** Warn\n**Reason:**{reason}", color=0xFC6700)
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Type:** Warn\n**Reason: **{reason}", color=0xFC6700)
 				embed.set_author(name="Infraction Information", icon_url=ctx.guild.icon_url)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await user.send(embed=embed)

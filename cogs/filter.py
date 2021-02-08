@@ -29,6 +29,9 @@ class Filter(commands.Cog):
 			for guilds in premium.find({ "_id": f"{message.guild.id}" }):
 				trf = guilds["premium"]
 
+			if premium.count_documents({ "_id": f"{message.guild.id}" }) == 0:
+				return
+
 			if trf == "False":
 				return
 
