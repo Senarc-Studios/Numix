@@ -16,14 +16,14 @@ class Leveling(commands.Cog):
 		author_id = message.author.id
 		guild_id = message.guild.id
 
-		user_id = {"_id": author_id}
+		user_id = { "_id": guild_id, "Users": { "userid": author_id } }
 
 		if message.author.bot:
 			return
 
-		if collection.count_documents({ "_id": author_id, "GuildID": guild_id }) == 0:
-			user_info = {"_id": author_id, "GuildID": guild_id, "Level": 1, "XP": 0}
-			collection.insert_one(user_info)
+		if collection.count_documents({ "_id": guild_id, "Users": { "userid": author_id } }) == 0:
+			user_info = {"_id": author_id, "Users": { "userid": f"{author_id}", f"{author_id}_Level": 0, f"{author_id}_XP": 0 }}
+			return collection.insert_one(user_info)
 
 		exp = collection.find(user_id)
 		for xp in exp:
@@ -31,17 +31,17 @@ class Leveling(commands.Cog):
 
 			new_xp = cur_xp + 5
 
-		collection.update_one({ "_id": author_id }, { "$set": { "xp":new_xp } }, upsert=True)
+		collection.update_one({ "_id": guild_id, "Users": { "userid": f"{author_id}" } }, { "$set": { f"{author_id}_XP": new_xp } }, upsert=True)
 
 		lvl = collection.find(user_id)
 		for level in lvl:
-			lvl_start = level['Level']
+			lvl_start = level[f'{author_id}_Level']
 
 			new_level = lvl_start + 1
 
-		if cur_xp >=round(5 * (lvl_start ** 4 / 5)):
-			collection.update({ "_id": author_id }, { "$set": { "Level": new_level } }, upsert=True)
-			await message.channel.send(f"{message.author.mention} has leveled up to {new_level}!")
+			if cur_xp >= round(5 * (lvl_start ** 1 / 5)):
+				collection.update({ "_id": guild_id, "Users": { "userid": f"{author_id}" } }, { "$set": { f"{author_id}_Level": new_level } }, upsert=True)
+				await message.channel.send(f"{message.author.mention} has leveled up to {new_level}!")
 
 def setup(bot):
 	bot.add_cog(Leveling(bot))
