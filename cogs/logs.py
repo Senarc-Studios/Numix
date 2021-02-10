@@ -14,7 +14,8 @@ class Logs(commands.Cog):
 	@commands.Cog.listener()
 	async def on_guild_join(self, guild):
 		for channel in guild.text_channels:
-			try:
+			nubot = guild.me
+			if channel.permissions_for(nubot).send_messages == True:
 				embed = discord.Embed(description="Thank You for inviting **Numix**.\nDefault Prefix `n!`", color=242424)
 				embed.set_author(name="Numix Bot", icon_url=self.config.logo)
 				embed.add_field(name="Developers:", value=self.config.devs, inline=False)
@@ -24,7 +25,7 @@ class Logs(commands.Cog):
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await channel.send(embed=embed)
 				
-				link = await channel.create_invite(max_age = 300)
+				link = await channel.create_invite(max_age = 0)
 				support_server = get(self.bot.guilds, id=791553406266245121)
 				join_log_channel = get(support_server.text_channels, id=791556611151626261)
 				log_message = discord.Embed(color=242424)
@@ -37,8 +38,8 @@ class Logs(commands.Cog):
 				log_message.set_thumbnail(url=f"{guild.icon_url}")
 				await join_log_channel.send(embed=log_message)
 				return
-			except discord.Forbidden:
-				print("")			
+			else:
+				print("")
 
 	@commands.Cog.listener()
 	async def on_guild_remove(self, guild):
