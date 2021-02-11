@@ -39,7 +39,7 @@ class MyBot(commands.Bot):
 
 # Eval
 
-@bot.command(name='e')
+@bot.command(name='e', aliases=["eval"])
 @commands.is_owner()
 async def _e(ctx, *, body=None):
 	env = {
