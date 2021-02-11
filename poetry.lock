@@ -315,7 +315,7 @@ description = "Non-blocking MongoDB driver for Tornado or asyncio"
 name = "motor"
 optional = false
 python-versions = ">=3.5.2"
-version = "2.3.0"
+version = "2.3.1"
 
 [package.dependencies]
 pymongo = ">=3.11,<4"
@@ -602,7 +602,7 @@ python-versions = "*"
 version = "2020.12.31"
 
 [metadata]
-content-hash = "b4c82e9f1f53e8ebdc43a72d69462e47c7b537772dc11ff9034290fc822d4713"
+content-hash = "11bb2f4818142eaf84ecbb59ae96b73de888ffa7a1d4ef1de4ef006ec6fcc118"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -867,8 +867,8 @@ markupsafe = [
     {file = "MarkupSafe-1.1.1.tar.gz", hash = "sha256:29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b"},
 ]
 motor = [
-    {file = "motor-2.3.0-py3-none-any.whl", hash = "sha256:428d94750123d19fcd0a89b8671ff9b4656f205217bad9f44161748c64c5fc80"},
-    {file = "motor-2.3.0.tar.gz", hash = "sha256:f1692b760d834707e3477996ce8d407af8cd61c1a2abedbf81c22ef14675e61a"},
+    {file = "motor-2.3.1-py3-none-any.whl", hash = "sha256:ea5a8f5c7cbb08b7c301d7c66746fc96333d634182df236dff0f814f802fe232"},
+    {file = "motor-2.3.1.tar.gz", hash = "sha256:319df35ef9d4099dc125b7d46b552fa88578675e0b06cab94624c666bb0a8a90"},
 ]
 multidict = [
     {file = "multidict-5.1.0-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:b7993704f1a4b204e71debe6095150d43b2ee6150fa4f44d6d966ec356a8d61f"},

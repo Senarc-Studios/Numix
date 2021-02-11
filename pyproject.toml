@@ -14,7 +14,6 @@ timeago = "^1.0.15"
 aiohttp = "^3.7.3"
 discord = "^1.0.1"
 dnspython = "^2.1.0"
-motor = "^2.3.0"
 PyYAML = "^5.3.1"
 pynite = "^1.4.2"
 Pillow = "^8.1.0"
@@ -35,6 +34,7 @@ youtube-dl = "^2020.7.28"
 async-timeout = "^3.0.1"
 PyNaCl = "^1.4.0"
 profanityfilter = "^2.0.6"
+motor = "^2.3.1"
 [tool.poetry.dev-dependencies]
 
 [build-system]
