@@ -6,6 +6,17 @@ class Moderation(commands.Cog, name='Moderation'):
 		self.config = default.get("./config.json")
 		self.s = self.config.success
 		print('"Moderation" cog loaded')
+
+	@commands.command()
+	async def whocrypt(self, ctx, key=None):
+		if ctx.author.id in self.config.owners:
+			return await ctx.send(f"{self.config.forbidden} This command can only be used by the Bot Developers.")
+
+		elif key is None:
+			await ctx.send(f"{self.config.forbidden} You have you provide a key to whocrypt it.")
+
+		else:
+			return await ctx.send("Command still in progress.")		
 		
 	@commands.command()
 	async def report(self, ctx, user: discord.Member=None, *, reason=None):
