@@ -26,6 +26,14 @@ class Config(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
+	@commands.command(aliases=["join-message", "join-msg", "greet", "greetings", "join_message"])
+	async def jm(self, ctx, command=None, channel=None):
+		if command is None:
+			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
+
+		elif command == "enable":
+			return await ctx.send("Work in Progress")
+
 		' Change Prefixes '
 	@commands.command()
 	async def prefix(self, ctx, command=None, *, prefix=None):

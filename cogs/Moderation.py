@@ -207,21 +207,23 @@ class Moderation(commands.Cog, name='Moderation'):
 		collection = cluster.Moderation.warns
 
 		if user is None:
-			await ctx.send(f"{self.config.forbidden} Specify a user.")
-	
-		else:
-			finder = collection.find({"_id": ctx.guild.id})
-			for result in finder:
-				infractions = result[f'{user.id}']
-				count = result[f'{user.id}_count']
-				warns = f"{infractions}"
-				infraction_fix_1 = warns.replace("['", "")
-				infraction_fix_2 = infraction_fix_1.replace("']", "")
-				infraction = infraction_fix_2.replace("', '", "\n")
-				embed = discord.Embed(description=f"This user has **{count}** warns.\nTop ten warns of this user below.\n\n{infraction}", timestamp=ctx.message.created_at, color=242424)
-				embed.set_author(name=f"{user.name}'s Warns", icon_url=user.avatar_url)
-				embed.set_footer(text="Numix", icon_url=self.config.logo)
-				await ctx.send(embed=embed)
+			user = ctx.author
+
+		finder = collection.find({"_id": ctx.guild.id})
+		if collection.find({ "_id": ctx.guild.id }) == 0:
+			return await ctx.send(f"{self.config.forbidden} No Infractions Found.")
+
+		for result in finder:
+			infractions = result[f'{user.id}']
+			count = result[f'{user.id}_count']
+			warns = f"{infractions}"
+			infraction_fix_1 = warns.replace("['", "")
+			infraction_fix_2 = infraction_fix_1.replace("']", "")
+			infraction = infraction_fix_2.replace("', '", "\n")
+			embed = discord.Embed(description=f"This user has **{count}** warns.\nTop ten warns of this user below.\n\n{infraction}", timestamp=ctx.message.created_at, color=242424)
+			embed.set_author(name=f"{user.name}'s Warns", icon_url=user.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
 
 def setup(bot):
 	bot.add_cog(Moderation(bot))
