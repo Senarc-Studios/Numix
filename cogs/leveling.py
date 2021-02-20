@@ -1,4 +1,10 @@
 from numix_imports import *
+import motor.motor_asyncio
+import discord
+
+mongo_url = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
+cluster = motor.motor_asyncio.AsyncIOMotorClient(mongo_url)
+level = cluster["DataBase_1"]['Leveling']
 
 class Leveling(commands.Cog):
 	def __init__(self, bot):
@@ -9,38 +15,63 @@ class Leveling(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
-		mongo_url = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
-		cluster = MongoClient(mongo_url)
-		db = cluster["DataBase_1"]
-		collection = db["Leveling"]
-		author_id = message.author.id
-		guild_id = message.guild.id
-
-		user_id = {"_id": author_id, "GuildID": guild_id}
 
 		if message.author.bot:
 			return
 
-		if collection.count_documents({ "_id": author_id, "GuildID": guild_id }) == 0:
-			user_info = {"_id": author_id, "GuildID": guild_id, "Level": 1, "XP": 0}
-			collection.insert_one(user_info)
+		elif message.guild is None:
+			return 
 
-		exp = collection.find(user_id)
-		for xp in exp:
-			cur_xp = xp['XP']
+		# Checks for dm and bot 
 
-			new_xp = cur_xp + 5
+		stats = await level.find_one({'_id' : message.author.id})
+		try:
+			if stats is None:
+				newuser = {"_id": message.author.id, "GuildID": message.guild.id,"Level" : 1,"XP": 0}
+				await level.insert_one(newuser)
 
-			collection.update_one({ "_id": author_id }, { "$set": { "XP":new_xp } }, upsert=True)
+			else:
+				current_xp = stats['XP']
+				new_xp = current_xp + 5
+				await level.update_one({"_id": message.author.id}, {"$set": {"XP": new_xp}})
 
-			lvl_start = xp['Level']
+				lvl_start = stats['Level']
+				if stats['XP'] >= round(lvl_start * 2 * 100):
+					new_lvl  = lvl_start + 1
+					await level.update_one({"_id": message.author.id}, {"$set": {"Level": new_lvl}})
+					await message.channel.send(f":tada: {message.author.mention} You leveled up to **Level {new_lvl}** :tada:")
 
-			new_level = lvl_start + 1
+		except Exception:
+			pass
 
-			if cur_xp >= round(lvl_start * 2 * 100):
+	@commands.command()
+	async def rank(self, ctx, member: discord.Member=None):
+		if member is None:
+			member = ctx.author
+		else:
+			pass
+		try:
+			stats = await level.find_one({'_id' : member.id, "GuildID": ctx.guild.id})
+			if stats is None:
+				newuser = {"_id": member.id, "GuildID": ctx.guild.id, "Level" : 1, "XP": 0}
+				await level.insert_one(newuser)
 
-				collection.update_one({ "_id": author_id, "GuildID": guild_id }, { "$set": { "Level": new_level } }, upsert=True)
-				await message.channel.send(f":tada: {message.author.mention} You leveled up to **Level {new_level}** :tada:")
+			else:
+				xp = stats['XP']
+				lvl = stats['Level']
+				embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+				embed.set_author(name=f"{member.name}'s Rank", icon_url=member.avatar_url)
+				embed.set_thumbnail(url=ctx.guild.icon_url)
+				embed.add_field(name='Level:',value=f'{lvl}', inline=False)
+				embed.add_field(name='Total XP:',value=f'{xp}', inline=False)
+				embed.add_field(name="XP to next level:", value=int((lvl * 2 * 100)-xp), inline=False)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await ctx.send(f"{member.mention}'s rank commands has been loaded.", delete_after=0)
+				await ctx.send(embed=embed)
+
+
+		except Exception:
+			pass
 
 def setup(bot):
 	bot.add_cog(Leveling(bot))

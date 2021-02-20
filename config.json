@@ -3,7 +3,7 @@
         529499034495483926, 727365670395838626, 709310923130667012
     ],
     "token": "NzQ0ODY1OTkwODEwMjcxNzg1.Xzpcgw.inf5HBhM3GqlvcwXtb1jTxLv2HU",
-    "botversion": "0.7.4.20 Beta",
+    "botversion": "0.7.4.11 Beta",
     "devs": "`Benitz Original#1317`, `Mini.py#5183` and `BaconHead#8187`",
     "logo": "https://cdn.discordapp.com/avatars/744865990810271785/d4da704d65f395fbb51122d70f7731f6.png?size=1024",
 	"supportserver": "https://numix.xyz/discord",
@@ -12,9 +12,8 @@
     "forbidden": "<:F:795909145760104480>",
     "mongo1": "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/",
     "mongo2": "?retryWrites=true&w=majority",
-    "db1": "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority",
     "discordrep_api_token": "D-REP.0DRYPKZPTZ.Q3GIV3Z986V910H3Y6GIM.O29TTXJEJP7ZPGGRLRUCSH41Z",
     "ads": [
-        738356303595831416, 259875936852246528, 729189625754550352, 755662384751968286
+        738356303595831416, 729189625754550352, 755662384751968286
     ]
 }
