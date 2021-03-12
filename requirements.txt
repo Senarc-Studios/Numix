@@ -29,3 +29,4 @@ flask
 flask-discord
 psutil
 profanityfilter
+nest_asyncio
