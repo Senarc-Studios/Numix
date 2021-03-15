@@ -44,7 +44,7 @@ class Info(commands.Cog):
 	async def lookup(self, ctx, user: discord.Member = None):
 		if user is None:
 			user = ctx.message.author
-		if user.activity is not None:
+		if user.activity == None:
 			game = user.activity.name
 		else:
 			game = None

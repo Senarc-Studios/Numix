@@ -17,7 +17,7 @@ class Economy(commands.Cog):
 		self.bot = bot
 		self.config = default.get("./config.json")
 
-	async def open_account(self,id : int)-> None:
+	async def create_account(self,id : int)-> None:
 		"""
 		Function to make opening account easy
 		"""
@@ -37,7 +37,7 @@ class Economy(commands.Cog):
 		stats = await eco.find_one({'_id' : id})
 
 		if stats is None:
-			self.open_account(id)
+			self.create_account(id)
 			await ctx.send('**No data found**')
 		else:
 			money = stats['bal']

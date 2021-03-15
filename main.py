@@ -30,7 +30,7 @@ bot.remove_command("help")
 
 class MyBot(commands.Bot):
 	async def is_owner(self, user: discord.User):
-		dev = [727365670395838626, 529499034495483926, 709310923130667012]
+		dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
 		if user.id in dev:  # Implement your own conditions here
 			return True
 		else:

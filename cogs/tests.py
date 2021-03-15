@@ -6,6 +6,7 @@ class Tests(commands.Cog):
 		self.config = default.get("./config.json")
 		print('"Tests" cog loaded')
 
+    
 
 def setup(bot):
 	bot.add_cog(Tests(bot))
