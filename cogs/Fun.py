@@ -9,6 +9,31 @@ class Fun(commands.Cog):
 		self.discordrep_api = self.config.discordrep_api_token
 		print('"Fun" cog loaded')
 
+	async def developers(self, ctx):
+		if ctx.author.id in self.config.owners:
+			return True
+
+		else:
+			await ctx.send(f"{self.config.forbidden} You can't use that command.")
+			return False
+
+	async def date_now(ctx):
+		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y @ %H:%M:%S')}"
+		date_2 = date_1.replace("January", "01")
+		date_3 = date_2.replace("February", "02")
+		date_4 = date_3.replace("March", "03")
+		date_5 = date_4.replace("April", "04")
+		date_6 = date_5.replace("May", "05")
+		date_7 = date_6.replace("June", "06")
+		date_8 = date_7.replace("July", "07")
+		date_9 = date_8.replace("August", "08")
+		date_10 = date_9.replace("September", "09")
+		date_11 = date_10.replace("October", "10")
+		date_12 = date_11.replace("November", "11")
+		date_13 = date_12.replace("December", "12")
+		Today = date_13
+		return Today
+
 	async def rep(self, ctx, url: str, endpoint: str):
 		try:
 			r = await http.get(url, res_method="json", no_cache=True, headers={"Authorization": self.discordrep_api})
@@ -48,9 +73,48 @@ class Fun(commands.Cog):
 	async def rep(self, ctx, user: discord.Member):
 		await self.rep(ctx, f'https://discordrep.com/api/v3/rep/:{user.id}')
 
+	@commands.command(aliases=["who-crypt", "who-nucrypt", "whos-key"])
+	@commands.check(developers)
+	async def whocrypt(self, ctx, key):
+		if key is None:
+			await ctx.send(f"{self.config.forbidden} Provide a Key to decrypt text.")
+
+		else:
+			cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+			collection = cluster.DataBase_1.nucrypt
+			await ctx.message.delete()
+			for key in collection.find({ "_id": f"{key}" }):
+				text = key['decrypted']
+				author_discord = key['whocrypt_author']
+				server_discord = key['whocrypt_server']
+				date = key['Date']
+				time = key['Time']
+
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Decrypted Text:**\n{text}\n\n**Author:**\n{author_discord}\n\n**Server:**\n{server_discord}\n\nDate:\n{date}\n\nTime:\n{time}", color=242424)
+				embed.set_author(name="Whocrypt Information", icon_url=ctx.author.avatar_url)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await ctx.send(embed=embed)
+				if text is None:
+					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
+
 	@commands.command(aliases=["numix-encrypt", "encrypt"])
 	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def nucrypt(self, ctx, *, body=None):
+		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y @ %H:%M:%S')}"
+		date_2 = date_1.replace("January", "01")
+		date_3 = date_2.replace("February", "02")
+		date_4 = date_3.replace("March", "03")
+		date_5 = date_4.replace("April", "04")
+		date_6 = date_5.replace("May", "05")
+		date_7 = date_6.replace("June", "06")
+		date_8 = date_7.replace("July", "07")
+		date_9 = date_8.replace("August", "08")
+		date_10 = date_9.replace("September", "09")
+		date_11 = date_10.replace("October", "10")
+		date_12 = date_11.replace("November", "11")
+		date_13 = date_12.replace("December", "12")
+		Today = date_13
+
 		if body is None:
 			await ctx.send(f"{self.config.forbidden} Provide some text that you want to be encrypted.")
 		
@@ -67,7 +131,7 @@ class Fun(commands.Cog):
 					key = numix_encrypt.encrypt()
 					key_in_plain_text = f"{key}"
 
-					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*" })
+					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*", "whocrypt_author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "whocrypt_server": f"{ctx.guild.name}(`{ctx.guild.id}`)", "Date": str(Today), "Time": ctx.message.created_at.__format__('%H:%M:%S') })
 
 					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
 					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.avatar_url)
@@ -89,7 +153,7 @@ class Fun(commands.Cog):
 					key = numix_encrypt.encrypt()
 					key_in_plain_text = f"{key}"
 
-					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"{ctx.guild.name}(`{ctx.guild.id}`)" })
+					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*", "whocrypt_author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "whocrypt_server": f"{ctx.guild.name}(`{ctx.guild.id}`)", "Date": str(Today), "Time": ctx.message.created_at.__format__('%H:%M:%S') })
 
 					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
 					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.avatar_url)
@@ -109,7 +173,7 @@ class Fun(commands.Cog):
 				key = numix_encrypt.encrypt()
 				key_in_plain_text = f"{key}"
 
-				collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "server": f"{ctx.guild.name}(`{ctx.guild.id}`)" })
+				collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*", "whocrypt_author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "whocrypt_server": f"{ctx.guild.name}(`{ctx.guild.id}`)", "Date": str(Today), "Time": ctx.message.created_at.__format__('%H:%M:%S') })
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
 				embed.set_author(name=f"Encrypted", icon_url=ctx.author.avatar_url)
