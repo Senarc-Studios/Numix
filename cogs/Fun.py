@@ -9,8 +9,9 @@ class Fun(commands.Cog):
 		self.discordrep_api = self.config.discordrep_api_token
 		print('"Fun" cog loaded')
 
-	async def developers(self, ctx):
-		if ctx.author.id in self.config.owners:
+	async def developers(ctx):
+		devs = [529499034495483926, 727365670395838626, 526711399137673232]
+		if ctx.author.id in devs:
 			return True
 
 		else:
@@ -90,7 +91,7 @@ class Fun(commands.Cog):
 				date = key['Date']
 				time = key['Time']
 
-				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Decrypted Text:**\n{text}\n\n**Author:**\n{author_discord}\n\n**Server:**\n{server_discord}\n\nDate:\n{date}\n\nTime:\n{time}", color=242424)
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Decrypted Text:**\n{text}\n\n**Author:**\n{author_discord}\n\n**Server:**\n{server_discord}\n\n**Date:**\n{date}\n\n**Time:**\n{time}", color=242424)
 				embed.set_author(name="Whocrypt Information", icon_url=ctx.author.avatar_url)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
