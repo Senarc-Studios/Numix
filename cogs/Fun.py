@@ -100,7 +100,7 @@ class Fun(commands.Cog):
 	@commands.command(aliases=["numix-encrypt", "encrypt"])
 	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def nucrypt(self, ctx, *, body=None):
-		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y @ %H:%M:%S')}"
+		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y')}"
 		date_2 = date_1.replace("January", "01")
 		date_3 = date_2.replace("February", "02")
 		date_4 = date_3.replace("March", "03")
