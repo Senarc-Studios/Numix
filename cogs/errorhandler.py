@@ -1,4 +1,6 @@
 from numix_imports import *
+import sys
+import traceback
 
 # Define Cogs
 
@@ -22,11 +24,12 @@ class ErrorHandler(commands.Cog):
         else:
             ss = get(self.bot.guilds, id=791553406266245121)
             report = get(ss.text_channels, id=791556612715708448)
-            embed = discord.Embed(title="An Error has occurred", description=f"Error: \n ```py\n{err}```", timestamp=ctx.message.created_at, color=242424,)
+            embed = discord.Embed(title="An Error has occurred", description=f"Error: \n ```py\nIgnoring exception in command {ctx.command}:\n{type(err), err, err.__traceback__}```", timestamp=ctx.message.created_at, color=242424,)
             embed.set_thumbnail(url=self.config.logo)
             embed.set_footer(text="Numix Developers", icon_url=self.config.logo)
             await report.send(embed=embed)
-            print(err)
+            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+            traceback.print_exception(type(err), err, err.__traceback__, file=sys.stderr)
 
 
 def setup(bot):
