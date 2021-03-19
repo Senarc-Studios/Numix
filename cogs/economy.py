@@ -28,7 +28,7 @@ class Economy(commands.Cog):
 
 	async def register_account(self, id: int, password):
 
-		credentials = { "_id": id, "password": "P@ssword" }
+		credentials = { "_id": id, "password": password }
 		await bank_authorisation.insert_one(credentials)
 
 	@commands.command(aliases=['balance','money','b', "wallet", "bank", "account"])
@@ -45,22 +45,26 @@ class Economy(commands.Cog):
 			convert_to_string = f"{generate}"
 			password = f"{convert_to_string}"
 
-			self.create_account(id)
-			self.register_account(id, password)
+			await self.create_account(id)
+			await self.register_account(id, password)
 
 			em = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 			em.set_author(name=f"Bank Account", icon_url=self.config.logo)
 			em.add_field(name="Username:", value=f"{member.id}", inline=False)
-			em.add_field(name="")
+			em.add_field(name="Password:", value=f"{password}", inline=False)
+			em.set_footer(text="Numix", icon_url=self.config.logo)
+
+			await member.send(embed=em)
 
 			e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 			e.set_author(name=f'{member.name}\'s Account', icon_url=member.avatar_url)
 			e.add_field(name="Wallet:", value=f"$100", inline=False)
-			e.add_field(name="Bank Ballance:", value=f"$0")
-			e.add_field(name="Bank Transactions:", value=f"`0`")
+			e.add_field(name="Bank Ballance:", value=f"$0", inline=False)
+			e.add_field(name="Bank Transactions:", value=f"`0`", inline=False)
 			e.set_footer(text="Numix", icon_url=self.config.logo)
 
 			await ctx.send(embed=e)
+
 		else:
 			money = stats['bal']
 			bank_ballance = bank_account["bal"]
@@ -69,14 +73,14 @@ class Economy(commands.Cog):
 			e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 			e.set_author(name=f'{member.name}\'s Account', icon_url=member.avatar_url)
 			e.add_field(name="Wallet:", value=f"${money}", inline=False)
-			e.add_field(name="Bank Ballance:", value=f"${bank_ballance}")
-			e.add_field(name="Bank Transactions:", value=f"`{bank_transactions}`")
+			e.add_field(name="Bank Ballance:", value=f"${bank_ballance}", inline=False)
+			e.add_field(name="Bank Transactions:", value=f"`{bank_transactions}`", inline=False)
 			e.set_footer(text="Numix", icon_url=self.config.logo)
 
 			await ctx.send(embed=e)
 
 	@commands.command(aliases=["send-money", "transfer", "pay"])
-	async def sm(self, ctx, username, password, money: int, receiver):
+	async def sm(self, ctx, username: int=None, password=None, money: int=None, receiver: int=None):
 		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y')}"
 		date_2 = date_1.replace("January", "01")
 		date_3 = date_2.replace("February", "02")
@@ -93,17 +97,17 @@ class Economy(commands.Cog):
 		Today = date_13
 
 		id = username
-		bank_account = await bank_authorisation.find_one({ "_id": id, "password": password })
-
-		recipient = await bank_authorisation.find_one({ "_id": id, "password": password })
-
-		if username == "help":
-			return await ctx.send(f"To transfer the money to another account, please use the right formate.\n\n**Formate:**\n`n!sm <username> <password> <money> <uora>`\n\nThe Username is going to be the User ID of the account/user you're sending it from, and the Password is the password of that account. UORA means Username Of Receiving Account, which is the username of the receiving account.")
-		
+		bank_account = await bank_authorisation.find_one({ "_id": id })
+		recipient = await bank_authorisation.find_one({ "_id": receiver })
+		bank_loggedin = await bank.find_one({ "_id": id })
+	
 		if username is None:
 			return await ctx.send(f"To transfer the money to another account, please use the right formate.\n\n**Formate:**\n`n!sm <username> <password> <money> <uora>`\n\nThe Username is going to be the User ID of the account/user you're sending it from, and the Password is the password of that account. UORA means Username Of Receiving Account, which is the username of the receiving account.")
 
-		if bank_account is None:
+		if password is None:
+			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
+
+		if password != bank_account["password"]:
 			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
 		if money is None:
@@ -111,15 +115,24 @@ class Economy(commands.Cog):
 			return await ctx.send(f"{self.config.forbidden} Specify the ammount of money to be sent.")
 
 		if money <= 10:
-			await ctx.send(f"{self.config.forbidden} You can't send money less than $10.")
+			await ctx.message.delete()
+			return await ctx.send(f"{self.config.forbidden} You can't send money less than $10.")
 
 		if receiver is None:
 			await ctx.message.delete()
-			return await ctx.send(f"{self.config.forbidden} Specify the username of the account that is receiving the money.")
+			return await ctx.send(f"{self.config.forbidden} Specify a valid username of the account that is receiving the money.")
 
-		bank_ballance = bank_account["bal"]
-		bank_transactions = bank_account["transactions"]
-		recipiant_account = await bank.find_one({ "_id": receiver })
+		try:
+			if recipient["password"] is None:
+				await ctx.message.delete()
+				return await ctx.send(f"{self.config.forbidden} Specify a valid username of the account that is receiving the money.")
+		except Exception as e:
+			await ctx.message.delete()
+			return await ctx.send(f"{self.config.forbidden} Specify a valid username of the account that is receiving the money.")
+
+		bank_ballance = bank_loggedin["bal"]
+		bank_transactions = bank_loggedin["transactions"]
+		recipient_account = await bank.find_one({ "_id": receiver })
 
 		generated = generate_transaction_id()
 		convert_to_string = f"{generated}"
@@ -133,33 +146,38 @@ class Economy(commands.Cog):
 			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} This account doesn't have enough Funds to send money.")
 
-		if recipiant_account["bal"] >= 999990:
+		if recipient_account["bal"] >= 999990:
+			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} The recipient has reached the max level of funds.")
 
-		await bank.update_one({ "_id": username }, { set: { "bal": int(bank_ballance)-money, "transactions": int(bank_transactions)+1 } })
-		await bank.update_one({ "_id": receiver }, { set: { "bal": int(bank_ballance)+money, "transactions": int(bank_transactions)+1 } })
+		await ctx.message.delete()
 
-		await transaction_documents.insert_one({ "_id": f"{transaction_id}", "account_owner": username, "recipient": receiver, "money": f"-${money}", "time": f"{ctx.message.created_at.__formate__('%H:%M:%S')}", "date": f"{Today}" })
-		await transaction_documents.insert_one({ "_id": f"{transaction_id_1}", "account_owner": receiver, "recipient": username, "money": f"+${money}", "time": f"{ctx.message.created_at.__formate__('%H:%M:%S')}", "date": f"{Today}" })
+		await bank.update_one({ "_id": username }, { "$set": { "bal": int(bank_ballance)-money, "transactions": int(bank_transactions)+1 } })
+		await bank.update_one({ "_id": receiver }, { "$set": { "bal": int(recipient_account["bal"])+money, "transactions": int(recipient_account["transactions"])+1 } })
+
+		await transaction_documents.insert_one({ "_id": f"{transaction_id}", "account_owner": username, "recipient": receiver, "money": f"-${money}", "time": f"{ctx.message.created_at.__format__('%H:%M:%S')}", "date": f"{Today}" })
+		await transaction_documents.insert_one({ "_id": f"{transaction_id_1}", "account_owner": receiver, "recipient": username, "money": f"+${money}", "time": f"{ctx.message.created_at.__format__('%H:%M:%S')}", "date": f"{Today}" })
 		
 		account_owner = discord.utils.get(self.bot.users, id=id)
-		recipiant_user = discord.utils.get(self.bot.users, id=receiver)
+		recipient_user = discord.utils.get(self.bot.users, id=receiver)
 
-		e = discord.Embed(timestamp=ctx.message.created_at, description="If you did not send the money, you can contact the **Numix Fraud Deparment**." color=242424)
+		e = discord.Embed(timestamp=ctx.message.created_at, description="If you did not send the money, you can contact the **Numix Fraud Deparment**.", color=242424)
 		e.set_author(name="Money Sent", icon_url=account_owner.avatar_url)
 		e.add_field(name="Ammount of Money Sent:", value=f"{money}", inline=False)
-		e.add_field(name="Recipient:", value=f"{recipiant_user.name}#{recipiant_user.discriminator}(`{recipiant_user.id}`)")
-		e.add_field(name="Transaction ID:", value=f"`{transaction_id}`")
+		e.add_field(name="Recipient:", value=f"{recipient_user.name}#{recipient_user.discriminator}(`{recipient_user.id}`)", inline=False)
+		e.add_field(name="Transaction ID:", value=f"`{transaction_id}`", inline=False)
 		e.set_footer(text="Numix", icon_url=self.config.logo)
 		await account_owner.send(embed=e)
 
 		em = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-		em.set_author(name="Money Received", icon_url=recipiant_user.avatar_url)
+		em.set_author(name="Money Received", icon_url=recipient_user.avatar_url)
 		em.add_field(name="Ammount of Money Received:", value=f"{money}", inline=False)
-		em.add_field(name="Sent by:", value=f"{account_owner.name}#{account_owner.discriminator}(`{account_owner.id}`)")
-		em.add_field(name="Transaction ID:", value=f"`{transaction_id_1}`")
+		em.add_field(name="Sent by:", value=f"{account_owner.name}#{account_owner.discriminator}(`{account_owner.id}`)", inline=False)
+		em.add_field(name="Transaction ID:", value=f"`{transaction_id_1}`", inline=False)
 		em.set_footer(text="Numix", icon_url=self.config.logo)
-		await recipiant_user.send(embed=em)
+		await recipient_user.send(embed=em)
+
+		await ctx.send(f"{self.config.success} {ctx.author.mention} Transaction is Complete")
 		
 def setup(bot):
 	bot.add_cog(Economy(bot))
