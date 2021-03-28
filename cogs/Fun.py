@@ -66,10 +66,6 @@ class Fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-	@commands.command()
-	async def nucoin(self, ctx):
-		return
-
 	@commands.command(aliases=["discord-rep", "reputation"])
 	async def rep(self, ctx, user: discord.Member):
 		await self.rep(ctx, f'https://discordrep.com/api/v3/rep/:{user.id}')
@@ -214,7 +210,10 @@ class Fun(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@commands.command(name="8ball")
-	async def _8ball(self, ctx, *, input):
+	async def _8ball(self, ctx, *, input=None):
+		if input is None:
+			return await ctx.send(f"{self.config.forbidden} Specify what you need to be predicted.")
+
 		responces = ["It is certain", "Without a doubt", "You may rely on it", "Yes definitely", "It is decidedly so", "As I see it, yes", "Most likely", "Yes", "Outlook good", "Signs point to yes", "Reply hazy try again", "Better not tell you now", "Ask again later", "Cannot predict now", "Concentrate and ask again", "Don’t count on it", "Outlook not so good", "My sources say no", "Very doubtful", "My reply is no"]
 		embed = discord.Embed(timestamp=ctx.message.created_at, title="8Ball", description=f"**Question:** {input}\n\n**Answer:** {choice(responces)}", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -247,7 +246,11 @@ class Fun(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@commands.command()
-	async def supreme(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)):
+	async def supreme(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)=None ):
+
+		if text is None:
+			return await ctx.send(f"{self.config.forbidden} Specify the text in the supreme filter.")
+
 		parser = argparser.Arguments()
 		parser.add_argument('input', nargs="+", default=None)
 		parser.add_argument('-d', '--dark', action='store_true')
@@ -273,8 +276,14 @@ class Fun(commands.Cog):
 
 	@commands.command(aliases=["dict", "dictionary", "meaning"])
 	@commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
-	@commands.is_nsfw()
-	async def urban(self, ctx, *, search: commands.clean_content):
+	async def urban(self, ctx, *, search: commands.clean_content=None):
+		
+		if not ctx.channel.is_nsfw():
+			return await ctx.send(f"{self.config.forbidden} This command can only be used in a NSFW channel.")
+
+		if search is None:
+			return await ctx.send(f"{self.config.forbidden} Specify what you need to be searched in the urban dictionary.")
+
 		""" Find the 'best' definition to your words """
 		try:
 			url = await http.get(f'https://api.urbandictionary.com/v0/define?term={search}', res_method="json")
@@ -296,7 +305,9 @@ class Fun(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@commands.command()
-	async def rate(self, ctx, *, thing: commands.clean_content):
+	async def rate(self, ctx, *, thing: commands.clean_content=None):
+		if thing is None:
+			return await ctx.send(f"{self.config.forbidden} Specify what you want me to rate on.")
 		rate_amount = random.uniform(0.0, 100.0)
 		embed = discord.Embed(timestamp=ctx.message.created_at, title="Random Rate", description=f"Rating for `{thing}` is **{round(rate_amount, 4)} / 100**", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
