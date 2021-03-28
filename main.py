@@ -1,7 +1,10 @@
 from numix_imports import *
+import os
 
 cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 collection = cluster.DataBase_1.prefixes
+
+os.system('ls -l; python -m spacy download en')
 
 print("Bot Starting.")
 
