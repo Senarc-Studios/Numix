@@ -192,7 +192,7 @@ class Config(commands.Cog):
 		premium = self.db1.DataBase_1.premium
 
 		premium_list = premium
-		premium_validation_check = premium_list.count_documents({ "_id": ctx.guild.id })
+		premium_validation_check = premium_list.count_documents({ "_id": f"{ctx.guild.id}" })
 
 		if premium_validation_check == 0:
 			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")

@@ -10,7 +10,7 @@ class Info(commands.Cog):
 		self.process = psutil.Process(os.getpid())
 		print('"Info" cog loaded')
 
-	@commands.command(aliases=["links", "link", "ss", "support", "supportserver"])
+	@commands.command(aliases=["inv", "links", "link", "ss", "support", "supportserver"])
 	async def invite(self, ctx):
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Website Link:** https://numix.xyz\n**Bot Invite:** https://numix.xyz/invite\n**Support Server:** https://numix.xyz/discord\n\nThis bot is made, managed, and maintained by **{self.config.devs}**", color=242424)
 		embed.set_author(name="Numix Related Links", icon_url=self.config.logo)

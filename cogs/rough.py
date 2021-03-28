@@ -11,7 +11,7 @@ class rough(commands.Cog):
 			self.config = default.get("./config.json")
 			print('"Rough" cog loaded')
 		
-		@commands.command()
+		@commands.command(aliases=["server-info", "server"])
 		async def serverinfo(self, ctx):
 
 			default_notification_setting = f"{ctx.guild.default_notifications}"

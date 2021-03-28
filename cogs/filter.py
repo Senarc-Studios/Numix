@@ -1,6 +1,5 @@
 from numix_imports import *
-#import joblib
-#from profanity_check import predict, predict_prob
+from profanity_filter import ProfanityFilter
 
 class Filter(commands.Cog):
 	def __init__(self, bot):
@@ -82,7 +81,9 @@ class Filter(commands.Cog):
 						#
 						#for bad_word in bad_words:
 						#	if bad_word in message.content:
-						if self.pf.is_profane(f"{message.content}"):
+						check = self.pf.censor(f"{message.content}")
+
+						if message.content != check:
 							await message.delete()
 							blocked_word = discord.Embed(title='Blocked Message', description='Your message has been blocked because it contained Blocked Words, you may delete the blocked word and send the message again.', color=242424)
 							blocked_word.set_footer(text='Numix Premium', icon_url=self.config.logo)

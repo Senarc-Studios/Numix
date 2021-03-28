@@ -29,7 +29,7 @@ class Economy(commands.Cog):
 		credentials = { "_id": id, "password": password }
 		await self.bank_authorisation.insert_one(credentials)
 
-	@commands.command(aliases=['balance','money','b', "wallet", "bank", "account"])
+	@commands.command(aliases=['balance','money','b', "wallet", "bank", "account", "open-account"])
 	async def bal(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
@@ -117,20 +117,11 @@ class Economy(commands.Cog):
 		
 
 	@commands.command(aliases=["cash-out", "with"])
-	async def withdraw(self, ctx, username: int=None, password=None, money: int=None):
+	async def withdraw(self, ctx, money: int=None):
+		username = ctx.author.id
 		id = username
-		bank_authorisation = await self.bank_authorisation.find_one({ "_id": id })
 		bank_account = await self.bank.find_one({ "_id": id })
 		wallet = await self.eco.find_one({ "_id": username })
-
-		if username is None:
-			return await ctx.send(f"To withdraw money to a bank account, please use the right formate.\n\n**Formate:**\n`n!withdraw <username> <password> <money>`\n\nThe Username is going to be the User ID of the account/user you're withdrawing the money from, and the Password is the password of that account.")
-
-		if password is None:
-			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
-
-		if password != bank_authorisation["password"]:
-			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
 		if money is None:
 			await ctx.message.delete()
@@ -151,35 +142,15 @@ class Economy(commands.Cog):
 		await self.bank.update_one({ "_id": username }, { "$set": { "bal": int(bank_account["bal"])-money } })
 		await self.eco.update_one({ "_id": username }, { "$set": { "bal": int(wallet["bal"])+money } })
 
-		account_owner = discord.utils.get(self.bot.users, id=id)
-		await ctx.message.delete()
-
-		e = discord.Embed(timestamp=ctx.message.created_at, description="If you did not withdraw the money, you can contact the **Numix Fraud Deparment**.", color=242424)
-		e.set_author(name="Money Withdrawn", icon_url=account_owner.avatar_url)
-		e.add_field(name="Ammount of Money Withdrawn:", value=f"${money}", inline=False)
-		e.add_field(name="ID used:", value=f"`{id}`", inline=False)
-		e.set_footer(text="Numix", icon_url=self.config.logo)
-		await account_owner.send(embed=e)
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been withdrawn.")
 
 	@commands.command(aliases=["dep", "depo"])
-	async def deposit(self, ctx, username: int=None, password=None, money: int=None):
+	async def deposit(self, ctx, money: int=None):
+		username = ctx.author.id
 		id = username
 		bank_authorisation = await self.bank_authorisation.find_one({ "_id": username })
 		bank_account = await self.bank.find_one({ "_id": username })
 		wallet = await self.eco.find_one({ "_id": username })
-
-		if username is None:
-			return await ctx.send(f"To deposit money to a bank account, please use the right formate.\n\n**Formate:**\n`n!deposit <username> <password> <money>`\n\nThe Username is going to be the User ID of the account/user you're depositing the money to, and the Password is the password of that account.")
-
-		if username != bank_authorisation["_id"]:
-			return ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
-
-		if password is None:
-			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
-
-		if password != bank_authorisation["password"]:
-			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
 		if money is None:
 			await ctx.message.delete()
@@ -196,15 +167,6 @@ class Economy(commands.Cog):
 		await self.bank.update_one({ "_id": username }, { "$set": { "bal": int(bank_account["bal"])+money } })
 		await self.eco.update_one({ "_id": username }, { "$set": { "bal": int(wallet["bal"])-money } })
 
-		account_owner = discord.utils.get(self.bot.users, id=id)
-		await ctx.message.delete()
-
-		e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-		e.set_author(name="Money Deposited", icon_url=account_owner.avatar_url)
-		e.add_field(name="Ammount of Money Deposited:", value=f"${money}", inline=False)
-		e.add_field(name="ID used:", value=f"`{id}`", inline=False)
-		e.set_footer(text="Numix", icon_url=self.config.logo)
-		await account_owner.send(embed=e)
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been deposited.")
 
 	@commands.command(aliases=["send-money", "transfer", "pay"])
