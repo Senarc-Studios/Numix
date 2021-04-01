@@ -36,6 +36,7 @@ PyNaCl = "^1.4.0"
 profanityfilter = "^2.0.6"
 motor = "^2.3.1"
 nest-asyncio = "^1.5.1"
+slashify = "^1.0.1"
 [tool.poetry.dev-dependencies]
 
 [build-system]

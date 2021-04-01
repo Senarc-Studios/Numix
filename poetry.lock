@@ -521,6 +521,14 @@ version = "1.15.0"
 
 [[package]]
 category = "main"
+description = "Automatically convert discord.py commands to slash commands!"
+name = "slashify"
+optional = false
+python-versions = "*"
+version = "1.0.1"
+
+[[package]]
+category = "main"
 description = "A modern CSS selector implementation for Beautiful Soup."
 marker = "python_version >= \"3.0\""
 name = "soupsieve"
@@ -610,7 +618,7 @@ python-versions = "*"
 version = "2020.12.31"
 
 [metadata]
-content-hash = "ed2e13ebd219cfabde456df86b85837d912e448301045a0aa31edb4333ede3f5"
+content-hash = "e68ba956a4188a60b6fd3dbb38639d6cc1a2027b01dd6ae7abe68303adb035ad"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -1163,6 +1171,9 @@ requests-oauthlib = [
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
+]
+slashify = [
+    {file = "slashify-1.0.1.tar.gz", hash = "sha256:30301cb181c9c28fa08fcec81156c58dd2563ca4ae4482ec76cb8af04b747122"},
 ]
 soupsieve = [
     {file = "soupsieve-2.2.1-py3-none-any.whl", hash = "sha256:c2c1c2d44f158cdbddab7824a9af8c4f83c76b1e23e049479aa432feb6c4c23b"},

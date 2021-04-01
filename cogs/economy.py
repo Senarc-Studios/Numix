@@ -247,9 +247,13 @@ class Economy(commands.Cog):
 
 		await self.transaction_documents.insert_one({ "_id": f"{transaction_id}", "account_owner": username, "recipient": receiver, "money": f"-${money}", "time": f"{ctx.message.created_at.__format__('%H:%M:%S')}", "date": f"{Today}" })
 		await self.transaction_documents.insert_one({ "_id": f"{transaction_id_1}", "account_owner": receiver, "recipient": username, "money": f"+${money}", "time": f"{ctx.message.created_at.__format__('%H:%M:%S')}", "date": f"{Today}" })
-		
+
 		account_owner = discord.utils.get(self.bot.users, id=id)
 		recipient_user = discord.utils.get(self.bot.users, id=receiver)
+
+		msg = f"{account_owner.name}#{account_owner.discriminator}(`{account_owner.id}`) has bank transfered ${money} to {recipient_account.name}#{recipient_account.discriminator}(`{recipient_account.id}`) at {Today} {ctx.message.created_at}. Owner account trasaction ID is `{transaction_id}`, Recipient account transaction ID is `{transaction_id_1}`."
+		webhook = DiscordWebhook(url="https://ptb.discord.com/api/webhooks/827106209105838091/4h1OhWgyUZyAbaxf29LRpoE4bdobl8qzyzdG1-SfINVtRSC854M5OIxncdTi-87rxPYn", content=msg)
+		response = webhook.execute()
 
 		e = discord.Embed(timestamp=ctx.message.created_at, description="If you did not send the money, you can contact the **Numix Fraud Deparment**.", color=242424)
 		e.set_author(name="Money Sent", icon_url=account_owner.avatar_url)
