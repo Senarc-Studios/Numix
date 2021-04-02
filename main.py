@@ -1,6 +1,5 @@
 from numix_imports import *
 import os
-from slashify import Slashify
 
 cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 collection = cluster.DataBase_1.prefixes
@@ -32,8 +31,6 @@ def prefix(bot, message):
 
 bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
-
-Slashify(bot)
 
 class MyBot(commands.Bot):
 	async def is_owner(self, user: discord.User):

@@ -10,7 +10,7 @@ class April(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_command(self, ctx):
-		chances = [True, False, False, False, False, False, False, False]
+		chances = [True, False, False]
 		roll = random.choice(chances)
 		if roll == False:
 			return
