@@ -1,6 +1,6 @@
 from numix_imports import *
 import discord_webhook
-from discord_webhook import *
+from discord_webhook import DiscordWebhook
 import random
 
 class April(commands.Cog):
@@ -16,7 +16,7 @@ class April(commands.Cog):
 			return
 
 		msg = f":tada: {ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`) Just got the april fool prank! :tada:"
-		webhook = discord.Webhook(url="https://ptb.discord.com/api/webhooks/827081143802789919/mzECxSjyx3mtb6JnX6me36CCCcwM0AB-S74krLQkHIoBUqYRexgL5tHgrEVDgLLGSmXb", content=msg)
+		webhook = DiscordWebhook(url="https://ptb.discord.com/api/webhooks/827081143802789919/mzECxSjyx3mtb6JnX6me36CCCcwM0AB-S74krLQkHIoBUqYRexgL5tHgrEVDgLLGSmXb", content=msg)
 		response = webhook.execute()
 
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
