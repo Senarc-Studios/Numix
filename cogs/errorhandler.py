@@ -1,4 +1,5 @@
 from numix_imports import *
+from discord_webhook import DiscordWebhook
 import sys
 import traceback
 import datetime
@@ -25,7 +26,7 @@ class ErrorHandler(commands.Cog):
 		else:
 			e = "`"
 			webhook = DiscordWebhook(url="https://ptb.discord.com/api/webhooks/827098788295606283/MdIajYdY98zaEM8DrygakRceR0XBQimMIBdU4kOJq4ogCo3Ur7TgwsJc85dnkkgsjTgP")
-			embed = DiscordEmbed(title="An Error has occurred", description=f"Error:\n {e}{e}{e}Test{e}{e}{e}", color=242424)
+			embed = DiscordEmbed(title="An Error has occurred", description=f"Error:\n {e}{e}{e}Ignoring exception in command {ctx.command}:\n{type(err), err, err.__traceback__}{e}{e}{e}", color=242424)
 			embed.set_thumbnail(url=config.logo)
 			embed.set_footer(text="Numix Developers", icon_url=config.logo)
 			webhook.add_embed(embed)

@@ -19,6 +19,7 @@ import secrets
 import random
 import pymongo
 import requests
+import discord_webhook
 
 from profanityfilter import ProfanityFilter
 from io import BytesIO
