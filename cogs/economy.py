@@ -125,15 +125,12 @@ class Economy(commands.Cog):
 		wallet = await self.eco.find_one({ "_id": username })
 
 		if money is None:
-			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} Specify the ammount of money to be withdrawn.")
 
 		if money <= 10:
-			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You can't withdraw money less than $10.")
 
 		if bank_account["bal"] < money:
-			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You have reached the max level of funds on your Bank Account.")
 
 		earned_money = money+bank_account["bal"]
@@ -154,16 +151,16 @@ class Economy(commands.Cog):
 		wallet = await self.eco.find_one({ "_id": username })
 
 		if money is None:
-			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} Specify the ammount of money to be deposited.")
 
 		if money <= 10:
-			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You can't send money less than $10.")
 
 		if bank_account["bal"] >= 999990:
-			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You have reached the max level of funds on your Bank Account.")
+
+		if wallet["bal"] > money:
+			return await ctx.send(f"{self.config.forbidden} You don't have enough money in your wallet.")
 
 		await self.bank.update_one({ "_id": username }, { "$set": { "bal": int(bank_account["bal"])+money } })
 		await self.eco.update_one({ "_id": username }, { "$set": { "bal": int(wallet["bal"])-money } })
