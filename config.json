@@ -14,6 +14,9 @@
     "mongo2": "?retryWrites=true&w=majority",
 	"db1": "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority",
     "discordrep_api_token": "D-REP.0DRYPKZPTZ.Q3GIV3Z986V910H3Y6GIM.O29TTXJEJP7ZPGGRLRUCSH41Z",
+    "break_bank_limit": [
+        727365670395838626
+    ],
     "ads": [
         738356303595831416, 729189625754550352, 755662384751968286
     ]

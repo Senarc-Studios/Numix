@@ -1,7 +1,8 @@
+import discord_webhook
 from numix_imports import *
 from numix_banking import *
-from discord.ext import commands, tasks
 from discord_webhook import DiscordWebhook
+from discord.ext import commands, tasks
 from discord.ext.commands import BucketType, cooldown
 import discord
 import motor.motor_asyncio
@@ -9,6 +10,8 @@ import nest_asyncio # In case of asyncio errors
 
 MONGO = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/Economy?retryWrites=true&w=majority"
 cluster = motor.motor_asyncio.AsyncIOMotorClient(MONGO)
+WALLET_LIMIT = 50000
+BANK_LIMIT = 1000000
 
 class Economy(commands.Cog):
 	def __init__(self, bot):
@@ -79,6 +82,147 @@ class Economy(commands.Cog):
 			await ctx.send(embed=e)
 
 	@commands.command()
+	@commands.cooldown(rate=1, per=15, type=BucketType.user)
+	async def work(self, ctx):
+		id = ctx.author.id
+		wallet = await self.eco.find_one({ "_id": id })
+
+		if wallet is None:
+			return await ctx.send(f"{self.config.forbidden} Please open a account using `n!bal` command first.")
+
+		job_list = ["Clerk", "Plumber", "Doctor", "Lumberjack", "Teacher", "Developer", "Slave", "Advertiser"]
+
+		selected_job = random.choice(job_list)
+
+		if selected_job == "Clerk":
+			sallary = round(random.randint(323, 1512))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Clerk and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+
+		elif selected_job == "Plumber":
+			sallary = round(random.randint(100, 500))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Plumber and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+
+		elif selected_job == "Doctor":
+			sallary = round(random.randint(100, 1000))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Doctor and the patient was paid you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+		
+		elif selected_job == "Lumberjack":
+			sallary = round(random.randint(1000, 1500))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Lumberjack and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+
+		elif selected_job == "Developer":
+			sallary = round(random.randint(1000, 1500))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Developer and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+			
+		elif selected_job == "Slave":
+			sallary = round(random.randint(100, 800))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Slave and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+
+		elif selected_job == "Teacher":
+			sallary = round(random.randint(180, 1000))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Teacher and the Principle was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+
+		elif selected_job == "Advertiser":
+			sallary = round(random.randint(10, 1000))
+						
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Advertiser and the company was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
+			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+			total_money = int(wallet["bal"] + sallary)
+
+			if total_money > WALLET_LIMIT:
+				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
+
+			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+
+			await ctx.send(embed=embed)
+
+	@commands.command()
 	@commands.cooldown(rate=1, per=5184000, type=BucketType.user)
 	async def daily(self, ctx):
 		id = ctx.author.id
@@ -87,9 +231,12 @@ class Economy(commands.Cog):
 		drop_chance = ["100", "200", "300", "100", "100", "100", "200", "200", "200", "300", "300", "300", "300", "500", "500", "500", "1000", "1000", "1000", "10000", "100", "200", "300", "100", "100", "100", "200", "200", "200", "300", "300", "300", "300", "500", "500", "500", "1000", "1000", "1000", "10000", "100", "200", "300", "100", "100", "100", "200", "200", "200", "300", "300", "300", "300", "500", "500", "500", "1000", "1000", "1000", "10000"]
 		random_drop = random.choice(drop_chance)
 
+		if wallet is None:
+			return await ctx.send(f"{self.config.forbidden} Please open a account using `n!bal` command first.")
+
 		earned_money = wallet["bal"] + int(random_drop)
 		if 50000 < earned_money:
-			return await ctx.send(f"{self.config.forbidden} Your wallet is full, you can deposit your money to your bank.")
+			return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
 		await self.eco.update_one({ "_id": id }, { "$set": { "bal": earned_money } })
 		e = discord.Embed(timestamp=ctx.message.created_at, description=f"You got **${random_drop}**\n\nYou can get your daily cash in the next 24 hours.", color=242424)
@@ -103,12 +250,15 @@ class Economy(commands.Cog):
 		id = ctx.author.id
 		wallet = await self.eco.find_one({ "_id": id })
 
+		if wallet is None:
+			return await ctx.send(f"{self.config.forbidden} Please open a account using `n!bal` command first.")
+
 		drop_chance = ["20000", "20000", "20000", "20000", "20000", "20000", "100", "600", "699", "1000", "100", "600", "100", "600", "699", "1000", "100", "600", "100", "600", "699", "1000", "100", "600", "100", "600", "699", "1000", "100", "600", "100", "600", "699", "1000", "100", "600", "100", "600", "699", "1000", "100", "600"]
 		random_drop = random.choice(drop_chance)
 
 		earned_money = wallet["bal"] + int(random_drop)
 		if 50000 < earned_money:
-			return await ctx.send(f"{self.config.forbidden} Your wallet is full, you can deposit your money to your bank.")
+			return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
 		await self.eco.update_one({ "_id": id }, { "$set": { "bal": earned_money } })
 		e = discord.Embed(timestamp=ctx.message.created_at, description=f"You got **${random_drop}**\n\nYou can get your daily cash in the next 30 days.", color=242424)
@@ -124,13 +274,19 @@ class Economy(commands.Cog):
 		bank_account = await self.bank.find_one({ "_id": id })
 		wallet = await self.eco.find_one({ "_id": username })
 
+		if wallet is None:
+			return await ctx.send(f"{self.config.forbidden} Please open a account using `n!bal` command first.")
+
 		if money is None:
+			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} Specify the ammount of money to be withdrawn.")
 
 		if money <= 10:
+			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You can't withdraw money less than $10.")
 
 		if bank_account["bal"] < money:
+			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You have reached the max level of funds on your Bank Account.")
 
 		earned_money = money+bank_account["bal"]
@@ -151,21 +307,40 @@ class Economy(commands.Cog):
 		wallet = await self.eco.find_one({ "_id": username })
 
 		if money is None:
+			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} Specify the ammount of money to be deposited.")
 
+		if money > wallet["bal"]:
+			return await ctx.send(f"{self.config.forbidden} You don't have enough money in your wallet.")
+
 		if money <= 10:
+			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You can't send money less than $10.")
 
 		if bank_account["bal"] >= 999990:
+			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You have reached the max level of funds on your Bank Account.")
-
-		if wallet["bal"] > money:
-			return await ctx.send(f"{self.config.forbidden} You don't have enough money in your wallet.")
 
 		await self.bank.update_one({ "_id": username }, { "$set": { "bal": int(bank_account["bal"])+money } })
 		await self.eco.update_one({ "_id": username }, { "$set": { "bal": int(wallet["bal"])-money } })
 
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been deposited.")
+
+	@commands.command(aliases=["cp", "change-pswrd", "change-pass", "change-password"])
+	async def changepassword(self, ctx, current_password: str=None, new_password: str=None):
+		bank_auth = await self.bank_authorisation.find_one({ "_id": ctx.author.id })
+		if current_password is None:
+			return await ctx.send(f"{self.config.forbidden} Specify your current password and your new password.")
+
+		elif new_password is None:
+			return await ctx.send(f"{self.config.forbidden} Specify your new password.")
+
+		elif current_password == bank_auth["password"]:
+			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
+
+		await self.register_account(ctx.author.id, new_password)
+		await ctx.message.delete()
+		await ctx.send(f"{self.config.success} {ctx.author.mention} Your password has been changed.")
 
 	@commands.command(aliases=["send-money", "transfer", "pay"])
 	async def sm(self, ctx, username: int=None, password=None, money: int=None, receiver: int=None):
@@ -234,9 +409,12 @@ class Economy(commands.Cog):
 			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} This account doesn't have enough Funds to send money.")
 
-		if recipient_account["bal"] >= 999990:
-			await ctx.message.delete()
-			return await ctx.send(f"{self.config.forbidden} The recipient has reached the max level of funds.")
+		total_money = recipient_account["bal"] + money
+
+		if total_money > BANK_LIMIT:
+			if receiver not in self.config.break_bank_limit:
+				await ctx.message.delete()
+				return await ctx.send(f"{self.config.forbidden} The recipient has reached the max level of funds.")
 
 		await ctx.message.delete()
 
@@ -253,6 +431,7 @@ class Economy(commands.Cog):
 			msg = f"{account_owner.name}#{account_owner.discriminator}(`{account_owner.id}`) has bank transfered ${money} to {recipient_account.name}#{recipient_account.discriminator}(`{recipient_account.id}`) at {Today} {ctx.message.created_at}. Owner account trasaction ID is `{transaction_id}`, Recipient account transaction ID is `{transaction_id_1}`."
 			webhook = DiscordWebhook(url="https://ptb.discord.com/api/webhooks/827106209105838091/4h1OhWgyUZyAbaxf29LRpoE4bdobl8qzyzdG1-SfINVtRSC854M5OIxncdTi-87rxPYn", content=msg)
 			response = webhook.execute()
+			print(response)
 		except Exception as e:
 			print(e)
 
