@@ -106,7 +106,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 
@@ -122,7 +122,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 
@@ -138,7 +138,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 		
@@ -154,7 +154,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 
@@ -170,7 +170,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 			
@@ -186,7 +186,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 
@@ -202,7 +202,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 
@@ -218,7 +218,7 @@ class Economy(commands.Cog):
 			if total_money > WALLET_LIMIT:
 				return await ctx.send(f"{self.config.forbidden} Your wallet will be full, you can deposit your money in your bank.")
 
-			await self.eco.update_one({ "_id": id }, { "bal": total_money })
+			await self.eco.update_one({ "_id": id }, { "$set": { "bal": total_money } })
 
 			await ctx.send(embed=embed)
 
