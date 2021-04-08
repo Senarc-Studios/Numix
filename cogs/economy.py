@@ -327,7 +327,7 @@ class Economy(commands.Cog):
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been deposited.")
 
 	@commands.command(aliases=["cp", "change-pswrd", "change-pass", "change-password"])
-	async def changepassword(self, ctx, current_password: str=None, new_password: str=None):
+	async def changepassword(self, ctx, current_password=None, new_password=None):
 		bank_auth = await self.bank_authorisation.find_one({ "_id": ctx.author.id })
 		if current_password is None:
 			return await ctx.send(f"{self.config.forbidden} Specify your current password and your new password.")
@@ -335,7 +335,7 @@ class Economy(commands.Cog):
 		elif new_password is None:
 			return await ctx.send(f"{self.config.forbidden} Specify your new password.")
 
-		elif current_password == bank_auth["password"]:
+		elif current_password != bank_auth["password"]:
 			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
 		await self.register_account(ctx.author.id, new_password)
