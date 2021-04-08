@@ -338,7 +338,9 @@ class Economy(commands.Cog):
 		elif current_password != bank_auth["password"]:
 			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
-		await self.register_account(ctx.author.id, new_password)
+		old_credentials = { "_id": id, "password": current_password }
+		new_credentials = { "$set": { "_id": id, "password": current_password } }
+		await self.bank_authorisation.update_one(old_credentials, new_credentials)
 		await ctx.message.delete()
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your password has been changed.")
 
