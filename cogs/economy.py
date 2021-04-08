@@ -338,9 +338,7 @@ class Economy(commands.Cog):
 		elif current_password != bank_auth["password"]:
 			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
-		old_credentials = { "_id": id, "password": current_password }
-		new_credentials = { "$set": { "_id": id, "password": current_password } }
-		await self.bank_authorisation.update_one(old_credentials, new_credentials)
+		await self.bank_authorisation.update_one({ "_id": ctx.author.id }, { "$set": { "password": f"{new_password}" } })
 		await ctx.message.delete()
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your password has been changed.")
 
@@ -369,21 +367,24 @@ class Economy(commands.Cog):
 		if username is None:
 			return await ctx.send(f"To transfer the money to another account, please use the right formate.\n\n**Formate:**\n`n!sm <username> <password> <money> <uora>`\n\nThe Username is going to be the User ID of the account/user you're sending it from, and the Password is the password of that account. UORA means Username Of Receiving Account, which is the username of the receiving account.")
 
-		if password is None:
+		elif password is None:
 			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
-		if password != bank_account["password"]:
+		elif username == receiver:
+			return await ctx.send(f"{self.config.forbidden} You can't send money to yourself.") 
+
+		elif password != bank_account["password"]:
 			return await ctx.send(f"{self.config.forbidden} The credentials you've entered isn't valid.")
 
-		if money is None:
+		elif money is None:
 			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} Specify the ammount of money to be sent.")
 
-		if money <= 10:
+		elif money <= 10:
 			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} You can't send money less than $10.")
 
-		if receiver is None:
+		elif receiver is None:
 			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} Specify a valid username of the account that is receiving the money.")
 
