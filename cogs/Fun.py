@@ -66,10 +66,6 @@ class Fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-	@commands.command(aliases=["discord-rep", "reputation"])
-	async def rep(self, ctx, user: discord.Member):
-		await self.rep(ctx, f'https://discordrep.com/api/v3/rep/:{user.id}')
-
 	@commands.command(aliases=["who-crypt", "who-nucrypt", "whos-key"])
 	@commands.check(developers)
 	async def whocrypt(self, ctx, key):
@@ -219,60 +215,6 @@ class Fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command()
-	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-	async def bird(self, ctx):
-		""" Posts a random birb """
-		await self.randomimageapi(ctx, 'https://api.alexflipnote.dev/birb', 'file', token=self.alex_api_token)
-
-	@commands.command()
-	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-	async def duck(self, ctx):
-		""" Posts a random duck """
-		await self.randomimageapi(ctx, 'https://random-d.uk/api/v1/random', 'url')
-
-	@commands.command()
-	@commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-	async def coffee(self, ctx):
-		""" Posts a random coffee """
-		await self.randomimageapi(ctx, 'https://coffee.alexflipnote.dev/random.json', 'file')
-
-	@commands.command(aliases=['flip', 'coin'])
-	async def coinflip(self, ctx):
-		""" Coinflip! """
-		coinsides = ['Heads', 'Tails']
-		embed = discord.Embed(timestamp=ctx.message.created_at, title="Coinflip", description=f"\nflipped a coin and got **{random.choice(coinsides)}**!", color=242424)
-		embed.set_footer(text="Numix", icon_url=self.config.logo)
-		await ctx.send(embed=embed)
-
-	@commands.command()
-	async def supreme(self, ctx, *, text: commands.clean_content(fix_channel_mentions=True)=None ):
-
-		if text is None:
-			return await ctx.send(f"{self.config.forbidden} Specify the text in the supreme filter.")
-
-		parser = argparser.Arguments()
-		parser.add_argument('input', nargs="+", default=None)
-		parser.add_argument('-d', '--dark', action='store_true')
-		parser.add_argument('-l', '--light', action='store_true')
-
-		args, valid_check = parser.parse_args(text)
-		if not valid_check:
-			return await ctx.send(args)
-
-		inputText = urllib.parse.quote(' '.join(args.input))
-		if len(inputText) > 500:
-			return await ctx.send(f"**{ctx.author.name}**, the Supreme API is limited to 500 characters, sorry.")
-
-		darkorlight = ""
-		if args.dark:
-			darkorlight = "dark=true"
-		if args.light:
-			darkorlight = "light=true"
-		if args.dark and args.light:
-			return await ctx.send(f"**{ctx.author.name}**, you can't define both --dark and --light, sorry..")
-
-		await self.api_img_creator(ctx, f"https://api.alexflipnote.dev/supreme?text={inputText}&{darkorlight}", "supreme.png", token=self.alex_api_token)
 
 	@commands.command(aliases=["dict", "dictionary", "meaning"])
 	@commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
@@ -312,14 +254,6 @@ class Fun(commands.Cog):
 		embed = discord.Embed(timestamp=ctx.message.created_at, title="Random Rate", description=f"Rating for `{thing}` is **{round(rate_amount, 4)} / 100**", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
-
-	@commands.command(aliases=['noticemesenpai'])
-	async def noticeme(self, ctx):
-		if not permissions.can_handle(ctx, "attach_files"):
-			return await ctx.send(f"{self.config.forbidden} No image perms")
-
-		bio = BytesIO(await http.get("https://i.alexflipnote.dev/500ce4.gif", res_method="read"))
-		await ctx.send(file=discord.File(bio, filename="noticeme.gif"))
 
 	@commands.command(aliases=['slots', 'bet'])
 	@commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
