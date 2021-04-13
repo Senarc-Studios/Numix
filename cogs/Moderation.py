@@ -1,5 +1,7 @@
 from numix_imports import *
 
+MONGO = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
+
 class Moderation(commands.Cog, name='Moderation'):
 	def __init__(self, bot):
 		self.bot = bot
@@ -184,7 +186,7 @@ class Moderation(commands.Cog, name='Moderation'):
 	@commands.guild_only()
 	@commands.has_permissions(manage_messages=True)
 	async def infractions(self, ctx, user: discord.Member=None):
-		cluster = MongoClient('	+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/Moderation?retryWrites=true w=majority')
+		cluster = MongoClient(MONGO)
 		collection = cluster.Moderation.warns	
 		if user is None:
 			user = ctx.author	
