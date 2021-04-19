@@ -11,7 +11,9 @@ class Moderation(commands.Cog, name='Moderation'):
 
 	@commands.command()
 	async def report(self, ctx, member: discord.Member = None, *, reason = None):
-		MONGO_GUILD_SETTINGS = self.db.find_one({ "_id": member.guild.id })
+		cluster = MongoClient(f"{self.config.mongo1}DataBase_1{self.config.mongo2}")
+		collection = cluster.DataBase_1.settings
+		MONGO_GUILD_SETTINGS = collection.find_one({ "_id": member.guild.id })
 		ReportChannel = self.bot.get_channel(MONGO_GUILD_SETTINGS["report"])
 		channel = ctx.message.channel
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
