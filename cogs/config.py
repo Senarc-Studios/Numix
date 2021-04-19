@@ -26,7 +26,7 @@ class Config(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
-	@commands.command(aliases=["leave-message", "leave-msg", "bye", "leave_message"])
+	@commands.command(aliases=["lm", "leave_message", "leave_msg"])
 	@commands.command(administrator=True)
 	async def leavemessage(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
@@ -59,7 +59,7 @@ class Config(commands.Cog):
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Disabled" } }
 			collection.update_one(myquery, newvalues)
 
-	@commands.command(aliases=["join-message", "join-msg", "greet", "greetings", "join_message"])
+	@commands.command(aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.command(administrator=True)
 	async def joinmessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
