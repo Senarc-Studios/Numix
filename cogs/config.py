@@ -28,7 +28,7 @@ class Config(commands.Cog):
 
 	@commands.command(aliases=["leave-message", "leave-msg", "bye", "leave_message"])
 	@commands.command(administrator=True)
-	async def lm(self, ctx, command=None, channel: discord.TextChannel=None):
+	async def leavemessage(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
 			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
 		
@@ -61,7 +61,7 @@ class Config(commands.Cog):
 
 	@commands.command(aliases=["join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.command(administrator=True)
-	async def jm(self, ctx, command=None, channel: discord.TextChannel=None):
+	async def joinmessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
 			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
 		
