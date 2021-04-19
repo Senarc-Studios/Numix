@@ -27,12 +27,38 @@ class Config(commands.Cog):
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
 	@commands.command(aliases=["join-message", "join-msg", "greet", "greetings", "join_message"])
-	async def jm(self, ctx, command=None, channel=None):
+	@commands.command(administrator=True)
+	async def jm(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
 			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
+		
+		elif command == "set":
+			if channel is None:
+				channel = ctx.channel
+
+			await ctx.send(f'{self.config.success} Join Channel set to <#{channel.id}>')
+			collection = self.db1.DataBase_1.settings
+
+			if collection.count_documents({"_id": ctx.guild.id}) == 0:
+				collection.insert_one({ "_id": int(ctx.guild.id), "jm": int(channel.id) })
+
+			else:
+				myquery = { "_id": int(ctx.guild.id) }
+				newvalues = { "$set": { "_id": int(ctx.guild.id), "jm": int(channel.id) } }
+				collection.update_one(myquery, newvalues)
 
 		elif command == "enable":
-			return await ctx.send("Work in Progress")
+			collection = self.db1.DataBase_1.settings
+			myquery = { "_id": int(ctx.guild.id) }
+			newvalues = { "$set": { "_id": int(ctx.guild.id), "jmstatus": "Enabled" } }
+			collection.update_one(myquery, newvalues)
+
+		elif command == "disable":
+			collection = self.db1.DataBase_1.settings
+			myquery = { "_id": int(ctx.guild.id) }
+			newvalues = { "$set": { "_id": int(ctx.guild.id), "jmstatus": "Disabled" } }
+			collection.update_one(myquery, newvalues)
+
 
 		' Change Prefixes '
 	@commands.command()
@@ -130,18 +156,17 @@ class Config(commands.Cog):
 	@commands.command(aliases=["remove-dj"])
 	@commands.has_permissions(administrator=True)
 	async def rdj(self, ctx, *, role: discord.Role):
-		try:
-			collection = self.db1.DataBase_1.settings
+		collection = self.db1.DataBase_1.settings
+		if collection.count_documents({"_id": ctx.guild.id}) == 0:
+			await ctx.send(f"{self.config.forbidden} <@&{role.id}> is not a DJ role.")
 
+		else:
 			myquery = { "_id": int(ctx.guild.id) }
 
 			newvalues = { "$removeFromSet": { "_id": int(ctx.guild.id), "dj": role.id } }
 
 			collection.update_one(myquery, newvalues)
 			await ctx.send(f'{self.config.success} Removed <@&{role.id}> from DJ roles.')
-		except Exception as e:
-			print(e)
-			await ctx.send(f"{self.config.forbidden} <@&{role.id}> is not a DJ role.")
 
 		' Reports Config '
 
@@ -149,17 +174,12 @@ class Config(commands.Cog):
 	@commands.has_permissions(administrator=True)
 	async def reports(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Report Channel set to <#{log.id}>')
-		try:
-			collection = self.db1.DataBase_1.settings
-			
+		collection = self.db1.DataBase_1.settings
+		if collection.count_documents({"_id": ctx.guild.id}) == 0:
 			collection.insert_one({ "_id": int(ctx.guild.id), "report": int(log.id) })
-
-		except Exception as e:
-			print(e)
+		else:
 			myquery = { "_id": int(ctx.guild.id) }
-
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "report": int(log.id) } }
-
 			collection.update_one(myquery, newvalues)
 
 		' Log Config '
@@ -168,17 +188,14 @@ class Config(commands.Cog):
 	@commands.has_permissions(administrator=True)
 	async def log(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Log Channel set to <#{log.id}>')
-		try:
-			collection = self.db1.DataBase_1.settings
-			
+		collection = self.db1.DataBase_1.settings
+
+		if collection.count_documents({"_id": ctx.guild.id}) == 0:
 			collection.insert_one({ "_id": int(ctx.guild.id), "log": int(log.id) })
 
-		except Exception as e:
-			print(e)
+		else:
 			myquery = { "_id": int(ctx.guild.id) }
-
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "log": int(log.id) } }
-
 			collection.update_one(myquery, newvalues)
 
 		' Filter Setting '
