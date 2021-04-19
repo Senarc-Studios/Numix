@@ -17,7 +17,7 @@ class Moderation(commands.Cog, name='Moderation'):
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 		embed.set_author(name="Member Reported", icon_url=ctx.author.avatar_url)
 		embed.add_field(name="Reported User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)", inline = False)
-		embed.add_field(name="Reported By:", value=f"{member.name}#{member.discriminator}(`{member.id}`)", inline = False)
+		embed.add_field(name="Reported By:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", inline = False)
 		embed.add_field(name="Reason:", value=f"{reason}", inline = False)
 		embed.set_thumbnail(url=member.avatar_url)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
