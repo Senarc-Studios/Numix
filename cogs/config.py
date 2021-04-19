@@ -27,7 +27,7 @@ class Config(commands.Cog):
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
 	@commands.command(aliases=["lm", "leave_message", "leave_msg"])
-	@commands.command(administrator=True)
+	@commands.has_guild_permissions(administrator=True)
 	async def leavemessage(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
 			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
@@ -60,7 +60,7 @@ class Config(commands.Cog):
 			collection.update_one(myquery, newvalues)
 
 	@commands.command(aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
-	@commands.command(administrator=True)
+	@commands.has_guild_permissions(administrator=True)
 	async def joinmessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
 			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
