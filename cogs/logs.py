@@ -73,12 +73,12 @@ class Logs(commands.Cog):
 			await log.send(embed=log_message)
 
 	@commands.Cog.listener()
-	async def on_member_remove(self, member, guild):
-
+	async def on_member_remove(self, member):
+		guild = member.guild
 		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 		collection = cluster.DataBase_1.settings
 
-		for x in collection.find({"_id":guild.id}):
+		for x in collection.find({"_id": guild.id}):
 			logid = x["log"]
 			print(logid)
 			guild = get(self.bot.guilds, id=guild.id)

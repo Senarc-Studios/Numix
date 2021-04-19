@@ -26,6 +26,39 @@ class Config(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
+	@commands.command(aliases=["leave-message", "leave-msg", "bye", "leave_message"])
+	@commands.command(administrator=True)
+	async def lm(self, ctx, command=None, channel: discord.TextChannel=None):
+		if command is None:
+			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
+		
+		elif command == "set":
+			if channel is None:
+				channel = ctx.channel
+
+			await ctx.send(f'{self.config.success} Leave Channel set to <#{channel.id}>')
+			collection = self.db1.DataBase_1.settings
+
+			if collection.count_documents({"_id": ctx.guild.id}) == 0:
+				collection.insert_one({ "_id": int(ctx.guild.id), "lm": int(channel.id) })
+
+			else:
+				myquery = { "_id": int(ctx.guild.id) }
+				newvalues = { "$set": { "_id": int(ctx.guild.id), "lm": int(channel.id) } }
+				collection.update_one(myquery, newvalues)
+
+		elif command == "enable":
+			collection = self.db1.DataBase_1.settings
+			myquery = { "_id": int(ctx.guild.id) }
+			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Enabled" } }
+			collection.update_one(myquery, newvalues)
+
+		elif command == "disable":
+			collection = self.db1.DataBase_1.settings
+			myquery = { "_id": int(ctx.guild.id) }
+			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Disabled" } }
+			collection.update_one(myquery, newvalues)
+
 	@commands.command(aliases=["join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.command(administrator=True)
 	async def jm(self, ctx, command=None, channel: discord.TextChannel=None):
