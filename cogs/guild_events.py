@@ -55,3 +55,6 @@ class Guild_Events(commands.Cog):
         embed.set_image(url="https://media.giphy.com/media/8PyTvI5EOu9LbAm8uS/giphy.gif")
         embed.set_footer(f"{MEMBER_COUNT}", icon_url=member.guild.icon_url)
         channel.send(embed=embed)
+
+def setup(bot):
+    bot.add_cog(Guild_Events(bot))
