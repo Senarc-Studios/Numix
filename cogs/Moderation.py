@@ -11,7 +11,8 @@ class Moderation(commands.Cog, name='Moderation'):
 
 	@commands.command()
 	async def report(self, ctx, member: discord.Member = None, *, reason = None):
-		ReportChannel = self.bot.get_channel(817751502881947689)
+		MONGO_GUILD_SETTINGS = self.db.find_one({ "_id": member.guild.id })
+		ReportChannel = self.bot.get_channel(MONGO_GUILD_SETTINGS["report"])
 		channel = ctx.message.channel
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 		embed.set_author(name="Member Reported", icon_url=ctx.author.avatar_url)
