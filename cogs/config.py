@@ -26,7 +26,7 @@ class Config(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
-	@commands.command(aliases=["lm", "leave_message", "leave_msg"])
+	@commands.command(description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
 	async def leavemessage(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
@@ -59,7 +59,7 @@ class Config(commands.Cog):
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Disabled" } }
 			collection.update_one(myquery, newvalues)
 
-	@commands.command(aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
+	@commands.command(description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.has_guild_permissions(administrator=True)
 	async def joinmessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
@@ -94,7 +94,7 @@ class Config(commands.Cog):
 
 
 		' Change Prefixes '
-	@commands.command()
+	@commands.command(description="Set and view information about server prefixes.")
 	async def prefix(self, ctx, command=None, *, prefix=None):
 		if command is None:
 			return
@@ -165,7 +165,7 @@ class Config(commands.Cog):
 
 		' Add DJ Command '
 
-	@commands.command(aliases=["add-dj"])
+	@commands.command(description="Adds a role from the \"DJ\" list.", aliases=["add-dj"])
 	@commands.has_permissions(administrator=True)
 	async def dj(self, ctx, *, role: discord.Role):
 		await ctx.send(f'{self.config.success} Added <@&{role.id}> to DJ roles.')
@@ -186,7 +186,7 @@ class Config(commands.Cog):
 
 		' Remove DJ Command '
 
-	@commands.command(aliases=["remove-dj"])
+	@commands.command(description="Removes a role from the \"DJ\" list.", aliases=["remove-dj"])
 	@commands.has_permissions(administrator=True)
 	async def rdj(self, ctx, *, role: discord.Role):
 		collection = self.db1.DataBase_1.settings
@@ -203,7 +203,7 @@ class Config(commands.Cog):
 
 		' Reports Config '
 
-	@commands.command(alisases=["set-report", "report-channel"])
+	@commands.command(description="Sets the channel that reports are sent.", alisases=["set-report", "report-channel"])
 	@commands.has_permissions(administrator=True)
 	async def reports(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Report Channel set to <#{log.id}>')
@@ -217,7 +217,7 @@ class Config(commands.Cog):
 
 		' Log Config '
 
-	@commands.command(alisases=["logs", "set-logs", "audit-log"])
+	@commands.command(description="Sets the log channel.", alisases=["logs", "set-logs", "audit-log"])
 	@commands.has_permissions(administrator=True)
 	async def log(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Log Channel set to <#{log.id}>')
@@ -233,7 +233,7 @@ class Config(commands.Cog):
 
 		' Filter Setting '
 
-	@commands.command()
+	@commands.command(description="Customising server filters on premium servers.")
 	async def filter(self, ctx, type=None, *, option=None):
 
 		links = ["link", "links"]

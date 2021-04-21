@@ -3,7 +3,7 @@ from numix_imports import *
 config = default.get('./config.json')
 
 
-class Info(commands.Cog):
+class general(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = config
@@ -67,4 +67,4 @@ class Info(commands.Cog):
 		await ctx.send(embed=embed)
 
 def setup(bot):
-	bot.add_cog(Info(bot))		
+	bot.add_cog(general(bot))		

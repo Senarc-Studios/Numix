@@ -2,14 +2,14 @@ from numix_imports import *
 
 MONGO = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
 
-class Moderation(commands.Cog, name='Moderation'):
+class moderation(commands.Cog, name='Moderation'):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
 		self.s = self.config.success
 		print('"Moderation" cog loaded')		
 
-	@commands.command()
+	@commands.command(description="Reports a user to the staff members", name="report")
 	async def report(self, ctx, member: discord.Member = None, *, reason = None):
 		cluster = MongoClient(f"{self.config.mongo1}DataBase_1{self.config.mongo2}")
 		collection = cluster.DataBase_1.settings
@@ -33,7 +33,7 @@ class Moderation(commands.Cog, name='Moderation'):
 			await channel.send(f"{self.config.success} This member has been reported.")
 
 
-	@commands.command()
+	@commands.command(description="Warns a mentioned user with a reason.", name="warn")
 	@commands.has_permissions(kick_members=True)
 	async def warn(self, ctx, user: discord.Member=None, *, reason=None):
 		cluster = MongoClient(f"{self.config.mongo1}Moderation{self.config.mongo2}")
@@ -79,7 +79,7 @@ class Moderation(commands.Cog, name='Moderation'):
 			except discord.Forbidden:
 				await ctx.send(f"{self.s} {user.name}#{user.discriminator} warned *User was	 notified*")
 
-	@commands.command()
+	@commands.command(description="Clears the specified amount of messages", name="clear")
 	@commands.guild_only()
 	@commands.has_permissions(manage_messages=True)
 	async def clear(self, ctx, *, amount: int=None):
@@ -91,7 +91,7 @@ class Moderation(commands.Cog, name='Moderation'):
 			await asyncio.sleep(1)
 			await ctx.send(f"{self.config.s} Deleted **{int(amount)}** Messages", delete_after=3)
 
-	@commands.command()
+	@commands.command(description="Bans a mentioned user.", name="ban")
 	@commands.guild_only()
 	@commands.has_permissions(ban_members=True)
 	async def ban(self, ctx, user:discord.Member=None, *, reason=None):
@@ -143,7 +143,7 @@ class Moderation(commands.Cog, name='Moderation'):
 					log_message.set_footer(text="Numix", icon_url=self.config.logo)
 					await log.send(embed=log_message)
 
-	@commands.command()
+	@commands.command(description="Kicks a mentioned user.", name="kick")
 	@commands.guild_only()
 	@commands.has_permissions(kick_members=True)
 	async def kick(self, ctx, user: discord.Member=None, *, reason=None):
@@ -185,7 +185,7 @@ class Moderation(commands.Cog, name='Moderation'):
 					log_message.set_footer(text="Numix", icon_url=self.config.logo)
 					await log.send(embed=log_message)
 
-	@commands.command()
+	@commands.command(description="Shows all the warning a user has.")
 	@commands.guild_only()
 	@commands.has_permissions(manage_messages=True)
 	async def infractions(self, ctx, user: discord.Member=None):
@@ -209,4 +209,4 @@ class Moderation(commands.Cog, name='Moderation'):
 			await ctx.send(embed=embed)
 
 def setup(bot):
-	bot.add_cog(Moderation(bot))
+	bot.add_cog(moderation(bot))

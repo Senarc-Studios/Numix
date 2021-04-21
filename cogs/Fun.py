@@ -1,7 +1,7 @@
 from numix_imports import *
 import numix_encrypt
 
-class Fun(commands.Cog):
+class fun(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
@@ -66,7 +66,117 @@ class Fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-	@commands.command(aliases=["who-crypt", "who-nucrypt", "whos-key"])
+	 @commands.command(description="Sends a random cat image")
+	async def cat(self, ctx):
+		URL = f'https://api.thecatapi.com/v1/images/search'
+
+		def check_valid_status_code(request):
+			if request.status_code == 200:
+				return request.json()
+
+			return False
+
+		def get_cat():
+			request = requests.get(URL)
+			data = check_valid_status_code(request)
+
+			return data
+
+		cat = get_cat()
+		if not cat:
+			await ctx.channel.send(
+				"Couldn't get cat from API. Try again later.")
+
+		else:
+			#print(cat)
+			cat = cat[0]['url']
+			#agee = str(cat['url'])
+			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+			embed.set_author(name="Cat", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			embed.set_image(url=f"{cat}")
+			await ctx.send(embed=embed)
+
+	@commands.command(description="Sends a random dog image")
+	async def dog(self, ctx):
+		URL = f'https://api.thedogapi.com/v1/images/search'
+
+		def check_valid_status_code(request):
+			if request.status_code == 200:
+				return request.json()
+
+			return False
+
+		def get_cat():
+			request = requests.get(URL)
+			data = check_valid_status_code(request)
+
+			return data
+
+		cat = get_cat()
+		if not cat:
+			await ctx.channel.send(
+				"Couldn't get dog from API. Try again later.")
+
+		else:
+			#print(cat)
+			cat = cat[0]['url']
+			#agee = str(cat['url'])
+			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+			embed.set_author(name="Dog", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			embed.set_image(url=f"{cat}")
+			await ctx.send(embed=embed)
+
+	@commands.command(cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song")
+	@commands.cooldown(1, 30, type=BucketType.user)
+	async def ly(self, ctx, *, lyrics):
+		if lyrics == None:
+			await ctx.send('You forgot lyrcis')
+		else:
+			words = "+".join(lyrics.split(' '))
+			print(words)
+			URL = f'https://some-random-api.ml/lyrics?title={words}'
+
+			def check_valid_status_code(request):
+				if request.status_code == 200:
+					return request.json()
+
+				return False
+
+			def get_song():
+				request = requests.get(URL)
+				data = check_valid_status_code(request)
+
+				return data
+
+			song = get_song()
+			if not song:
+				await ctx.channel.send(
+					"Couldn't get lyrcis from API. Try again later.")
+
+			else:
+				music = song['lyrics']
+				ti = song['title']
+				au = song['author']
+
+				embed = discord.Embed(Title=f'Title: Song', color=0xff0000)
+
+				embed.add_field(name=f'Title: {ti}', value=f'Author: {au}')
+
+				chunks = [
+					music[i:i + 1024] for i in range(0, len(music), 2000)
+				]
+				for chunk in chunks:
+					embed.add_field(name="\u200b", value=chunk, inline=False)
+
+				#embed.add_field(name='Song',value=f'{music}', inline=True)
+				embed.set_footer(
+					text=f'Requested By: {ctx.author.name}',
+					icon_url=f'{ctx.author.avatar_url}')
+				await ctx.send(embed=embed)
+
+	@commands.command(hidden=True, aliases=["who-crypt", "who-nucrypt", "whos-key"])
 	@commands.check(developers)
 	async def whocrypt(self, ctx, key):
 		if key is None:
@@ -90,7 +200,7 @@ class Fun(commands.Cog):
 				if text is None:
 					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
 
-	@commands.command(aliases=["numix-encrypt", "encrypt"])
+	@commands.command(description="You can encrypt message using Numix's encryption method.", aliases=["numix-encrypt", "encrypt"])
 	@commands.cooldown(1, 5, commands.BucketType.user)
 	async def nucrypt(self, ctx, *, body=None):
 		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y')}"
@@ -174,8 +284,8 @@ class Fun(commands.Cog):
 				await Author.send(embed=embed)
 				await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
 
-	@commands.command(aliases=["Nu-Decrypt", "nu-decrypt", "decrypt"])
-	async def nudecrypt(self, ctx, *, key=None):
+	@commands.command(description="Decryped Messages that are encrypted with Numix.", aliases=["Nu-Decrypt", "nu-decrypt"])
+	async def decrypt(self, ctx, *, key=None):
 		Author = ctx.author
 		if key is None:
 			await ctx.send(f"{self.config.forbidden} Provide a Key to decrypt text.")
@@ -197,7 +307,7 @@ class Fun(commands.Cog):
 				if text == "":
 					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
 
-	@commands.command(aliases=["dice", "dise"])
+	@commands.command(description="Rolles a Dice for a number for 1 to 6.", aliases=["dice", "dise"])
 	async def roll(self, ctx):
 		dice = ["1", "2", "3", "4", "5", "6"]
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Dice has been rolled. The number is **{random.choice(dice)}**.", color=242424)
@@ -205,7 +315,7 @@ class Fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command(name="8ball")
+	@commands.command(description="Gives a random answer to your question.", name="8ball")
 	async def _8ball(self, ctx, *, input=None):
 		if input is None:
 			return await ctx.send(f"{self.config.forbidden} Specify what you need to be predicted.")
@@ -216,7 +326,7 @@ class Fun(commands.Cog):
 		await ctx.send(embed=embed)
 
 
-	@commands.command(aliases=["dict", "dictionary", "meaning"])
+	@commands.command(description="Shows the meaning of word using the urban dictionary.", aliases=["dict", "dictionary", "meaning"])
 	@commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
 	async def urban(self, ctx, *, search: commands.clean_content=None):
 		
@@ -246,16 +356,16 @@ class Fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command()
+	@commands.command(description="Gives a random rating from 0 to 100.")
 	async def rate(self, ctx, *, thing: commands.clean_content=None):
 		if thing is None:
 			return await ctx.send(f"{self.config.forbidden} Specify what you want me to rate on.")
-		rate_amount = random.uniform(0.0, 100.0)
+		rate_amount = round(random.randint(0, 100))
 		embed = discord.Embed(timestamp=ctx.message.created_at, title="Random Rate", description=f"Rating for `{thing}` is **{round(rate_amount, 4)} / 100**", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command(aliases=['slots', 'bet'])
+	@commands.command(description="Play the slot machine.", aliases=['slots', 'bet'])
 	@commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
 	async def slot(self, ctx):
 		""" Roll the slot machine """
@@ -282,4 +392,4 @@ class Fun(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(Fun(bot))
+	bot.add_cog(fun(bot))

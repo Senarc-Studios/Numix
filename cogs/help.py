@@ -110,5 +110,45 @@ class Help(commands.Cog):
 			e.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=e)
 
+	@commands.command()
+	@commands.has_permissions(add_reactions=True,embed_links=True)
+	async def th(self,ctx,*cog):
+		"""Gets all cogs and commands of mine."""
+		try:
+			if not cog:
+				e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+				e.set_author(name="Numix Commands", icon_url=self.config.logo)
+				e.add_field(name="•── Information:", value="\nYou can change the bot's prefix using `n!prefix set <prefix>`, and if you forget your prefix just ping the bot. You can see all the command help categories, to look at the commands, type `n!help <category>` and if you need help with a specific command you can type `n!help <command>`.", inline=False)
+				e.add_field(name="•── Command Categories:", value="\n:arrow_right: `n!help general` - Shows all the general commands.\n\n:arrow_right: `n!help music` - Shows all the music commands.\n\n:arrow_right: `n!help fun` - Shows all the api and fun commands.\n\n:arrow_right: `n!help economy` - Shows all the commands related to the economy.\n\n:arrow_right: `n!help moderation` - Shows all the moderation commands.\n\n:arrow_right: `n!help admin` - Shows all the commands that are accessable to admins.", inline=False)
+				e.set_footer(text="Numix", icon_url=self.config.logo)
+				return await ctx.send(embed=e)
+			if len(cog) > 1:
+				e = discord.Embed(timestamp=ctx.message.created_at, description="It looks like you've found a invalid command/category. Did you make a typo?", color=0xFF0000)
+				e.set_author(name="Numix Commands", icon_url=self.config.logo)
+				e.set_footer(text="Numix", icon_url=self.config.logo)
+				await ctx.send(embed=e)
+			else:
+				found = False
+				for x in self.bot.cogs:
+					for y in cog:
+						if x == y:
+							command_list = ""
+							for c in self.bot.get_cog(y).get_commands():
+								if not c.hidden:
+									command_list += f"`{c.name}` - **{c.description}**\n\n"
+							halp=discord.Embed(timstamp=ctx.message.created_at, title=cog[0], description=command_list, color=242424)
+							halp.set_footer(text="Numix", icon_url=self.config.logo)
+							found = True
+				if not found:
+					e = discord.Embed(timestamp=ctx.message.created_at, description="It looks like you've found a invalid command/category. Did you make a typo?", color=0xFF0000)
+					e.set_author(name="Numix Commands", icon_url=self.config.logo)
+					e.set_footer(text="Numix", icon_url=self.config.logo)
+					await ctx.send(embed=e)
+				else:
+					await ctx.message.add_reaction(emoji='✉')
+				await ctx.send(embed=halp)
+		except:
+			pass
+
 def setup(bot):
 	bot.add_cog(Help(bot))
