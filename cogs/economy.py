@@ -13,7 +13,7 @@ cluster = motor.motor_asyncio.AsyncIOMotorClient(MONGO)
 WALLET_LIMIT = 50000
 BANK_LIMIT = 1000000
 
-class Economy(commands.Cog):
+class economy(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
@@ -455,4 +455,4 @@ class Economy(commands.Cog):
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Transaction is Complete")
 		
 def setup(bot):
-	bot.add_cog(Economy(bot))
+	bot.add_cog(economy(bot))

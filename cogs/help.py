@@ -140,10 +140,21 @@ class Help(commands.Cog):
 							halp.set_footer(text="Numix", icon_url=self.config.logo)
 							found = True
 				if not found:
-					e = discord.Embed(timestamp=ctx.message.created_at, description="It looks like you've found a invalid command/category. Did you make a typo?", color=0xFF0000)
-					e.set_author(name="Numix Commands", icon_url=self.config.logo)
-					e.set_footer(text="Numix", icon_url=self.config.logo)
-					await ctx.send(embed=e)
+					try:
+						c = self.bot.get_command(cog)
+						if c.perms is None:
+							c.perms = "@everyone"
+						e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+						e.set_author(name=cog)
+						e.add_field(name="Description", value=c.description)
+						e.add_field(name="Required Permissions", value=c.perms)
+						e.set_footer(text="Numix", icon_url=self.config.logo)
+						await ctx.send(embed=e)
+					except:
+						e = discord.Embed(timestamp=ctx.message.created_at, description="It looks like you've found a invalid command/category. Did you make a typo?", color=0xFF0000)
+						e.set_author(name="Numix Commands", icon_url=self.config.logo)
+						e.set_footer(text="Numix", icon_url=self.config.logo)
+						await ctx.send(embed=e)
 				else:
 					await ctx.message.add_reaction(emoji='✉')
 				await ctx.send(embed=halp)
