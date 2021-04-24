@@ -46,6 +46,8 @@ class MyBot(commands.Bot):
 @bot.command(name='e', aliases=["eval"])
 @commands.is_owner()
 async def _e(ctx, *, body=None):
+	if ctx.author.id not in config.owners:
+		return await ctx.send(f"{config.forbidden} **`ERROR 401`**")
 	env = {
 		'ctx': ctx,
 		'channel': ctx.channel,

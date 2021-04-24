@@ -139,11 +139,12 @@ class Help(commands.Cog):
 							halp=discord.Embed(timstamp=ctx.message.created_at, title=cog[0], description=command_list, color=242424)
 							halp.set_footer(text="Numix", icon_url=self.config.logo)
 							found = True
-				if not found:
+				if not found: 
 					try:
-						c = self.bot.get_command(cog)
-						if c.perms is None:
-							c.perms = "@everyone"
+						c = self.bot.commands
+						for command in c:
+							if cog == c:
+								c = command
 						e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 						e.set_author(name=cog)
 						e.add_field(name="Description", value=c.description)

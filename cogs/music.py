@@ -525,7 +525,7 @@ class Music(commands.Cog):
 			try:
 				source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
 			except YTDLError as e:
-				await ctx.send(f'{config.forbidden} ' + '{}'.format(str(e)))
+				await ctx.send('{}'.format(str(e)))
 			else:
 				song = Song(source)
 
