@@ -174,6 +174,7 @@ async def reload(ctx, *, name: str):
 @bot.command()
 @commands.is_owner()
 async def restart(ctx):
+	await ctx.send(f"{config.success} Performing Complete Restart on Numix.")
 	os.system("ls -l; python3 main.py")
 	await bot.logout()
 

@@ -76,10 +76,10 @@ class fun(commands.Cog):
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=embed)
 
-		e_title = e_title.replace("\\", " ")
-		e_description = e_title.replace("\\", " ")
-		e_footer = e_title.replace("\\", " ")
-		e_icon = e_title.replace("\\", " ")
+		e_title = e_title.replace(";;", " ")
+		e_description = e_title.replace(";;", " ")
+		e_footer = e_title.replace(";;", " ")
+		e_icon = e_title.replace(";;", " ")
 
 		e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 		e.set_footer(text=e_footer, icon_url=e_icon)
