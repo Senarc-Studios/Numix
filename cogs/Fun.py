@@ -66,7 +66,7 @@ class fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-	@commands.command(aliases=["e", "em"], description="Creates a Embed.", perms="ADMINISTRATOR")
+	@commands.command(aliases=["em"], description="Creates a Embed.", perms="ADMINISTRATOR")
 	@commands.has_permissions(administrator=True)
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
 		if e_title is None or e_description is None:
