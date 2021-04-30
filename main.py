@@ -171,6 +171,12 @@ async def reload(ctx, *, name: str):
 		return await ctx.send(default.traceback_maker(e))
 	await ctx.send(f'"**{name}**" Cog reloaded')
 
+@bot.command()
+@commands.is_owner()
+async def restart(ctx):
+	os.system("ls -l; python3 main.py")
+	await bot.logout()
+
 # Read Cogs
 
 for file in os.listdir("./cogs"):
