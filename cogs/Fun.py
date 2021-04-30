@@ -146,7 +146,7 @@ class fun(commands.Cog):
 			await ctx.send(embed=embed)
 
 	@commands.command(cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song")
-	@commands.cooldown(1, 30, type=BucketType.user)
+	@commands.cooldown(rate=1, per=60.0, type=commands.BucketType.user)
 	async def ly(self, ctx, *, lyrics):
 		if lyrics == None:
 			await ctx.send('You forgot lyrcis')
@@ -218,7 +218,7 @@ class fun(commands.Cog):
 					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
 
 	@commands.command(description="You can encrypt message using Numix's encryption method.", aliases=["numix-encrypt", "encrypt"])
-	@commands.cooldown(1, 5, commands.BucketType.user)
+	@commands.cooldown(rate=1, per=5.0, type=commands.BucketType.user)
 	async def nucrypt(self, ctx, *, body=None):
 		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y')}"
 		date_2 = date_1.replace("January", "01")
