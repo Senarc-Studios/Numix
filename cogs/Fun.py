@@ -71,7 +71,7 @@ class fun(commands.Cog):
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
 		
 		if e_title is None or e_description is None:
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The proper way to use this command is by using the command with this formate.\n\n`n!embed <Embed Tile> <Embed Description> [Embed Footer] [Footer Icon]`\n\n**Breif Info**\n\nThe only way you can add spaces in your message is by doing `\+`.", color=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The proper way to use this command is by using the command with this formate.\n\n`n!embed <Embed Tile> <Embed Description> [Embed Footer] [Footer Icon]`\n\n**Breif Info**\n\nThe only way you can add spaces in your message is by doing `;;`.", color=242424)
 			embed.set_author(name="Invalid Syntax", icon_url="https://cdn.discordapp.com/emojis/780326063120318465.png?v=1")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=embed)
@@ -79,9 +79,8 @@ class fun(commands.Cog):
 		elif e_footer is not None:
 
 			e_title = e_title.replace(";;", " ")
-			e_description = e_title.replace(";;", " ")
-			e_footer = e_title.replace(";;", " ")
-			e_icon = e_title.replace(";;", " ")
+			e_description = e_description.replace(";;", " ")
+			e_footer = e_footer.replace(";;", " ")
 
 			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 			e.set_footer(text=e_footer)
@@ -90,19 +89,18 @@ class fun(commands.Cog):
 		elif e_icon is not None:
 
 			e_title = e_title.replace(";;", " ")
-			e_description = e_title.replace(";;", " ")
-			e_footer = e_title.replace(";;", " ")
-			e_icon = e_title.replace(";;", " ")
+			e_description = e_description.replace(";;", " ")
+			e_footer = e_footer.replace(";;", " ")
 
 			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 			e.set_footer(text=e_footer, icon_url=e_icon)
 			await ctx.send(embed=e)
 
 		else:
+
 			e_title = e_title.replace(";;", " ")
-			e_description = e_title.replace(";;", " ")
-			e_footer = e_title.replace(";;", " ")
-			e_icon = e_title.replace(";;", " ")
+			e_description = e_description.replace(";;", " ")
+			e_footer = e_footer.replace(";;", " ")
 
 			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 			await ctx.send(embed=e)
