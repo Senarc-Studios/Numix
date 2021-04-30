@@ -76,14 +76,36 @@ class fun(commands.Cog):
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=embed)
 
-		e_title = e_title.replace(";;", " ")
-		e_description = e_title.replace(";;", " ")
-		e_footer = e_title.replace(";;", " ")
-		e_icon = e_title.replace(";;", " ")
+		elif e_footer is not None:
 
-		e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
-		e.set_footer(text=e_footer, icon_url=e_icon)
-		await ctx.send(embed=e)
+			e_title = e_title.replace(";;", " ")
+			e_description = e_title.replace(";;", " ")
+			e_footer = e_title.replace(";;", " ")
+			e_icon = e_title.replace(";;", " ")
+
+			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
+			e.set_footer(text=e_footer)
+			await ctx.send(embed=e)
+
+		elif e_icon is not None:
+
+			e_title = e_title.replace(";;", " ")
+			e_description = e_title.replace(";;", " ")
+			e_footer = e_title.replace(";;", " ")
+			e_icon = e_title.replace(";;", " ")
+
+			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
+			e.set_footer(text=e_footer, icon_url=e_icon)
+			await ctx.send(embed=e)
+
+		else:
+			e_title = e_title.replace(";;", " ")
+			e_description = e_title.replace(";;", " ")
+			e_footer = e_title.replace(";;", " ")
+			e_icon = e_title.replace(";;", " ")
+
+			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
+			await ctx.send(embed=e)
 
 	@commands.command(description="Sends a random cat image", perms="@everyone")
 	async def cat(self, ctx):
