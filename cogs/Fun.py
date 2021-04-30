@@ -69,6 +69,7 @@ class fun(commands.Cog):
 	@commands.command(aliases=["em"], description="Creates a Embed.", perms="ADMINISTRATOR")
 	@commands.has_permissions(administrator=True)
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
+		
 		if e_title is None or e_description is None:
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The proper way to use this command is by using the command with this formate.\n\n`n!embed <Embed Tile> <Embed Description> [Embed Footer] [Footer Icon]`\n\n**Breif Info**\n\nThe only way you can add spaces in your message is by doing `\+`.", color=242424)
 			embed.set_author(name="Invalid Syntax", icon_url="https://cdn.discordapp.com/emojis/780326063120318465.png?v=1")
@@ -79,8 +80,9 @@ class fun(commands.Cog):
 		e_description = e_title.replace("\\", " ")
 		e_footer = e_title.replace("\\", " ")
 		e_icon = e_title.replace("\\", " ")
+
 		e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
-		e.footer(text=e_footer, icon_url=e_icon)
+		e.set_footer(text=e_footer, icon_url=e_icon)
 		await ctx.send(embed=embed)
 
 	@commands.command(description="Sends a random cat image", perms="@everyone")
