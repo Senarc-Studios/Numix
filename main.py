@@ -33,13 +33,38 @@ bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
 
 class MyBot(commands.Bot):
-	async def is_owner(self, user: discord.User):
-		dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
-		if user.id in dev:  # Implement your own conditions here
-			return True
-		else:
-			await ctx.send(f"{config.forbidden} You can't use that command.")
-			return False
+	def __init__(self,*args,**kwargs):
+		super().__init__(*args,**kwargs)
+
+		self.ipc = ipc.Server(self,secret_key = "Swas")
+
+	async def on_ipc_ready(self):
+		"""Called upon the IPC Server being ready"""
+		print("Ipc server is ready.")
+
+	async def on_ipc_error(self, endpoint, error):
+		"""Called upon an error being raised within an IPC route"""
+		print(endpoint, "raised", error)
+
+
+async def is_owner(self, user: discord.User):
+	dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
+	if user.id in dev:  # Implement your own conditions here
+		return True
+	else:
+		await ctx.send(f"{config.forbidden} You can't use that command.")
+		return False
+
+@bot.ipc.route()
+async def get_guild_count(data):
+	return len(my_bot.guilds) # returns the len of the guilds to the client
+
+@bot.ipc.route()
+async def get_guild_ids(data):
+	final = []
+	for guild in my_bot.guilds:
+		final.append(guild.id)
+	return final # returns the guild ids to the client
 
 # Eval
 
@@ -189,6 +214,7 @@ for file in os.listdir("./cogs"):
 # Run Bot
 
 try:
+	bot.ipc.start()
 	bot.run(config.token, reconnect=True)
 except Exception as e:
 	print(e)

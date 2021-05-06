@@ -29,6 +29,6 @@ from datetime import datetime
 from utils import lists, permissions, http, default, argparser
 from discord.utils import get
 from contextlib import redirect_stdout
-from discord.ext import commands, tasks
+from discord.ext import commands, tasks, ipc
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from discord.ext.commands import has_permissions, MissingPermissions, errors
