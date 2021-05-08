@@ -1,5 +1,7 @@
 from numix_imports import *
 import os
+import discord
+from discor.ext import commands, ipc
 
 cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 collection = cluster.DataBase_1.prefixes

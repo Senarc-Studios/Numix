@@ -100,7 +100,6 @@ class fun(commands.Cog):
 
 			e_title = e_title.replace(";;", " ")
 			e_description = e_description.replace(";;", " ")
-			e_footer = e_footer.replace(";;", " ")
 
 			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 			await ctx.send(embed=e)
