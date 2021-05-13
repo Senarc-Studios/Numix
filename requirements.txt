@@ -30,3 +30,7 @@ flask-discord
 psutil
 profanityfilter
 nest_asyncio
+discord.py
+google-assistant-sdk[samples]
+dblpy
+html2text

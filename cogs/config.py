@@ -52,12 +52,14 @@ class Config(commands.Cog):
 			myquery = { "_id": int(ctx.guild.id) }
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Enabled" } }
 			collection.update_one(myquery, newvalues)
+			await ctx.send(f"{self.config.success} Leave Messages has been enabled in this server.")
 
 		elif command == "disable":
 			collection = self.db1.DataBase_1.settings
 			myquery = { "_id": int(ctx.guild.id) }
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Disabled" } }
 			collection.update_one(myquery, newvalues)
+			await ctx.send(f"{self.config.success} Leave Messages has been disabled in this server.")
 
 	@commands.command(description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.has_guild_permissions(administrator=True)
@@ -85,12 +87,14 @@ class Config(commands.Cog):
 			myquery = { "_id": int(ctx.guild.id) }
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "jmstatus": "Enabled" } }
 			collection.update_one(myquery, newvalues)
+			await ctx.send(f"{self.config.success} Join Messages has been enabled in this server.")
 
 		elif command == "disable":
 			collection = self.db1.DataBase_1.settings
 			myquery = { "_id": int(ctx.guild.id) }
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "jmstatus": "Disabled" } }
 			collection.update_one(myquery, newvalues)
+			await ctx.send(f"{self.config.success} Join Messages has been disabled in this server.")
 
 
 		' Change Prefixes '

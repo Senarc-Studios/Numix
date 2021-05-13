@@ -34,21 +34,6 @@ def prefix(bot, message):
 bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
 
-class MyBot(commands.Bot):
-	def __init__(self,*args,**kwargs):
-		super().__init__(*args,**kwargs)
-
-		self.ipc = ipc.Server(self,secret_key = "Swas")
-
-	async def on_ipc_ready(self):
-		"""Called upon the IPC Server being ready"""
-		print("Ipc server is ready.")
-
-	async def on_ipc_error(self, endpoint, error):
-		"""Called upon an error being raised within an IPC route"""
-		print(endpoint, "raised", error)
-
-
 async def is_owner(self, user: discord.User):
 	dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
 	if user.id in dev:  # Implement your own conditions here
