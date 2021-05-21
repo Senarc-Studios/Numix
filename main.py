@@ -42,16 +42,6 @@ async def is_owner(self, user: discord.User):
 		await ctx.send(f"{config.forbidden} You can't use that command.")
 		return False
 
-@bot.ipc.route()
-async def get_guild_count(data):
-	return len(my_bot.guilds) # returns the len of the guilds to the client
-
-@bot.ipc.route()
-async def get_guild_ids(data):
-	final = []
-	for guild in my_bot.guilds:
-		final.append(guild.id)
-	return final # returns the guild ids to the client
 
 # Eval
 
@@ -201,7 +191,6 @@ for file in os.listdir("./cogs"):
 # Run Bot
 
 try:
-	bot.ipc.start()
 	bot.run(config.token, reconnect=True)
 except Exception as e:
 	print(e)
