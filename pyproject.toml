@@ -37,6 +37,7 @@ profanityfilter = "^2.0.6"
 motor = "^2.3.1"
 nest-asyncio = "^1.5.1"
 slashify = "^1.0.1"
+quart = "^0.15.0"
 [tool.poetry.dev-dependencies]
 
 [build-system]
