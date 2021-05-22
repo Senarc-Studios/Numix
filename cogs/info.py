@@ -2,6 +2,7 @@ from numix_imports import *
 
 config = default.get('./config.json')
 
+MONGO = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
 
 class general(commands.Cog):
 	def __init__(self, bot):
@@ -9,6 +10,29 @@ class general(commands.Cog):
 		self.config = config
 		self.process = psutil.Process(os.getpid())
 		print('"Info" cog loaded')
+
+	@commands.command(description="Reports a user to the staff members", name="report")
+	async def report(self, ctx, member: discord.Member = None, *, reason = None):
+		cluster = MongoClient(f"{self.config.mongo1}DataBase_1{self.config.mongo2}")
+		collection = cluster.DataBase_1.settings
+		MONGO_GUILD_SETTINGS = collection.find_one({ "_id": member.guild.id })
+		ReportChannel = self.bot.get_channel(MONGO_GUILD_SETTINGS["report"])
+		channel = ctx.message.channel
+		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+		embed.set_author(name="Member Reported", icon_url=ctx.author.avatar_url)
+		embed.add_field(name="Reported User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)", inline = False)
+		embed.add_field(name="Reported By:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", inline = False)
+		embed.add_field(name="Reason:", value=f"{reason}", inline = False)
+		embed.set_thumbnail(url=member.avatar_url)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+
+		if member is None:
+			await ctx.send(f"{self.config.forbidden} speficy a user.")
+		elif reason is None:
+			await ctx.send(f"{self.config.forbidden} speficy a reason.")
+		else:
+			await ReportChannel.send(embed=embed)
+			await channel.send(f"{self.config.success} This member has been reported.")
 
 	@commands.command(description="Shows information about the server.", aliases=["server-info", "server"])
 	async def serverinfo(self, ctx):
