@@ -35,9 +35,13 @@ class Help(commands.Cog):
 						
 						c = self.bot.get_command(cog)
 						if not c.hidden:
+							ali = c.aliases
+							ali = ali.replace("[", "")
+							ali = ali.replace("]", "")
 							e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 							e.set_author(name=cog)
-							e.add_field(name="Description", value=f" {c.description}")
+							e.add_field(name="Aliases", value=f"`{ali}`")
+							e.add_field(name="Description", value=f"{c.description}")
 							e.set_footer(text="Numix", icon_url=self.config.logo)
 							await ctx.send(embed=e)
 						else:
