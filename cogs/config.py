@@ -1,6 +1,6 @@
 from numix_imports import *
 
-class Config(commands.Cog):
+class admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
@@ -397,4 +397,4 @@ class Config(commands.Cog):
 			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
 
 def setup(bot):
-	bot.add_cog(Config(bot))
+	bot.add_cog(admin(bot))

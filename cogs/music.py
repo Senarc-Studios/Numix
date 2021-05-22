@@ -256,7 +256,7 @@ class VoiceState:
 			self.voice = None
 
 
-class Music(commands.Cog):
+class music(commands.Cog):
 	def __init__(self, bot: commands.AutoShardedBot):
 		self.bot = bot
 		self.voice_states = {}
@@ -469,4 +469,4 @@ class Music(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(Music(bot))
+	bot.add_cog(music(bot))
