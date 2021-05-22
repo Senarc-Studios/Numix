@@ -124,13 +124,16 @@ class Help(commands.Cog):
 				return await ctx.send(embed=e)
 			else:
 				found = False
-				command_list = ""
-				for c in self.bot.get_cog(cog).get_commands():
-					if not c.hidden:
-						command_list += f"`{c.name}` - **{c.description}**\n\n"
-				halp=discord.Embed(timstamp=ctx.message.created_at, title=cog, description=command_list, color=242424)
-				halp.set_footer(text="Numix", icon_url=self.config.logo)
-				found = True
+				try:
+					command_list = ""
+					for c in self.bot.get_cog(cog).get_commands():
+						if not c.hidden:
+							command_list += f"`{c.name}` - **{c.description}**\n\n"
+					halp=discord.Embed(timstamp=ctx.message.created_at, title=cog, description=command_list, color=242424)
+					halp.set_footer(text="Numix", icon_url=self.config.logo)
+					found = True
+				except Exception:
+					found = False
 				if not found:
 					try:
 						
@@ -145,14 +148,12 @@ class Help(commands.Cog):
 							e = discord.Embed(timestamp=ctx.message.created_at, description="It looks like you've found a invalid command/category. Did you make a typo?", color=0xFF0000)
 							e.set_author(name="Numix Commands", icon_url=self.config.logo)
 							e.set_footer(text="Numix", icon_url=self.config.logo)
-							await ctx.send(embed=e)
+							return await ctx.send(embed=e)
 					except:
 						e = discord.Embed(timestamp=ctx.message.created_at, description="It looks like you've found a invalid command/category. Did you make a typo?", color=0xFF0000)
 						e.set_author(name="Numix Commands", icon_url=self.config.logo)
 						e.set_footer(text="Numix", icon_url=self.config.logo)
-						await ctx.send(embed=e)
-				else:
-					await ctx.message.add_reaction(emoji='✉')
+						return await ctx.send(embed=e)
 				await ctx.send(embed=halp)
 		except:
 			pass
