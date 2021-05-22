@@ -8,7 +8,7 @@ class App(commands.Cog):
 		self.settings_db = self.mongo_connection.DataBase_1.settings
 		self.application_db = self.mongo_connection.DataBase_1.application
 
-	@commands.command(aliases=["application", "app", "staff"])
+	@commands.command(hidden=True, aliases=["application", "app", "staff"])
 	async def apply(self, ctx):
 		if self.settings_db.find({ "_id": f"{ctx.guild.id}" }) == 0:
 			return await ctx.send(f"{self.config.forbidden} Applications aren't set-up in this server.")

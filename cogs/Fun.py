@@ -66,7 +66,7 @@ class fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-	@commands.command(aliases=["em"], description="Creates a Embed.", perms="ADMINISTRATOR")
+	@commands.command(aliases=["em"], description="Use this command to create an Embed.", perms="ADMINISTRATOR")
 	@commands.has_permissions(administrator=True)
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
 		
@@ -104,7 +104,7 @@ class fun(commands.Cog):
 			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 			await ctx.send(embed=e)
 
-	@commands.command(description="Sends a random cat image", perms="@everyone")
+	@commands.command(description="Sends a random cat image.", perms="@everyone")
 	async def cat(self, ctx):
 		URL = f'https://api.thecatapi.com/v1/images/search'
 
@@ -135,7 +135,7 @@ class fun(commands.Cog):
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
 
-	@commands.command(description="Sends a random dog image")
+	@commands.command(description="Sends a random dog image.")
 	async def dog(self, ctx):
 		URL = f'https://api.thedogapi.com/v1/images/search'
 
@@ -166,7 +166,7 @@ class fun(commands.Cog):
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
 
-	@commands.command(cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song")
+	@commands.command(cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song.")
 	@commands.cooldown(rate=1, per=60.0, type=commands.BucketType.user)
 	async def ly(self, ctx, *, lyrics):
 		if lyrics == None:

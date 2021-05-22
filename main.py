@@ -45,7 +45,7 @@ async def is_owner(self, user: discord.User):
 
 # Eval
 
-@bot.command(name='e', aliases=["eval"])
+@bot.command(name='e', hidden=True, aliases=["eval"])
 @commands.is_owner()
 async def _e(ctx, *, body=None):
 	if ctx.author.id not in config.owners:
@@ -142,7 +142,7 @@ def get_syntax_error(e):
 
 # Load Cog
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def load(ctx, *, name: str):
 	try:
@@ -153,7 +153,7 @@ async def load(ctx, *, name: str):
 
 # Unload Cog
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def unload(ctx, *, name: str):
 	try:
@@ -164,7 +164,7 @@ async def unload(ctx, *, name: str):
 
 # Reload Cog
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def reload(ctx, *, name: str):
 	try:
@@ -173,7 +173,7 @@ async def reload(ctx, *, name: str):
 		return await ctx.send(default.traceback_maker(e))
 	await ctx.send(f'"**{name}**" Cog reloaded')
 
-@bot.command()
+@bot.command(hidden=True)
 @commands.is_owner()
 async def restart(ctx):
 	await ctx.send(f"{config.success} Performing Complete Restart on Numix.")

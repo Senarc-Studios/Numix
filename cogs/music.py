@@ -321,26 +321,11 @@ class Music(commands.Cog):
 	@commands.has_permissions(manage_guild=True)
 	async def leave(self, ctx: commands.Context):
 		"""Clears the queue and leaves the voice channel."""
+		if not ctx.voice_state.voice:
+			return await ctx.send(f'{config.forbidden} Not connected to any voice channels.')
 
-		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
-		collection = cluster.DataBase_1.settings
-
-		for x in collection.find({"_id":ctx.guild.id}):
-			dj_roles = x["dj"]
-
-			for roles in dj_roles:
-				guild = ctx.guild
-								
-				role = get(guild.roles, id=roles)
-				if role in ctx.author.roles:
-
-					if not ctx.voice_state.voice:
-						return await ctx.send(f'{config.forbidden} Not connected to any voice channels.')
-
-					await ctx.voice_state.stop()
-					del self.voice_states[ctx.guild.id]
-				else:
-					await ctx.send(f"{config.forbidden} Only DJs can disconnect the bot.")
+		await ctx.voice_state.stop()
+		del self.voice_states[ctx.guild.id]
 
 	@commands.command(aliases=['current', 'playing'],description='Shows current song')
 	async def np(self, ctx: commands.Context):
@@ -352,123 +337,63 @@ class Music(commands.Cog):
 	async def pause(self, ctx: commands.Context):
 		"""Pauses the currently playing song."""
 
-		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
-		collection = cluster.DataBase_1.settings
-
-		if ctx.author.guild_permissions.manage_message:
-			guild = ctx.guild
-
-			if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
-				ctx.voice_state.voice.pause()
-				await ctx.message.add_reaction('⏯')
-			else:
-				await ctx.send(f"{config.forbidden} No music playing.")
-
-		for x in collection.find({"_id":ctx.guild.id}):
-			dj_roles = x["dj"]
-
-			for roles in dj_roles:
-				guild = ctx.guild
-								
-				role = get(guild.roles, id=roles)
-				if role in ctx.author.roles:
-					if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
-						ctx.voice_state.voice.pause()
-						await ctx.message.add_reaction('⏯')
-					else:
-						await ctx.send(f"{config.forbidden} No music playing.")
-
-				else:
-					await ctx.send(f"{config.forbidden} You're not a DJ to control the music.")
+		if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
+			ctx.voice_state.voice.pause()
+			await ctx.message.add_reaction('⏯')
+		else:
+			await ctx.send(f"{config.forbidden} No music playing.")
 
 	@commands.command(description='Resume the paused song')
 	async def resume(self, ctx: commands.Context):
 		"""Resumes a currently paused song."""
 
-		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
-		collection = cluster.DataBase_1.settings
+		if ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
+			ctx.voice_state.voice.resume()
+			await ctx.message.add_reaction('⏯')
+		else:
+			await ctx.send(f"{config.forbidden} Music not paused.")
 
-		for x in collection.find({"_id":ctx.guild.id}):
-			dj_roles = x["dj"]
-
-			for roles in dj_roles:
-				guild = ctx.guild
-								
-				role = get(guild.roles, id=roles)
-				if role in ctx.author.roles:
-					if ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
-						ctx.voice_state.voice.resume()
-						await ctx.message.add_reaction('⏯')
-					else:
-						await ctx.send(f"{config.forbidden} Music not paused.")
-				else:
-					await ctx.send(f"{config.forbidden} You're not a DJ to control the music.")
 
 	@commands.command(description='Stops playing the song and clears the queue')
 	async def stop(self, ctx: commands.Context):
 		"""Stops playing song and clears the queue."""
 
-		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
-		collection = cluster.DataBase_1.settings
+		ctx.voice_state.songs.clear()
 
-		for x in collection.find({"_id":ctx.guild.id}):
-			dj_roles = x["dj"]
-
-			for roles in dj_roles:
-				guild = ctx.guild
-								
-				role = get(guild.roles, id=roles)
-				if role in ctx.author.roles:
-
-					ctx.voice_state.songs.clear()
-
-					if ctx.voice_state.is_playing:
-						ctx.voice_state.voice.stop()
-						await ctx.message.add_reaction('⏹')
-				else:
-					await ctx.send(f"{config.forbidden} You're not a DJ to control the music.")
+		if ctx.voice_state.is_playing:
+			ctx.voice_state.voice.stop()
+			await ctx.message.add_reaction('⏹')
 
 	@commands.command(description='Vote to skip the song')
 	async def skip(self, ctx: commands.Context):
 		"""Vote to skip a song. The requester can automatically skip.
 		3 skip votes are needed for the song to be skipped.
 		"""
+		if ctx.author.server_premission.manage_messages:
+			ctx.voice_state.skip()
 
-		cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
-		collection = cluster.DataBase_1.settings
+		else:
 
-		for x in collection.find({"_id":ctx.guild.id}):
-			dj_roles = x["dj"]
+			if not ctx.voice_state.is_playing:
+				return await ctx.send(f'{config.forbidden} No music playing.')
 
-			for roles in dj_roles:
-				guild = ctx.guild
-								
-				role = get(guild.roles, id=roles)
-				if role in ctx.author.roles:
+			voter = ctx.message.author
+			if voter == ctx.voice_state.current.requester:
+				await ctx.message.add_reaction('⏭')
+				ctx.voice_state.skip()
+
+			elif voter.id not in ctx.voice_state.skip_votes:
+				ctx.voice_state.skip_votes.add(voter.id)
+				total_votes = len(ctx.voice_state.skip_votes)
+
+				if total_votes >= 3:
+					await ctx.message.add_reaction('⏭')
 					ctx.voice_state.skip()
-
 				else:
+					await ctx.send(f'{config.success} Skip vote added,' + ' **{}/3**'.format(total_votes))
 
-					if not ctx.voice_state.is_playing:
-						return await ctx.send(f'{config.forbidden} No music playing.')
-
-					voter = ctx.message.author
-					if voter == ctx.voice_state.current.requester:
-						await ctx.message.add_reaction('⏭')
-						ctx.voice_state.skip()
-
-					elif voter.id not in ctx.voice_state.skip_votes:
-						ctx.voice_state.skip_votes.add(voter.id)
-						total_votes = len(ctx.voice_state.skip_votes)
-
-						if total_votes >= 3:
-							await ctx.message.add_reaction('⏭')
-							ctx.voice_state.skip()
-						else:
-							await ctx.send(f'{config.success} Skip vote added,' + ' **{}/3**'.format(total_votes))
-
-					else:
-						await ctx.send(f'{config.forbidden} You already voted to skip.')
+			else:
+				await ctx.send(f'{config.forbidden} You already voted to skip.')
 
 	@commands.command(description='Shows the player queue')
 	async def queue(self, ctx: commands.Context, *, page: int = 1):

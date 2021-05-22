@@ -33,7 +33,7 @@ class economy(commands.Cog):
 		credentials = { "_id": id, "password": password }
 		await self.bank_authorisation.insert_one(credentials)
 
-	@commands.command(aliases=['balance','money','b', "wallet", "bank", "account", "open-account"])
+	@commands.command(description="Check your account balance.", aliases=['balance','money','b', "wallet", "bank", "account", "open-account"])
 	async def bal(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
@@ -81,7 +81,7 @@ class economy(commands.Cog):
 
 			await ctx.send(embed=e)
 
-	@commands.command()
+	@commands.command(description="Work command to get money.")
 	@commands.cooldown(rate=1, per=15, type=BucketType.user)
 	async def work(self, ctx):
 		id = ctx.author.id
@@ -222,7 +222,7 @@ class economy(commands.Cog):
 
 			await ctx.send(embed=embed)
 
-	@commands.command()
+	@commands.command(description="A command to get your daily money.")
 	@commands.cooldown(rate=1, per=5184000, type=BucketType.user)
 	async def daily(self, ctx):
 		id = ctx.author.id
@@ -244,7 +244,7 @@ class economy(commands.Cog):
 		e.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=e)
 
-	@commands.command()
+	@commands.command(description="A command to get your monthly money.")
 	@commands.cooldown(rate=1, per=155520000, type=BucketType.user)
 	async def monthly(self, ctx):
 		id = ctx.author.id
@@ -267,7 +267,7 @@ class economy(commands.Cog):
 		await ctx.send(embed=e)
 		
 
-	@commands.command(aliases=["cash-out", "with"])
+	@commands.command(description="Withdraw money from your bank account.", aliases=["cash-out", "with"])
 	async def withdraw(self, ctx, money: int=None):
 		username = ctx.author.id
 		id = username
@@ -298,7 +298,7 @@ class economy(commands.Cog):
 
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been withdrawn.")
 
-	@commands.command(aliases=["dep", "depo"])
+	@commands.command(description="Deposit money to your bank account.", aliases=["dep", "depo"])
 	async def deposit(self, ctx, money: int=None):
 		username = ctx.author.id
 		id = username
@@ -326,7 +326,7 @@ class economy(commands.Cog):
 
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been deposited.")
 
-	@commands.command(aliases=["cp", "change-pswrd", "change-pass", "change-password"])
+	@commands.command(description="Change the password of your bank account.", aliases=["cp", "change-pswrd", "change-pass", "change-password"])
 	async def changepassword(self, ctx, current_password=None, new_password=None):
 		bank_auth = await self.bank_authorisation.find_one({ "_id": ctx.author.id })
 		if current_password is None:
@@ -342,8 +342,8 @@ class economy(commands.Cog):
 		await ctx.message.delete()
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your password has been changed.")
 
-	@commands.command(aliases=["send-money", "transfer", "pay"])
-	async def sm(self, ctx, username: int=None, password=None, money: int=None, receiver: int=None):
+	@commands.command(description="Send/Pay money to someone else", aliases=["send-money", "transfer", "sm"])
+	async def pay(self, ctx, username: int=None, password=None, money: int=None, receiver: int=None):
 		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y')}"
 		date_2 = date_1.replace("January", "01")
 		date_3 = date_2.replace("February", "02")
