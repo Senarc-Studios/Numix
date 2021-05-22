@@ -10,7 +10,7 @@ class general(commands.Cog):
 		self.process = psutil.Process(os.getpid())
 		print('"Info" cog loaded')
 
-	@commands.command(aliases=["server-info", "server"])
+	@commands.command(description="Shows information about the server.", aliases=["server-info", "server"])
 	async def serverinfo(self, ctx):
 
 		default_notification_setting = f"{ctx.guild.default_notifications}"
@@ -85,7 +85,7 @@ class general(commands.Cog):
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
 	
-	@commands.command(aliases=["av"])
+	@commands.command(description="Shows the avatar of a mentioned user.", aliases=["av"])
 	async def avatar(self, ctx, member: discord.User = None):
 			if member is None:
 				member = ctx.message.author
