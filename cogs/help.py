@@ -49,6 +49,8 @@ class Help(commands.Cog):
 								ali = "None"
 							ali = ali.replace("[", "")
 							ali = ali.replace("]", "")
+							ali = ali.replace("'", "")
+							ali = ali.replace('"', "")
 							e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 							e.set_author(name=f"{cog} command", icon_url=self.config.logo)
 							e.add_field(name="Description", value=f"{c.description}", inline=False)
