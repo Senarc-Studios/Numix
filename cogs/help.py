@@ -1,3 +1,4 @@
+
 from numix_imports import *
 
 class Help(commands.Cog):
@@ -27,21 +28,23 @@ class Help(commands.Cog):
 							command_list += f"`{c.name}` - **{c.description}**\n\n"
 					halp=discord.Embed(timstamp=ctx.message.created_at, title=cog, description=command_list, color=242424)
 					halp.set_footer(text="Numix", icon_url=self.config.logo)
+					await ctx.send(embed=halp)
 					found = True
 				except Exception:
 					found = False
 				if not found:
 					try:
-						
 						c = self.bot.get_command(cog)
 						if not c.hidden:
-							ali = c.aliases
+							ali = f"{c.aliases}"
+							if c.aliases == []:
+								ali = "None"
 							ali = ali.replace("[", "")
 							ali = ali.replace("]", "")
 							e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-							e.set_author(name=cog)
-							e.add_field(name="Aliases", value=f"`{ali}`")
-							e.add_field(name="Description", value=f"{c.description}")
+							e.set_author(name=f"{cog}")
+							e.add_field(name="Aliases", value=f"`{ali}`", inline=False)
+							e.add_field(name="Description", value=f"{c.description}", inline=False)
 							e.set_footer(text="Numix", icon_url=self.config.logo)
 							await ctx.send(embed=e)
 						else:
@@ -49,14 +52,14 @@ class Help(commands.Cog):
 							e.set_author(name="Numix Commands", icon_url=self.config.logo)
 							e.set_footer(text="Numix", icon_url=self.config.logo)
 							return await ctx.send(embed=e)
-					except:
+					except Exception as e:
+						print(e)
 						e = discord.Embed(timestamp=ctx.message.created_at, description="It looks like you've found a invalid command/category. Did you make a typo?", color=0xFF0000)
 						e.set_author(name="Numix Commands", icon_url=self.config.logo)
 						e.set_footer(text="Numix", icon_url=self.config.logo)
 						return await ctx.send(embed=e)
-				await ctx.send(embed=halp)
-		except:
-			pass
+		except Exception as e:
+			print(e)
 
 def setup(bot):
 	bot.add_cog(Help(bot))

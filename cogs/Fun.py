@@ -66,7 +66,7 @@ class fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-	@commands.command(aliases=["em"], description="Use this command to create an Embed.", perms="ADMINISTRATOR")
+	@commands.command(perms="ADMINISTRATOR", syntax="n!embed <title> <description> [footer] [icon]", aliases=["em"], description="Use this command to create an Embed.")
 	@commands.has_permissions(administrator=True)
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
 		
@@ -104,7 +104,7 @@ class fun(commands.Cog):
 			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 			await ctx.send(embed=e)
 
-	@commands.command(description="Sends a random cat image.", perms="@everyone")
+	@commands.command(perms="@everyone", syntax="n!cat", description="Sends a random cat image.")
 	async def cat(self, ctx):
 		URL = f'https://api.thecatapi.com/v1/images/search'
 
@@ -135,7 +135,7 @@ class fun(commands.Cog):
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
 
-	@commands.command(description="Sends a random dog image.")
+	@commands.command(perms="@everyone", syntax="n!dog", description="Sends a random dog image.")
 	async def dog(self, ctx):
 		URL = f'https://api.thedogapi.com/v1/images/search'
 
@@ -166,7 +166,7 @@ class fun(commands.Cog):
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
 
-	@commands.command(cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song.")
+	@commands.command(perms="@everyone", syntax="n!ly <lyrics>", cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song.")
 	@commands.cooldown(rate=1, per=60.0, type=commands.BucketType.user)
 	async def ly(self, ctx, *, lyrics):
 		if lyrics == None:
@@ -238,9 +238,10 @@ class fun(commands.Cog):
 				if text is None:
 					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
 
-	@commands.command(description="You can encrypt message using Numix's encryption method.", aliases=["numix-encrypt", "encrypt"])
+	@commands.command(perms="@everyone", syntax="n!nucrypt <text> [option]", description="You can encrypt message using Numix's encryption method.", aliases=["numix-encrypt", "encrypt"])
 	@commands.cooldown(rate=1, per=5.0, type=commands.BucketType.user)
-	async def nucrypt(self, ctx, *, body=None):
+	async def nucrypt(self, ctx, *, Text=None):
+		body = Text
 		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y')}"
 		date_2 = date_1.replace("January", "01")
 		date_3 = date_2.replace("February", "02")
@@ -322,7 +323,7 @@ class fun(commands.Cog):
 				await Author.send(embed=embed)
 				await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
 
-	@commands.command(description="Decryped Messages that are encrypted with Numix.", aliases=["Nu-Decrypt", "nu-decrypt"])
+	@commands.command(perms="@everyone", syntax="n!decrypt <key>", description="Decryped Messages that are encrypted with Numix.", aliases=["Nu-Decrypt", "nu-decrypt"])
 	async def decrypt(self, ctx, *, key=None):
 		Author = ctx.author
 		if key is None:
@@ -345,7 +346,7 @@ class fun(commands.Cog):
 				if text == "":
 					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
 
-	@commands.command(description="Rolles a Dice for a number for 1 to 6.", aliases=["dice", "dise"])
+	@commands.command(perms="@everyone", syntax="n!roll", description="Rolles a Dice for a number for 1 to 6.", aliases=["dice", "dise"])
 	async def roll(self, ctx):
 		dice = ["1", "2", "3", "4", "5", "6"]
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Dice has been rolled. The number is **{random.choice(dice)}**.", color=242424)
@@ -353,8 +354,9 @@ class fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command(description="Gives a random answer to your question.", name="8ball")
-	async def _8ball(self, ctx, *, input=None):
+	@commands.command(perms="@everyone", syntax="n!8ball <question>", description="Gives a random answer to your question.", name="8ball")
+	async def _8ball(self, ctx, *, question=None):
+		input = question
 		if input is None:
 			return await ctx.send(f"{self.config.forbidden} Specify what you need to be predicted.")
 
@@ -364,7 +366,7 @@ class fun(commands.Cog):
 		await ctx.send(embed=embed)
 
 
-	@commands.command(description="Shows the meaning of word using the urban dictionary.", aliases=["dict", "dictionary", "meaning"])
+	@commands.command(perms="@everyone", syntax="n!urban <search>", description="Shows the meaning of word using the urban dictionary.", aliases=["dict", "dictionary", "meaning"])
 	@commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
 	async def urban(self, ctx, *, search: commands.clean_content=None):
 		
@@ -403,7 +405,7 @@ class fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command(description="Play the slot machine.", aliases=['slots', 'bet'])
+	@commands.command(perms="@everyone", syntax="n!slot", description="Play the slot machine.", aliases=['slots', 'bet'])
 	@commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
 	async def slot(self, ctx):
 		""" Roll the slot machine """

@@ -285,7 +285,7 @@ class music(commands.Cog):
 	async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
 		await ctx.send(f'{config.forbidden}' + '{}'.format(str(error)))
 
-	@commands.command(invoke_without_subcommand=True,description="Joins a voice channel")
+	@commands.command(perms="@everyone", syntax="n!join", invoke_without_subcommand=True,description="Joins a voice channel")
 	async def join(self, ctx: commands.Context):
 		"""Joins a voice channel."""
 
@@ -298,7 +298,7 @@ class music(commands.Cog):
 		ctx.voice_state.voice = await destination.connect()
 		await ctx.send(f'{config.success} Joined the Voice Channel.')
 
-	@commands.command(description='Summons the bot to a voice channel')
+	@commands.command(perms="MANAGE_GUILD", syntax="n!summon [channel]", description='Summons the bot to a voice channel')
 	@commands.has_permissions(manage_guild=True)
 	async def summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
 		"""Summons the bot to a voice channel.
@@ -317,7 +317,7 @@ class music(commands.Cog):
 		ctx.voice_state.voice = await destination.connect()
 		await ctx.send(f'{config.success} Bot summoned!')
 
-	@commands.command( aliases=['disconnect'],description="Clear the queue and leave any voice channel")
+	@commands.command(perms="MANAGE_GUILD", syntax="n!leave", aliases=['disconnect'],description="Clear the queue and leave any voice channel")
 	@commands.has_permissions(manage_guild=True)
 	async def leave(self, ctx: commands.Context):
 		"""Clears the queue and leaves the voice channel."""
@@ -327,13 +327,13 @@ class music(commands.Cog):
 		await ctx.voice_state.stop()
 		del self.voice_states[ctx.guild.id]
 
-	@commands.command(aliases=['current', 'playing'],description='Shows current song')
+	@commands.command(perms="@everyone", syntax="n!np", aliases=['current', 'playing'],description='Shows current song')
 	async def np(self, ctx: commands.Context):
 		"""Displays the currently playing song."""
 
 		await ctx.send(embed=ctx.voice_state.current.create_embed())
 
-	@commands.command(description='Pause the current song')
+	@commands.command(perms="@everyone", syntax="n!pause", description='Pause the current song')
 	async def pause(self, ctx: commands.Context):
 		"""Pauses the currently playing song."""
 
@@ -343,7 +343,7 @@ class music(commands.Cog):
 		else:
 			await ctx.send(f"{config.forbidden} No music playing.")
 
-	@commands.command(description='Resume the paused song')
+	@commands.command(perms="@everyone", syntax="n!resume", description='Resume the paused song')
 	async def resume(self, ctx: commands.Context):
 		"""Resumes a currently paused song."""
 
@@ -354,7 +354,7 @@ class music(commands.Cog):
 			await ctx.send(f"{config.forbidden} Music not paused.")
 
 
-	@commands.command(description='Stops playing the song and clears the queue')
+	@commands.command(perms="@everyone", syntax="n!stop", description='Stops playing the song and clears the queue')
 	async def stop(self, ctx: commands.Context):
 		"""Stops playing song and clears the queue."""
 
@@ -395,7 +395,7 @@ class music(commands.Cog):
 			else:
 				await ctx.send(f'{config.forbidden} You already voted to skip.')
 
-	@commands.command(description='Shows the player queue')
+	@commands.command(perms="@everyone", syntax="n!queue [page]", description='Shows the player queue')
 	async def queue(self, ctx: commands.Context, *, page: int = 1):
 
 		if len(ctx.voice_state.songs) == 0:
@@ -415,7 +415,7 @@ class music(commands.Cog):
 				 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
 		await ctx.send(embed=embed)
 
-	@commands.command(description='Shuffle the playing song')
+	@commands.command(perms="@everyone", syntax="n!shuffle", description='Shuffle the playing song')
 	async def shuffle(self, ctx: commands.Context):
 		"""Shuffles the queue."""
 
@@ -425,7 +425,7 @@ class music(commands.Cog):
 		ctx.voice_state.songs.shuffle()
 		await ctx.message.add_reaction(f'{config.success}')
 
-	@commands.command(description='Remove the song from queue')
+	@commands.command(perms="@everyone", syntax="n!remove [index]", description='Remove the song from queue')
 	async def remove(self, ctx: commands.Context, index: int):
 		"""Removes a song from the queue at a given index."""
 
@@ -435,7 +435,7 @@ class music(commands.Cog):
 		ctx.voice_state.songs.remove(index - 1)
 		await ctx.message.add_reaction(f'{config.success}')
 
-	@commands.command(description='Plays the given song')
+	@commands.command(perms="@everyone", syntax="n!play [song name]", description='Plays the given song')
 	async def play(self, ctx: commands.Context, *, search: str):
 
 		if not ctx.voice_state.voice:

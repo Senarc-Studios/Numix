@@ -26,9 +26,9 @@ class admin(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
-	@commands.command(description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
+	@commands.command(perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
-	async def leavemessage(self, ctx, command=None, channel: discord.TextChannel=None):
+	async def leavemessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
 			return await ctx.send(f"{self.config.forbidden} Requirements missing. You can `enable`, `disable`, or `set` a channel.")
 		
@@ -61,7 +61,7 @@ class admin(commands.Cog):
 			collection.update_one(myquery, newvalues)
 			await ctx.send(f"{self.config.success} Leave Messages has been disabled in this server.")
 
-	@commands.command(description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
+	@commands.command(perms="ADMINISTRATOR", syntax="n!joinmessages <option> [channel]", description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.has_guild_permissions(administrator=True)
 	async def joinmessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
@@ -98,7 +98,7 @@ class admin(commands.Cog):
 
 
 		' Change Prefixes '
-	@commands.command(description="Set and view information about server prefixes.")
+	@commands.command(perms="@everyone", syntax="n!prefix <option> [prefix]", description="Set and view information about server prefixes.")
 	async def prefix(self, ctx, command=None, *, prefix=None):
 		if command is None:
 			return
@@ -165,49 +165,10 @@ class admin(commands.Cog):
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			await ctx.send(embed=embed)
-				
-
-		' Add DJ Command '
-
-	@commands.command(description="Adds a role from the \"DJ\" list.", aliases=["add-dj"])
-	@commands.has_permissions(administrator=True)
-	async def dj(self, ctx, *, role: discord.Role):
-		await ctx.send(f'{self.config.success} Added <@&{role.id}> to DJ roles.')
-		try:
-			collection = self.db1.DataBase_1.settings
-			
-			collection.insert_one({ "_id": int(ctx.guild.id), "dj": [ int(role.id) ] })
-
-		except Exception as e:
-			print(e)
-			collection = self.db1.DataBase_1.settings
-
-			myquery = { "_id": int(ctx.guild.id) }
-
-			newvalues = { "$addToSet": { "_id": int(ctx.guild.id), "dj": int(role.id) } }
-
-			collection.update_one(myquery, newvalues)
-
-		' Remove DJ Command '
-
-	@commands.command(description="Removes a role from the \"DJ\" list.", aliases=["remove-dj"])
-	@commands.has_permissions(administrator=True)
-	async def rdj(self, ctx, *, role: discord.Role):
-		collection = self.db1.DataBase_1.settings
-		if collection.count_documents({"_id": ctx.guild.id}) == 0:
-			await ctx.send(f"{self.config.forbidden} <@&{role.id}> is not a DJ role.")
-
-		else:
-			myquery = { "_id": int(ctx.guild.id) }
-
-			newvalues = { "$removeFromSet": { "_id": int(ctx.guild.id), "dj": role.id } }
-
-			collection.update_one(myquery, newvalues)
-			await ctx.send(f'{self.config.success} Removed <@&{role.id}> from DJ roles.')
 
 		' Reports Config '
 
-	@commands.command(description="Sets the channel that reports are sent.", alisases=["set-report", "report-channel"])
+	@commands.command(perms="ADMINISTRATOR", syntax="n!reports <channel>", description="Sets the channel that reports are sent.", alisases=["set-report", "report-channel"])
 	@commands.has_permissions(administrator=True)
 	async def reports(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Report Channel set to <#{log.id}>')
@@ -221,7 +182,7 @@ class admin(commands.Cog):
 
 		' Log Config '
 
-	@commands.command(description="Sets the log channel.", alisases=["logs", "set-logs", "audit-log"])
+	@commands.command(perms="ADMINISTRATOR", syntax="n!log <channel>", description="Sets the log channel.", alisases=["logs", "set-logs", "audit-log"])
 	@commands.has_permissions(administrator=True)
 	async def log(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Log Channel set to <#{log.id}>')
@@ -237,7 +198,8 @@ class admin(commands.Cog):
 
 		' Filter Setting '
 
-	@commands.command(description="Customising server filters on premium servers.")
+	@commands.command(perms="ADMINISTRATOR", syntax="n!filter <type> <option>", description="Customising server filters on premium servers.")
+	@commands.has_permissions(administrator=True)
 	async def filter(self, ctx, type=None, *, option=None):
 
 		links = ["link", "links"]
