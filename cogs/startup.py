@@ -9,7 +9,7 @@ class StartUp(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("Bot has started.")
-        await slash.sync_all_commands(self.bot)
+        await slash.sync_all_commands(self.bot, loading_message="We're proccessing your commmand currently.", hidden_commands=["e", "apply", "load", "unload", "reload", "restart", "run_ads"])
 
 def setup(bot):
     bot.add_cog(StartUp(bot))

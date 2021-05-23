@@ -1,5 +1,11 @@
 from numix_imports import *
 
+class CustomCommand(commands.Command):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.perms = kwargs.get("perms", None)
+        self.syntax = kwargs.get("syntax", None)
+
 class admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -26,7 +32,7 @@ class admin(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
-	@commands.command(perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
 	async def leavemessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
@@ -61,7 +67,7 @@ class admin(commands.Cog):
 			collection.update_one(myquery, newvalues)
 			await ctx.send(f"{self.config.success} Leave Messages has been disabled in this server.")
 
-	@commands.command(perms="ADMINISTRATOR", syntax="n!joinmessages <option> [channel]", description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!joinmessages <option> [channel]", description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.has_guild_permissions(administrator=True)
 	async def joinmessages(self, ctx, command=None, channel: discord.TextChannel=None):
 		if command is None:
@@ -98,7 +104,7 @@ class admin(commands.Cog):
 
 
 		' Change Prefixes '
-	@commands.command(perms="@everyone", syntax="n!prefix <option> [prefix]", description="Set and view information about server prefixes.")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!prefix <option> [prefix]", description="Set and view information about server prefixes.")
 	async def prefix(self, ctx, command=None, *, prefix=None):
 		if command is None:
 			return
@@ -168,7 +174,7 @@ class admin(commands.Cog):
 
 		' Reports Config '
 
-	@commands.command(perms="ADMINISTRATOR", syntax="n!reports <channel>", description="Sets the channel that reports are sent.", alisases=["set-report", "report-channel"])
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!reports <channel>", description="Sets the channel that reports are sent.", alisases=["set-report", "report-channel"])
 	@commands.has_permissions(administrator=True)
 	async def reports(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Report Channel set to <#{log.id}>')
@@ -182,7 +188,7 @@ class admin(commands.Cog):
 
 		' Log Config '
 
-	@commands.command(perms="ADMINISTRATOR", syntax="n!log <channel>", description="Sets the log channel.", alisases=["logs", "set-logs", "audit-log"])
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!log <channel>", description="Sets the log channel.", alisases=["logs", "set-logs", "audit-log"])
 	@commands.has_permissions(administrator=True)
 	async def log(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Log Channel set to <#{log.id}>')
@@ -198,7 +204,7 @@ class admin(commands.Cog):
 
 		' Filter Setting '
 
-	@commands.command(perms="ADMINISTRATOR", syntax="n!filter <type> <option>", description="Customising server filters on premium servers.")
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!filter <type> <option>", description="Customising server filters on premium servers.")
 	@commands.has_permissions(administrator=True)
 	async def filter(self, ctx, type=None, *, option=None):
 

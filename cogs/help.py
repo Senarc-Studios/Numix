@@ -1,15 +1,22 @@
 
 from numix_imports import *
 
+class CustomCommand(commands.Command):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.perms = kwargs.get("perms", None)
+        self.syntax = kwargs.get("syntax", None)
+
 class Help(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
 		print('"Help" cog loaded')
 
-	@commands.command()
+	@commands.command(cls=CustomCommand, description="Shows all of Numix's commands.")
 	@commands.has_permissions(add_reactions=True,embed_links=True)
-	async def help(self, ctx, cog=None):
+	async def help(self, ctx, command=None):
+		cog = command
 		"""Gets all cogs and commands of mine."""
 		try:
 			if cog is None:
@@ -26,7 +33,8 @@ class Help(commands.Cog):
 					for c in self.bot.get_cog(cog).get_commands():
 						if not c.hidden:
 							command_list += f"`{c.name}` - **{c.description}**\n\n"
-					halp=discord.Embed(timstamp=ctx.message.created_at, title=cog, description=command_list, color=242424)
+					halp=discord.Embed(timstamp=ctx.message.created_at, description=command_list, color=242424)
+					halp.set_author(name=f"{cog} commands", icon_url=self.config.logo)
 					halp.set_footer(text="Numix", icon_url=self.config.logo)
 					await ctx.send(embed=halp)
 					found = True
@@ -42,9 +50,11 @@ class Help(commands.Cog):
 							ali = ali.replace("[", "")
 							ali = ali.replace("]", "")
 							e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-							e.set_author(name=f"{cog}")
-							e.add_field(name="Aliases", value=f"`{ali}`", inline=False)
+							e.set_author(name=f"{cog} command", icon_url=self.config.logo)
 							e.add_field(name="Description", value=f"{c.description}", inline=False)
+							e.add_field(name="Permissions", value=f"`{c.perms}`")
+							e.add_field(name="Aliases", value=f"`{ali}`", inline=False)
+							e.add_field(name="Usage", value=f"`{c.syntax}`")
 							e.set_footer(text="Numix", icon_url=self.config.logo)
 							await ctx.send(embed=e)
 						else:

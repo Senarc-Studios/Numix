@@ -1,6 +1,12 @@
 from numix_imports import *
 import numix_encrypt
 
+class CustomCommand(commands.Command):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.perms = kwargs.get("perms", None)
+        self.syntax = kwargs.get("syntax", None)
+
 class fun(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -66,7 +72,7 @@ class fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
-	@commands.command(perms="ADMINISTRATOR", syntax="n!embed <title> <description> [footer] [icon]", aliases=["em"], description="Use this command to create an Embed.")
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!embed <title> <description> [footer] [icon]", aliases=["em"], description="Use this command to create an Embed.")
 	@commands.has_permissions(administrator=True)
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
 		
@@ -104,7 +110,7 @@ class fun(commands.Cog):
 			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
 			await ctx.send(embed=e)
 
-	@commands.command(perms="@everyone", syntax="n!cat", description="Sends a random cat image.")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!cat", description="Sends a random cat image.")
 	async def cat(self, ctx):
 		URL = f'https://api.thecatapi.com/v1/images/search'
 
@@ -135,7 +141,7 @@ class fun(commands.Cog):
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
 
-	@commands.command(perms="@everyone", syntax="n!dog", description="Sends a random dog image.")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!dog", description="Sends a random dog image.")
 	async def dog(self, ctx):
 		URL = f'https://api.thedogapi.com/v1/images/search'
 
@@ -166,7 +172,7 @@ class fun(commands.Cog):
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
 
-	@commands.command(perms="@everyone", syntax="n!ly <lyrics>", cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song.")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!ly <lyrics>", cooldown_after_parsing=True, aliases=['lyrics'], description="Shows the lyrics of given song.")
 	@commands.cooldown(rate=1, per=60.0, type=commands.BucketType.user)
 	async def ly(self, ctx, *, lyrics):
 		if lyrics == None:
@@ -214,7 +220,7 @@ class fun(commands.Cog):
 					icon_url=f'{ctx.author.avatar_url}')
 				await ctx.send(embed=embed)
 
-	@commands.command(hidden=True, aliases=["who-crypt", "who-nucrypt", "whos-key"])
+	@commands.command(cls=CustomCommand, hidden=True, aliases=["who-crypt", "who-nucrypt", "whos-key"])
 	@commands.check(developers)
 	async def whocrypt(self, ctx, key):
 		if key is None:
@@ -238,9 +244,9 @@ class fun(commands.Cog):
 				if text is None:
 					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
 
-	@commands.command(perms="@everyone", syntax="n!nucrypt <text> [option]", description="You can encrypt message using Numix's encryption method.", aliases=["numix-encrypt", "encrypt"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!encrypt <text> [option]", description="You can encrypt message using Numix's encryption method.", aliases=["numix-encrypt", "nucrypt"])
 	@commands.cooldown(rate=1, per=5.0, type=commands.BucketType.user)
-	async def nucrypt(self, ctx, *, Text=None):
+	async def encrypt(self, ctx, *, Text=None):
 		body = Text
 		date_1 = f"{ctx.message.created_at.__format__('%d-%B-%Y')}"
 		date_2 = date_1.replace("January", "01")
@@ -323,7 +329,7 @@ class fun(commands.Cog):
 				await Author.send(embed=embed)
 				await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
 
-	@commands.command(perms="@everyone", syntax="n!decrypt <key>", description="Decryped Messages that are encrypted with Numix.", aliases=["Nu-Decrypt", "nu-decrypt"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!decrypt <key>", description="Decryped Messages that are encrypted with Numix.", aliases=["Nu-Decrypt", "nu-decrypt"])
 	async def decrypt(self, ctx, *, key=None):
 		Author = ctx.author
 		if key is None:
@@ -346,7 +352,7 @@ class fun(commands.Cog):
 				if text == "":
 					await ctx.send(f"{self.config.forbidden} That key doesn't exist.")
 
-	@commands.command(perms="@everyone", syntax="n!roll", description="Rolles a Dice for a number for 1 to 6.", aliases=["dice", "dise"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!roll", description="Rolles a Dice for a number for 1 to 6.", aliases=["dice", "dise"])
 	async def roll(self, ctx):
 		dice = ["1", "2", "3", "4", "5", "6"]
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Dice has been rolled. The number is **{random.choice(dice)}**.", color=242424)
@@ -354,7 +360,7 @@ class fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command(perms="@everyone", syntax="n!8ball <question>", description="Gives a random answer to your question.", name="8ball")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!8ball <question>", description="Gives a random answer to your question.", name="8ball")
 	async def _8ball(self, ctx, *, question=None):
 		input = question
 		if input is None:
@@ -366,7 +372,7 @@ class fun(commands.Cog):
 		await ctx.send(embed=embed)
 
 
-	@commands.command(perms="@everyone", syntax="n!urban <search>", description="Shows the meaning of word using the urban dictionary.", aliases=["dict", "dictionary", "meaning"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!urban <search>", description="Shows the meaning of word using the urban dictionary.", aliases=["dict", "dictionary", "meaning"])
 	@commands.cooldown(rate=1, per=2.0, type=commands.BucketType.user)
 	async def urban(self, ctx, *, search: commands.clean_content=None):
 		
@@ -396,7 +402,7 @@ class fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command(description="Gives a random rating from 0 to 100.")
+	@commands.command(cls=CustomCommand, description="Gives a random rating from 0 to 100.")
 	async def rate(self, ctx, *, thing: commands.clean_content=None):
 		if thing is None:
 			return await ctx.send(f"{self.config.forbidden} Specify what you want me to rate on.")
@@ -405,7 +411,7 @@ class fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	@commands.command(perms="@everyone", syntax="n!slot", description="Play the slot machine.", aliases=['slots', 'bet'])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!slot", description="Play the slot machine.", aliases=['slots', 'bet'])
 	@commands.cooldown(rate=1, per=3.0, type=commands.BucketType.user)
 	async def slot(self, ctx):
 		""" Roll the slot machine """

@@ -4,6 +4,12 @@ config = default.get('./config.json')
 
 MONGO = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
 
+class CustomCommand(commands.Command):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.perms = kwargs.get("perms", None)
+        self.syntax = kwargs.get("syntax", None)
+
 class general(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -11,7 +17,7 @@ class general(commands.Cog):
 		self.process = psutil.Process(os.getpid())
 		print('"Info" cog loaded')
 
-	@commands.command(perms="@everyone", syntax="n!report <member> <reason>", description="Reports a user to the staff members", name="report")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!report <member> <reason>", description="Reports a user to the staff members", name="report")
 	async def report(self, ctx, member: discord.Member = None, *, reason = None):
 		cluster = MongoClient(f"{self.config.mongo1}DataBase_1{self.config.mongo2}")
 		collection = cluster.DataBase_1.settings
