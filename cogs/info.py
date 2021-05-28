@@ -15,6 +15,10 @@ class general(commands.Cog):
 		self.bot = bot
 		self.config = config
 		self.process = psutil.Process(os.getpid())
+		self.mongo_moderation_url = f"{self.config.mongo1}Moderation{self.config.mongo2}"
+		self.moderation_db = MongoClient(self.mongo_moderation_url)
+		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
+		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!premium [server]", description="Checks if a server has Numix Premium enabled.")
