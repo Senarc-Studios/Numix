@@ -17,6 +17,43 @@ class general(commands.Cog):
 		self.process = psutil.Process(os.getpid())
 		print('"Info" cog loaded')
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!premium [server]", description="Checks if a server has Numix Premium enabled.")
+	async def premium(self, ctx, id=None):
+		if id is None:
+			id = ctx.guild.id
+
+		deactivated_premium = "https://cdn.numix.xyz/kp7ylpny49a.png"
+		activated_premium = "https://cdn.numix.xyz/kp7z25iwy9a.png"
+
+		premium = self.db1.DataBase_1.premium
+
+		premium_list = premium
+		premium_validation_check = premium_list.count_documents({ "_id": f"{id}" })
+
+		if premium_validation_check == 0:
+			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
+
+		for guilds in premium.find({ "_id": f"{id}" }):
+			trf = guilds["premium"]
+			trf = f"{trf}"
+
+		if trf == "False":
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
+			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
+			e.footer(text="Numix", icon_url=self.config.logo)
+			return await ctx.send(embed=e)
+
+		elif trf == "True":
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium activated and all premium commands is unlocked and accessable in the server.", color=242424)
+			e.set_author(name="Numix Premium", icon_url=activated_premium)
+			e.footer(text="Numix Premium", icon_url=self.config.logo)
+			return await ctx.send(embed=e)
+		else:
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
+			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
+			e.footer(text="Numix", icon_url=self.config.logo)
+			return await ctx.send(embed=e)
+
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!report <member> <reason>", description="Reports a user to the staff members", name="report")
 	async def report(self, ctx, member: discord.Member = None, *, reason = None):
 		cluster = MongoClient(f"{self.config.mongo1}DataBase_1{self.config.mongo2}")

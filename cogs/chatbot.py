@@ -43,6 +43,9 @@ class ChatBot(commands.Cog):
 					url = requests.get('http://api.brainshop.ai/get?bid=155653&key=odFCsAutc2kb5BO5&uid=[uid]&msg='+msgAI)
 					decode = json.loads(url.text)
 					await ctx.send(decode['cnt'])
+
+				else:
+					return
 		except Exception:
 			pass
 

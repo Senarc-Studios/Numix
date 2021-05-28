@@ -95,6 +95,8 @@ class admin(commands.Cog):
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
 					await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
+		else:
+			return
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
