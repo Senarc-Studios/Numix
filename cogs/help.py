@@ -18,7 +18,7 @@ class Help(commands.Cog):
 	async def help(self, ctx, command=None):
 		cog = command
 		"""Gets all cogs and commands of mine."""
-		try:
+		try: 
 			if cog is None:
 				e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 				e.set_author(name="Numix Commands", icon_url=self.config.logo)

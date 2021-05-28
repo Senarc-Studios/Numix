@@ -232,7 +232,7 @@ description = "A package that you can use to easily implement slash commands int
 name = "discordpy-slash"
 optional = false
 python-versions = ">=3.6"
-version = "0.0.24"
+version = "0.0.25"
 
 [[package]]
 category = "main"
@@ -761,7 +761,7 @@ python-versions = "*"
 version = "2020.12.31"
 
 [metadata]
-content-hash = "b6fc6190b48aae2f881ed512a46e80e83d32e2b68100b21c29034571f1d0f9a9"
+content-hash = "2be87b0962dbed77814161d70a27eddff84e6f35ffdeec7792030aa4ab0acd5c"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -928,8 +928,8 @@ discord-webhook = [
     {file = "discord.py-1.7.2.tar.gz", hash = "sha256:114e76cd27362fb919abf7f001a2dbdc77c9a67cff74ed6a89aecd6582ee298e"},
 ]
 discordpy-slash = [
-    {file = "discordpy_slash-0.0.24-py3-none-any.whl", hash = "sha256:9c3bd810907d4eda93acab2805cb1d1afba631d5cb786b16440f3f78a23342ad"},
-    {file = "discordpy_slash-0.0.24.tar.gz", hash = "sha256:74c79256908df7410f060ea03385113d65bae6f0e83c7c912973324b4e78e3d6"},
+    {file = "discordpy_slash-0.0.25-py3-none-any.whl", hash = "sha256:7feec3932c26217e213579c8989ddc4838976b77eda4cf107772539b5da7b271"},
+    {file = "discordpy_slash-0.0.25.tar.gz", hash = "sha256:efb6f4cb4098d5ecf21c15b180017c71f9eee98d17f9283d7fc980beca9212b1"},
 ]
 dnspython = [
     {file = "dnspython-2.1.0-py3-none-any.whl", hash = "sha256:95d12f6ef0317118d2a1a6fc49aac65ffec7eb8087474158f42f26a639135216"},

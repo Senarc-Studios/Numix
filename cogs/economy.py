@@ -274,7 +274,7 @@ class economy(commands.Cog):
 		
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!withdraw <money>", description="Withdraw money from your bank account.", aliases=["cash-out", "with"])
-	async def withdraw(self, ctx, money: int=None):
+	async def withdraw(self, ctx, money=None):
 		username = ctx.author.id
 		id = username
 		bank_account = await self.bank.find_one({ "_id": id })
@@ -282,6 +282,12 @@ class economy(commands.Cog):
 
 		if wallet is None:
 			return await ctx.send(f"{self.config.forbidden} Please open a account using `n!bal` command first.")
+
+		if money == "all":
+			money = wallet["bal"]
+
+		else:
+			money = int(money)
 
 		if money is None:
 			await ctx.message.delete()
@@ -304,7 +310,7 @@ class economy(commands.Cog):
 
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been withdrawn.")
 
-	@commands.command(cls=CustomCommand, description="Deposit money to your bank account.", aliases=["dep", "depo"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!deposit <amount>", description="Deposit money to your bank account.", aliases=["dep", "depo"])
 	async def deposit(self, ctx, money: int=None):
 		username = ctx.author.id
 		id = username
@@ -315,6 +321,12 @@ class economy(commands.Cog):
 		if money is None:
 			await ctx.message.delete()
 			return await ctx.send(f"{self.config.forbidden} Specify the ammount of money to be deposited.")
+
+		if money == "all":
+			money = wallet["bal"]
+
+		else:
+			money = int(money)
 
 		if money > wallet["bal"]:
 			return await ctx.send(f"{self.config.forbidden} You don't have enough money in your wallet.")
@@ -437,7 +449,7 @@ class economy(commands.Cog):
 		recipient_user = discord.utils.get(self.bot.users, id=receiver)
 
 		
-		msg = f"{account_owner.name}#{account_owner.discriminator}(`{account_owner.id}`) has bank transfered ${money} to {recipient_account.name}#{recipient_account.discriminator}(`{recipient_account.id}`) at {Today} {ctx.message.created_at}. Owner account trasaction ID is `{transaction_id}`, Recipient account transaction ID is `{transaction_id_1}`."
+		msg = f"{account_owner.name}#{account_owner.discriminator}(`{account_owner.id}`) has bank transfered ${money} to {recipient_user.name}#{recipient_user.discriminator}(`{recipient_user.id}`) at {Today} {ctx.message.created_at}. Owner account trasaction ID is `{transaction_id}`, Recipient account transaction ID is `{transaction_id_1}`."
 		webhook = DiscordWebhook(url="https://ptb.discord.com/api/webhooks/827106209105838091/4h1OhWgyUZyAbaxf29LRpoE4bdobl8qzyzdG1-SfINVtRSC854M5OIxncdTi-87rxPYn", content=msg)
 		response = webhook.execute()
 		print(response)
