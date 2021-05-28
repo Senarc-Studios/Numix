@@ -26,8 +26,8 @@ class general(commands.Cog):
 		if id is None:
 			id = ctx.guild.id
 
-		deactivated_premium = "https://cdn.numix.xyz/kp7ylpny49a.png"
-		activated_premium = "https://cdn.numix.xyz/kp7z25iwy9a.png"
+		deactivated_premium = "https://cdn.numix.xyz/kp80894na9a.png"
+		activated_premium = "https://cdn.numix.xyz/kp7zx04pm9a.png"
 
 		premium = self.db1.DataBase_1.premium
 
@@ -35,7 +35,7 @@ class general(commands.Cog):
 		premium_validation_check = premium_list.count_documents({ "_id": f"{id}" })
 
 		if premium_validation_check == 0:
-			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xB8B8B8)
 			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
 			e.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
@@ -45,7 +45,7 @@ class general(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xB8B8B8)
 			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
 			e.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
@@ -56,7 +56,7 @@ class general(commands.Cog):
 			e.set_footer(text="Numix Premium", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
 		else:
-			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xB8B8B8)
 			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
 			e.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
