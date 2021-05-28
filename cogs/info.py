@@ -35,7 +35,10 @@ class general(commands.Cog):
 		premium_validation_check = premium_list.count_documents({ "_id": f"{id}" })
 
 		if premium_validation_check == 0:
-			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
+			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
+			e.set_footer(text="Numix", icon_url=self.config.logo)
+			return await ctx.send(embed=e)
 
 		for guilds in premium.find({ "_id": f"{id}" }):
 			trf = guilds["premium"]
