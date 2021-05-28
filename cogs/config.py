@@ -1,10 +1,10 @@
 from numix_imports import *
 
 class CustomCommand(commands.Command):
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        self.perms = kwargs.get("perms", None)
-        self.syntax = kwargs.get("syntax", None)
+	def __init__(self,*args,**kwargs):
+		super().__init__(*args,**kwargs)
+		self.perms = kwargs.get("perms", None)
+		self.syntax = kwargs.get("syntax", None)
 
 class admin(commands.Cog):
 	def __init__(self, bot):
@@ -31,6 +31,70 @@ class admin(commands.Cog):
 			for info in collection.find(guild_prefix):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
+
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!cb <option> [channel]", description="Manage ChatBots on premium servers.", aliases=["chat-bot", "chat", "bot", "ai"])
+	@commands.has_permissions(administrator=True)
+	async def cb(self, ctx, option=None, channel: discord.TextChannel=None):
+		premium = self.db1.DataBase_1.premium
+
+		premium_list = premium
+		premium_validation_check = premium_list.count_documents({ "_id": f"{ctx.guild.id}" })
+
+		if premium_validation_check == 0:
+			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use Chat Bots.")
+
+		for guilds in premium.find({ "_id": f"{ctx.guild.id}" }):
+			trf = guilds["premium"]
+			trf = f"{trf}"
+
+		if trf == "False":
+			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use Chat Bots.")
+
+		elif trf == "True":
+			if option is None:
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `diable`, or `set`.")
+
+			elif option == "enable":
+				collection = self.db1.DataBase_1.settings
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					if data["cb"] is None:
+						collection.insert_one({ "_id": int(ctx.guild.id), "cb": "enabled" })
+					
+					if data["cb"] == "enabled":
+						return await ctx.send(f"{self.config.forbidden} Chat bot is already enabled.")
+
+					else:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "enabled" } })
+					await ctx.send(f"{self.config.success} Chat bot has been enabled.")
+			
+			elif option == "disable":
+				collection = self.db1.DataBase_1.settings
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					if data["cb"] is None:
+						collection.insert_one({ "_id": int(ctx.guild.id), "cb": "disabled" })
+					
+					if data["cb"] == "disabled":
+						return await ctx.send(f"{self.config.forbidden} Chat bot is not enabled.")
+
+					else:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
+					await ctx.send(f"{self.config.success} Chat bot has been disabled.")
+
+			elif option == "set":
+				collection = self.db1.DataBase_1.settings
+				if channel == None:
+					channel = ctx.channel
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					if data["cbc"] is None:
+						collection.insert_one({ "_id": int(ctx.guild.id), "cb": "disabled" })
+					
+					if data["cbc"] == int(channel.id):
+						return await ctx.send(f"{self.config.forbidden} Chat bot is already set in that channel.")
+
+					else:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
+					await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
