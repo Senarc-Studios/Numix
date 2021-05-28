@@ -44,18 +44,18 @@ class general(commands.Cog):
 		if trf == "False":
 			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
 			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
-			e.footer(text="Numix", icon_url=self.config.logo)
+			e.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
 
 		elif trf == "True":
 			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium activated and all premium commands is unlocked and accessable in the server.", color=242424)
 			e.set_author(name="Numix Premium", icon_url=activated_premium)
-			e.footer(text="Numix Premium", icon_url=self.config.logo)
+			e.set_footer(text="Numix Premium", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
 		else:
 			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium is not activated and premium commands can't be executed in the server.", color=0xE05745)
 			e.set_author(name="Numix Premium", icon_url=deactivated_premium)
-			e.footer(text="Numix", icon_url=self.config.logo)
+			e.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!report <member> <reason>", description="Reports a user to the staff members", name="report")
