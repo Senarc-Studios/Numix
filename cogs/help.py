@@ -34,7 +34,7 @@ class Help(commands.Cog):
 						if not c.hidden:
 							command_list += f"`{c.name}` - **{c.description}**\n\n"
 					halp=discord.Embed(timstamp=ctx.message.created_at, description=command_list, color=242424)
-					halp.set_author(name=f"{cog} commands", icon_url=self.config.logo)
+					halp.set_author(name=f"{cog.capitalize()} Commands", icon_url=self.config.logo)
 					halp.set_footer(text="Numix", icon_url=self.config.logo)
 					await ctx.send(embed=halp)
 					found = True
@@ -52,7 +52,7 @@ class Help(commands.Cog):
 							ali = ali.replace("'", "")
 							ali = ali.replace('"', "")
 							e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-							e.set_author(name=f"{cog} command", icon_url=self.config.logo)
+							e.set_author(name=f"{cog.capitalize()} Command", icon_url=self.config.logo)
 							e.add_field(name="Description", value=f"{c.description}", inline=False)
 							e.add_field(name="Permissions", value=f"`{c.perms}`")
 							e.add_field(name="Aliases", value=f"`{ali}`", inline=False)
