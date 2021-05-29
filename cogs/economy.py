@@ -229,7 +229,7 @@ class economy(commands.Cog):
 			await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!daily", description="A command to get your daily money.")
-	@commands.cooldown(rate=1, per=5184000, type=BucketType.user)
+	@commands.cooldown(rate=1, per=86400, type=BucketType.user)
 	async def daily(self, ctx):
 		id = ctx.author.id
 		wallet = await self.eco.find_one({ "_id": id })
@@ -251,7 +251,7 @@ class economy(commands.Cog):
 		await ctx.send(embed=e)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!monthly", description="A command to get your monthly money.")
-	@commands.cooldown(rate=1, per=155520000, type=BucketType.user)
+	@commands.cooldown(rate=1, per=2592000, type=BucketType.user)
 	async def monthly(self, ctx):
 		id = ctx.author.id
 		wallet = await self.eco.find_one({ "_id": id })
