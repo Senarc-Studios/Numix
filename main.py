@@ -45,7 +45,7 @@ def prefix(bot, message):
 bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
 
-async def is_owner(self, user: discord.User):
+async def is_owner(ctx, user: discord.User):
 	dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
 	if user.id in dev:  # Implement your own conditions here
 		return True
@@ -53,6 +53,15 @@ async def is_owner(self, user: discord.User):
 		await ctx.send(f"{config.forbidden} You can't use that command.")
 		return False
 
+
+@bot.command(hidden=True, aliases=["pull", "git-pull", "update"])
+async def fetch(ctx):
+	if await is_owner(ctx, ctx.author) == False:
+		return
+	os.system(f"ls -l; git pull git@github.com:BenitzCoding/Numix.git")
+	await ctx.send(f"{config.success} Fetched all updates and restarting.")
+	os.system(f"ls -l; python3 main.py")
+	await bot.logout()
 
 # Eval
 
