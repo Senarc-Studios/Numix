@@ -1,5 +1,16 @@
-from numix_imports import *
 import os
+os.system(f"ls -l; pip install discord.py[voice]")
+os.system(f"ls -l; pip install discord.py")
+os.system(f"ls -l; pip install discordpy-slash")
+
+file1 = open('requirements.txt', 'r')
+Line = file1.readlines()
+for Lines in Line:
+	Lines.replace("import ", "")
+	Lines.replace("_", "-")
+	os.system(f"ls -l; pip install {Lines}")
+
+from numix_imports import *
 import discord
 from discord.ext import commands
 
