@@ -52,13 +52,15 @@ class admin(commands.Cog):
 
 		elif trf == "True":
 			if option is None:
-				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `diable`, or `set`.")
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
 
 			elif option == "enable":
 				collection = self.db1.DataBase_1.settings
-				for data in collection.find({ "_id": int(ctx.guild.id) }):
-					if data["cb"] is None:
-						collection.insert_one({ "_id": int(ctx.guild.id), "cb": "enabled" })
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+					collection.insert_one({ "_id": int(ctx.guild.id), "cb": "enabled" })
+
+				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
 					
 					if data["cb"] == "enabled":
 						return await ctx.send(f"{self.config.forbidden} Chat bot is already enabled.")
@@ -69,9 +71,11 @@ class admin(commands.Cog):
 			
 			elif option == "disable":
 				collection = self.db1.DataBase_1.settings
-				for data in collection.find({ "_id": int(ctx.guild.id) }):
-					if data["cb"] is None:
-						collection.insert_one({ "_id": int(ctx.guild.id), "cb": "disabled" })
+
+				if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+					collection.insert_one({ "_id": int(ctx.guild.id), "cb": "disabled" })
+
+				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
 					
 					if data["cb"] == "disabled":
 						return await ctx.send(f"{self.config.forbidden} Chat bot is not enabled.")
@@ -81,13 +85,15 @@ class admin(commands.Cog):
 					await ctx.send(f"{self.config.success} Chat bot has been disabled.")
 
 			elif option == "set":
-				collection = self.db1.DataBase_1.settings
 				if channel == None:
 					channel = ctx.channel
 
-				for data in collection.find({ "_id": int(ctx.guild.id) }):
-					if data["cbc"] is None:
-						collection.insert_one({ "_id": int(ctx.guild.id), "cb": "disabled" })
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+					collection.insert_one({ "_id": int(ctx.guild.id), "cbc": int(channel.id) })
+
+				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
 					
 					if data["cbc"] == int(channel.id):
 						return await ctx.send(f"{self.config.forbidden} Chat bot is already set in that channel.")

@@ -2,6 +2,7 @@ import os
 os.system(f"ls -l; pip install discord.py[voice]")
 os.system(f"ls -l; pip install discord.py")
 os.system(f"ls -l; pip install discordpy-slash")
+os.system(f"ls -l; pip install jishaku")
 
 file1 = open('requirements.txt', 'r')
 Line = file1.readlines()
