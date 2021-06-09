@@ -1,11 +1,5 @@
 from numix_imports import *
 
-class CustomCommand(commands.Command):
-	def __init__(self,*args,**kwargs):
-		super().__init__(*args,**kwargs)
-		self.perms = kwargs.get("perms", None)
-		self.syntax = kwargs.get("syntax", None)
-
 class ChatBot(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -40,7 +34,7 @@ class ChatBot(commands.Cog):
 					return
 
 				elif trf == "True":		
-					url = requests.get('http://api.brainshop.ai/get?bid=155653&key=odFCsAutc2kb5BO5&uid=[uid]&msg='+msgAI)
+					url = requests.get('http://api.brainshop.ai/get?bid=155653&key=odFCsAutc2kb5BO5&uid=[uid]&msg='+message.content)
 					decode = json.loads(url.text)
 					await ctx.send(decode['cnt'])
 

@@ -9,7 +9,10 @@ Line = file1.readlines()
 for Lines in Line:
 	Lines.replace("import ", "")
 	Lines.replace("_", "-")
-	os.system(f"ls -l; pip install {Lines}")
+	try:
+		exec(f"import {Lines}")
+	except Exception:
+		os.system(f"ls -l; pip install {Lines}")
 
 from numix_imports import *
 import discord
@@ -188,11 +191,16 @@ async def unload(ctx, *, name: str):
 @bot.command(hidden=True)
 @commands.is_owner()
 async def reload(ctx, *, name: str):
+	if reload == "all":
+		for file in os.listdir("./cogs"):
+			if file.endswith(".py"):
+				name = file[:-3]
+				bot.reload_extension(f"cogs.{name}")
 	try:
 		bot.reload_extension(f"cogs.{name}")
 	except Exception as e:
 		return await ctx.send(default.traceback_maker(e))
-	await ctx.send(f'"**{name}**" Cog reloaded')
+	await ctx.send(f'All Cogs are reloaded')
 
 @bot.command(hidden=True)
 @commands.is_owner()
@@ -207,6 +215,8 @@ for file in os.listdir("./cogs"):
 	if file.endswith(".py"):
 		name = file[:-3]
 		bot.load_extension(f"cogs.{name}")
+
+bot.load_extension("jishaku")
 
 
 # Run Bot
