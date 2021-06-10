@@ -68,18 +68,18 @@ class admin(commands.Cog):
 							return await ctx.send(f"{self.config.forbidden} Chat bot is already enabled.")
 					except Exception:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "enabled" } })
-						await ctx.send(f"{self.config.success} Chat bot has been enabled.")
+						return await ctx.send(f"{self.config.success} Chat bot has been enabled.")
 
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "enabled" } })
-					await ctx.send(f"{self.config.success} Chat bot has been enabled.")
+						return await ctx.send(f"{self.config.success} Chat bot has been enabled.")
 			
 			elif option == "disable":
 				collection = self.db1.DataBase_1.settings
 
 				if collection.count_documents({ "_id": int(ctx.guild.id), "cb": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "cb": "disabled" }) == 0:
 					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
-					await ctx.send(f"{self.config.success} Chat bot has been disabled.")
+					return await ctx.send(f"{self.config.success} Chat bot has been disabled.")
 
 				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
 					try:
@@ -87,11 +87,11 @@ class admin(commands.Cog):
 							return await ctx.send(f"{self.config.forbidden} Chat bot is not enabled.")
 					except Exception:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
-						await ctx.send(f"{self.config.success} Chat bot has been disabled.")
+						return await ctx.send(f"{self.config.success} Chat bot has been disabled.")
 
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
-					await ctx.send(f"{self.config.success} Chat bot has been disabled.")
+						return await ctx.send(f"{self.config.success} Chat bot has been disabled.")
 
 			elif option == "set":
 				if channel == None:
@@ -122,11 +122,11 @@ class admin(commands.Cog):
 							return await ctx.send(f"{self.config.forbidden} Chat bot is already set in that channel.")
 					except Exception:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
-						await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
+						return await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
 
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
-					await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
+						return await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
 		else:
 			return
 
