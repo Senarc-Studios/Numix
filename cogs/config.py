@@ -62,8 +62,12 @@ class admin(commands.Cog):
 
 				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
 					
-					if data["cb"] == "enabled":
-						return await ctx.send(f"{self.config.forbidden} Chat bot is already enabled.")
+					try:
+						if data["cb"] == "enabled":
+							return await ctx.send(f"{self.config.forbidden} Chat bot is already enabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "enabled" } })
+						await ctx.send(f"{self.config.success} Chat bot has been enabled.")
 
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "enabled" } })
@@ -76,9 +80,12 @@ class admin(commands.Cog):
 					collection.insert_one({ "_id": int(ctx.guild.id), "cb": "disabled" })
 
 				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
-					
-					if data["cb"] == "disabled":
-						return await ctx.send(f"{self.config.forbidden} Chat bot is not enabled.")
+					try:
+						if data["cb"] == "disabled":
+							return await ctx.send(f"{self.config.forbidden} Chat bot is not enabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
+						await ctx.send(f"{self.config.success} Chat bot has been disabled.")
 
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
@@ -94,9 +101,13 @@ class admin(commands.Cog):
 					collection.insert_one({ "_id": int(ctx.guild.id), "cbc": int(channel.id) })
 
 				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
-					
-					if data["cbc"] == int(channel.id):
-						return await ctx.send(f"{self.config.forbidden} Chat bot is already set in that channel.")
+	
+					try:
+						if data["cbc"] == int(channel.id):
+							return await ctx.send(f"{self.config.forbidden} Chat bot is already set in that channel.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
+						await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
 
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
