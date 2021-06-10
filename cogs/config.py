@@ -58,7 +58,7 @@ class admin(commands.Cog):
 				collection = self.db1.DataBase_1.settings
 				
 				if collection.count_documents({ "_id": int(ctx.guild.id), "cb": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "cb": "disabled" }) == 0:
-					collection.insert_one({ "_id": int(ctx.guild.id), "cb": "enabled" })
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "enabled" } })
 					return await ctx.send(f"{self.config.success} Chat bot has been enabled.")
 
 				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
@@ -78,7 +78,7 @@ class admin(commands.Cog):
 				collection = self.db1.DataBase_1.settings
 
 				if collection.count_documents({ "_id": int(ctx.guild.id), "cb": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "cb": "disabled" }) == 0:
-					collection.insert_one({ "_id": int(ctx.guild.id), "cb": "disabled" })
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
 					await ctx.send(f"{self.config.success} Chat bot has been disabled.")
 
 				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
@@ -112,7 +112,7 @@ class admin(commands.Cog):
 						break
 
 					if c == count:
-						collection.insert_one({ "_id": int(ctx.guild.id), "cbc": int(channel.id) })
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
 						return await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
 
 				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
