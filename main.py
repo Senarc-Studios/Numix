@@ -4,9 +4,11 @@ os.system(f"ls -l; pip install discord.py")
 os.system(f"ls -l; pip install discordpy-slash")
 os.system(f"ls -l; pip install jishaku")
 
-file1 = open('requirements.txt', 'r')
+file1 = open('./numix_imports.py', 'r')
 Line = file1.readlines()
 for Lines in Line:
+    if Lines.startswith("from"):
+        continue
 	Lines.replace("import ", "")
 	Lines.replace("_", "-")
 	try:
@@ -62,7 +64,7 @@ async def is_owner(ctx, user: discord.User):
 async def fetch(ctx):
 	if await is_owner(ctx, ctx.author) == False:
 		return
-	os.system(f"ls -l; git pull git@github.com:BenitzCoding/Numix.git")
+	os.system(f"ls -l; git pull https://github.com/BenitzCoding/Numix.git")
 	await ctx.send(f"{config.success} Fetched all updates and restarting.")
 	os.system(f"ls -l; python3 main.py")
 	await bot.logout()
@@ -214,7 +216,7 @@ async def restart(ctx):
 for file in os.listdir("./cogs"):
 	if file.endswith(".py"):
 		name = file[:-3]
-		bot.load_extension(f"cogs.{name}")
+		bot.load_extension(f"./cogs.{name}")
 
 bot.load_extension("jishaku")
 
