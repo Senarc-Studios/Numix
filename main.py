@@ -3,12 +3,14 @@ os.system(f"ls -l; pip install discord.py[voice]")
 os.system(f"ls -l; pip install discord.py")
 os.system(f"ls -l; pip install discordpy-slash")
 os.system(f"ls -l; pip install jishaku")
+os.system(f"ls -l; pip install psutil")
+os.system(f"ls -l; pip install pymongo")
 
-file1 = open('./numix_imports.py', 'r')
+file1 = open('./requirements.txt', 'r')
 Line = file1.readlines()
 for Lines in Line:
-    if Lines.startswith("from"):
-        continue
+	if Lines.startswith("from"):
+		continue
 	Lines.replace("import ", "")
 	Lines.replace("_", "-")
 	try:
@@ -64,10 +66,13 @@ async def is_owner(ctx, user: discord.User):
 async def fetch(ctx):
 	if await is_owner(ctx, ctx.author) == False:
 		return
-	os.system(f"ls -l; git pull https://github.com/BenitzCoding/Numix.git")
-	await ctx.send(f"{config.success} Fetched all updates and restarting.")
-	os.system(f"ls -l; python3 main.py")
-	await bot.logout()
+	os.system(f"ls -l; git pull Numix master")
+	await ctx.send(f"{config.success} Fetched all updates and reloading.")
+	for file in os.listdir("./cogs"):
+		if file.endswith(".py"):
+			name = file[:-3]
+			bot.reload_extension(f"cogs.{name}")
+	
 
 # Eval
 
@@ -216,7 +221,7 @@ async def restart(ctx):
 for file in os.listdir("./cogs"):
 	if file.endswith(".py"):
 		name = file[:-3]
-		bot.load_extension(f"./cogs.{name}")
+		bot.load_extension(f"cogs.{name}")
 
 bot.load_extension("jishaku")
 
