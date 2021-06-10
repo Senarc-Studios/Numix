@@ -14,7 +14,7 @@ class ChatBot(commands.Cog):
 	async def on_message(self, message):
 		try:
 			collection = self.db1.DataBase_1.settings
-			for data in collection({ "_id": int(message.guild.id) }):
+			for data in collection.find_one({ "_id": int(message.guild.id) }):
 				channel = data["cbc"]
 
 			if message.channel.id == channel:
