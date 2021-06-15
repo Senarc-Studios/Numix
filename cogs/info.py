@@ -26,8 +26,8 @@ class general(commands.Cog):
 		if id is None:
 			id = ctx.guild.id
 
-		deactivated_premium = "https://ibb.co/KhbjfX4"
-		activated_premium = "https://ibb.co/XYRVVKG"
+		deactivated_premium = "https://cdn.tixte.com/uploads/cdn.numix.xyz/kp80894na9a.png"
+		activated_premium = "https://cdn.tixte.com/uploads/cdn.numix.xyz/kp7zx04pm9a.png"
 
 		premium = self.db1.DataBase_1.premium
 
