@@ -34,7 +34,7 @@ class general(commands.Cog):
 				return await ctx.send(f"{self.config.forbidden} Please send some message before checking your rank.")
 			return await ctx.send(f"{self.config.forbiden} {user.name} hasn't sent any messages yet.")
 
-		user_data = leveling.find({ "_id": user.id })
+		user_data = await leveling.find_one({ "_id": user.id })
 		GLOBAL_FORMUA = int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
 		GLOBAL_BAR = int(( GLOBAL_FORMULA/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
 		GLOBAL_RANKING = leveling.find().sort("TOTAL_XP", -1)
