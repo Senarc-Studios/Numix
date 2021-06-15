@@ -51,7 +51,7 @@ class general(commands.Cog):
 			return await ctx.send(embed=e)
 
 		elif trf == "True":
-			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium activated and all premium commands is unlocked and accessable in the server.", color=242424)
+			e = discord.Embed(timestamp=ctx.message.created_at, description=f"Premium activated and all premium commands are unlocked and accessable in the server.", color=242424)
 			e.set_author(name="Numix Premium", icon_url=activated_premium)
 			e.set_footer(text="Numix Premium", icon_url=self.config.logo)
 			return await ctx.send(embed=e)
