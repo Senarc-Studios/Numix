@@ -3,6 +3,8 @@ from numix_imports import *
 config = default.get('./config.json')
 
 MONGO = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
+cluster = motor.motor_asyncio.AsyncIOMotorClient(MONGO)
+leveling = cluster["DataBase_1"]['Leveling']
 
 class CustomCommand(commands.Command):
     def __init__(self,*args,**kwargs):
@@ -20,6 +22,73 @@ class general(commands.Cog):
 		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
+
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!rank [member]", description="Gets information of the user's rank.", aliases=["level", "xp"])
+	async def rank(self, ctx, user: discord.Member=None):
+		if user is None:
+			user = ctx.message.author
+		
+		if await leveling.count_documents({ "_id": user.id, f"{ctx.guild.id}": "ENABLED" }) == 0:
+			if user.id == ctx.author.id:
+				return await ctx.send(f"{self.config.forbidden} Please send some message before checking your rank.")
+			return await ctx.send(f"{self.config.forbiden} {user.name} hasn't sent any messages yet.")
+
+		user_data = await leveling.find({ "_id": user.id })
+		GLOBAL_FORMUA = int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
+		GLOBAL_BAR = int(( GLOBAL_FORMULA/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
+		GLOBAL_RANKING = leveling.find().sort("TOTAL_XP", -1)
+
+		GUILD_FORMUA = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
+		GUILD_BAR = int(( GLOBAL_FORMULA/(200*((1/2) * user_data[f"{ctx.guild.id}_LEVEL"])))*20)
+		GUILD_RANKING = leveling.find().sort(f"{ctx.guild.id}_TOTAL_XP", -1)
+
+		embed = discord.Embed(timestamp=ctx.message.created_at)
+		embed.set_author(name=f"{user.name}'s Rank", icon_url=user.avatar_url)
+		embed.add_field(name="Level:", value=f"{user_data[f'{ctx.guild.id}_LEVEL']}")
+		embed.add_field(name="XP:", value=f"`{user_data[f'{ctx.guild.id}_XP']}xp`")
+		embed.add_field(name="Progress Bar:", value=GUILD_BAR * "<:blue_box:854277153809760277>" + (20-GUILD_BAR) * "<:Box:854277154032582658>", inline=False)
+		embed.add_field(name="Global Level:", value=f"{user_data[f'GLOBAL_LEVEL']}")
+		embed.add_field(name="Global XP:", value=f"`{user_data[f'GLOBAL_XP']}xp`")
+		embed.add_field(name="Global Progress Bar:", value=GLOBAL_BAR * "<:blue_box:854277153809760277>" + (20-GLOBAL_BAR) * "<:Box:854277154032582658>", inline=False)
+		embed.set_thumbnail(url=user.avatar_url)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
+
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!leaderboard [type]", description="Shows leaderboard of specified type.", aliases=["lb", "board", "rankings"])
+	async def leaderboard(self, ctx, type=None):
+		if type == None:
+			rankings = leveling.find().sort("TOTAL_XP", -1)
+			i = 1
+			embed = discord.Embed(timestamp=ctx.message.created_at, title="Leaderboard:")
+			for x in rankings:
+				try:
+					temp = ctx.guild.get_member(x["_id"])
+					tempxp = x[f"{ctx.guild.id}_TOTAL_XP"]
+					embed.add_field(name=f"{i}: {temp.name}", value=f"XP: `{tempxp}`", inline=False)
+					i += 1
+				except:
+					pass
+				if 1 == 11:
+					break
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+
+		elif type == "global":
+			rankings = leveling.find().sort("TOTAL_XP", -1)
+			i = 1
+			embed = discord.Embed(timestamp=ctx.message.created_at, title="Leaderboard:")
+			for x in rankings:
+				try:
+					temp = discord.utils.get(self.bot.users, x["_id"])
+					tempxp = x[f"TOTAL_XP"]
+					embed.add_field(name=f"{i}: {temp.name}", value=f"XP: `{tempxp}`", inline=False)
+					i += 1
+				except:
+					pass
+				if 1 == 11:
+					break
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!premium [server]", description="Checks if a server has Numix Premium enabled.")
 	async def premium(self, ctx, id=None):
