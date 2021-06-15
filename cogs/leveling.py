@@ -16,7 +16,7 @@ class Leveling(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self, message):
 		greet = None
-		if messsage.author.id in self.cooldown:
+		if message.author.id in self.cooldown:
 			return
 
 		if message[2:].startswith("!") or message[1:].startswith("!") or message.startswith("!") or message[2:].startswith("?") or message[1:].startswith("?") or message.startswith("?") or message[2:].startswith(">") or message[1:].startswith(">") or message.startswith(">") or message[2:].startswith(".") or message[1:].startswith(".") or message.startswith(".") or message[2:].startswith("$") or message[1:].startswith("$") or message.startswith("$") or message.startswith("<@!"):
