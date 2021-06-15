@@ -19,7 +19,7 @@ class Leveling(commands.Cog):
 		if message.author.id in self.cooldown:
 			return
 
-		if message[2:].startswith("!") or message[1:].startswith("!") or message.startswith("!") or message[2:].startswith("?") or message[1:].startswith("?") or message.startswith("?") or message[2:].startswith(">") or message[1:].startswith(">") or message.startswith(">") or message[2:].startswith(".") or message[1:].startswith(".") or message.startswith(".") or message[2:].startswith("$") or message[1:].startswith("$") or message.startswith("$") or message.startswith("<@!"):
+		if message.content[2:].startswith("!") or message.content[1:].startswith("!") or message.content.startswith("!") or message.content[2:].startswith("?") or message.content[1:].startswith("?") or message.content.startswith("?") or message.content[2:].startswith(">") or message.content[1:].startswith(">") or message.content.startswith(">") or message.content[2:].startswith(".") or message.content[1:].startswith(".") or message.content.startswith(".") or message.content[2:].startswith("$") or message.content[1:].startswith("$") or message.content.startswith("$") or message.content.startswith("<@!"):
 			return
 
 		if message.author.bot:
