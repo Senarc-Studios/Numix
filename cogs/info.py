@@ -154,7 +154,7 @@ class general(commands.Cog):
 			await ReportChannel.send(embed=embed)
 			await channel.send(f"{self.config.success} This member has been reported.")
 
-	@commands.command(perms="@everyone", syntax="n!serverinfo", description="Shows information about the server.", aliases=["server-info", "server"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!serverinfo", description="Shows information about the server.", aliases=["server-info", "server"])
 	async def serverinfo(self, ctx):
 
 		default_notification_setting = f"{ctx.guild.default_notifications}"
@@ -229,7 +229,7 @@ class general(commands.Cog):
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
 	
-	@commands.command(perms="@everyone", syntax="n!avatar [member]", description="Shows the avatar of a mentioned user.", aliases=["av"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!avatar [member]", description="Shows the avatar of a mentioned user.", aliases=["av"])
 	async def avatar(self, ctx, member: discord.User = None):
 			if member is None:
 				member = ctx.message.author
@@ -242,14 +242,14 @@ class general(commands.Cog):
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
 
-	@commands.command(perms="@everyone", syntax="n!links", description="Shows all the links related to Numix.", aliases=["inv", "invite", "link", "ss", "support", "supportserver"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!links", description="Shows all the links related to Numix.", aliases=["inv", "invite", "link", "ss", "support", "supportserver"])
 	async def links(self, ctx):
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Website Link:** https://numix.xyz\n**Bot Invite:** https://numix.xyz/invite\n**Support Server:** https://numix.xyz/discord\n\nThis bot is made, managed, and maintained by **{self.config.devs}**", color=242424)
 		embed.set_author(name="Numix Related Links", icon_url=self.config.logo)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 	
-	@commands.command(perms="@everyone", syntax="n!about", description="Gives information about Numix.", aliases=["info", "dev", "stat", "stats", "ver", "version"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!about", description="Gives information about Numix.", aliases=["info", "dev", "stat", "stats", "ver", "version"])
 	async def about(self,ctx):
 
 		before = time.monotonic()
@@ -271,7 +271,7 @@ class general(commands.Cog):
 		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
 		await ctx.send(embed=embed)
 
-	@commands.command(perms="@everyone", syntax="n!lookup [member]", description="Lookup information about the user.")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!lookup [member]", description="Lookup information about the user.")
 	@commands.has_permissions(manage_messages=True)
 	async def lookup(self, ctx, user: discord.Member = None):
 		if user is None:
