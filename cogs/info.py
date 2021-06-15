@@ -1,4 +1,5 @@
 from numix_imports import *
+import motor.motor_asyncio
 
 config = default.get('./config.json')
 
