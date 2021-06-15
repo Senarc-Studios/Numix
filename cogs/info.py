@@ -29,12 +29,12 @@ class general(commands.Cog):
 		if user is None:
 			user = ctx.message.author
 		
-		if await leveling.count_documents({ "_id": user.id, f"{ctx.guild.id}": "ENABLED" }) == 0:
+		if leveling.count_documents({ "_id": user.id, f"{ctx.guild.id}": "ENABLED" }) == 0:
 			if user.id == ctx.author.id:
 				return await ctx.send(f"{self.config.forbidden} Please send some message before checking your rank.")
 			return await ctx.send(f"{self.config.forbiden} {user.name} hasn't sent any messages yet.")
 
-		user_data = await leveling.find({ "_id": user.id })
+		user_data = leveling.find({ "_id": user.id })
 		GLOBAL_FORMUA = int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
 		GLOBAL_BAR = int(( GLOBAL_FORMULA/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
 		GLOBAL_RANKING = leveling.find().sort("TOTAL_XP", -1)

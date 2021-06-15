@@ -34,7 +34,7 @@ class Leveling(commands.Cog):
 		if await level.count_documents({ "_id": message.author.id, f"{message.guild.id}": "ENABLED" }) == 0:
 			return await level.update_one({ "_id": message.author.id }, { "_id": message.author.id, f"{message.guild.id}": "ENABLED", f"{message.guild.id}_XP": len(message.content), f"{message.guild.id}_LEVEL": 1, "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content)})
 
-		author_data = await level.find({ "_id": message.author.id })
+		author_data = level.find({ "_id": message.author.id })
 
 		await level.update({ "_id": message.guild.id }, { "_id": message.guild.id, f"{message.guild.id}_XP": author_data[f'{message.author.id}_XP'] + len(message.content), f"GLOBAL_XP": author_data[f'GLOBAL_XP'] + len(message.content), "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content) })
 
