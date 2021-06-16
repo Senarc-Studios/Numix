@@ -58,7 +58,7 @@ class general(commands.Cog):
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!leaderboard [type]", description="Shows leaderboard of specified type.", aliases=["lb", "board", "rankings"])
 	async def leaderboard(self, ctx, type=None):
 		if type == None:
-			rankings = leveling.find().sort("TOTAL_XP", -1)
+			rankings = leveling.find().sort(f"{ctx.guild.id}_TOTAL_XP", -1)
 			i = 1
 			embed = discord.Embed(timestamp=ctx.message.created_at, title="Leaderboard:")
 			for x in rankings:
