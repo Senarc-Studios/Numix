@@ -18,7 +18,7 @@ class ChatBot(commands.Cog):
 			collection = self.db1.DataBase_1.settings
 			for data in collection.find({ "_id": int(message.guild.id) }):
 				channel = data["cbc"]
-				if data["cb"] == "Disabled":
+				if data["cb"] == "disabled":
 					return
 
 				if message.channel.id == channel:
