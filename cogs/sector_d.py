@@ -1,4 +1,4 @@
-from numix_import import *
+from numix_imports import *
 
 class SECTOR_D(commands.Cog):
 	def __init__(self, bot):
