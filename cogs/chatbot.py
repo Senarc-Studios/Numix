@@ -12,10 +12,14 @@ class ChatBot(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
+		if message.author.bot:
+			return
 		try:
 			collection = self.db1.DataBase_1.settings
-			for data in collection.find_one({ "_id": int(message.guild.id) }):
+			for data in collection.find({ "_id": int(message.guild.id) }):
 				channel = data["cbc"]
+				if data["cb"] == "Disabled":
+					return
 
 				if message.channel.id == channel:
 					premium = self.db1.DataBase_1.premium

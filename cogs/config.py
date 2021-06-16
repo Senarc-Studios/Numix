@@ -61,7 +61,7 @@ class admin(commands.Cog):
 					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "enabled" } })
 					return await ctx.send(f"{self.config.success} Chat bot has been enabled.")
 
-				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
 					
 					try:
 						if data["cb"] == "enabled":
@@ -81,7 +81,7 @@ class admin(commands.Cog):
 					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cb": "disabled" } })
 					await ctx.send(f"{self.config.success} Chat bot has been disabled.")
 
-				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
 					try:
 						if data["cb"] == "disabled":
 							return await ctx.send(f"{self.config.forbidden} Chat bot is not enabled.")
@@ -115,7 +115,7 @@ class admin(commands.Cog):
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
 						return await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
 
-				for data in collection.find_one({ "_id": int(ctx.guild.id) }):
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
 	
 					try:
 						if data["cbc"] == int(channel.id):
