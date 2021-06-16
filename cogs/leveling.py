@@ -36,7 +36,7 @@ class Leveling(commands.Cog):
 		if await level.count_documents({ "_id": message.author.id, f"{message.guild.id}": "ENABLED" }) == 0:
 			return await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id, f"{message.guild.id}": "ENABLED", f"{message.guild.id}_XP": len(message.content), f"{message.guild.id}_LEVEL": 1, "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content)}})
 
-		await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.guild.id, f"{message.guild.id}_XP": author_data[f'{message.guild.id}_XP'] + len(message.content), f"GLOBAL_XP": author_data[f'GLOBAL_XP'] + len(message.content), "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content) } })
+		await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id, f"{message.guild.id}_XP": author_data[f'{message.guild.id}_XP'] + len(message.content), f"GLOBAL_XP": author_data[f'GLOBAL_XP'] + len(message.content), "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content) } })
 
 		if author_data[f"{message.guild.id}_XP"] >= int((50 * (author_data[f"{message.guild.id}_LEVEL"] ** 2)) + (50 * author_data[f"{message.guild.id}_LEVEL"])):
 			await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id,  f"{message.guild.id}_XP": 0, f"{message.guild.id}_LEVEL": author_data[f"{message.guild.id}_LEVEL"] + 1 }})
