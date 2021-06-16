@@ -34,19 +34,19 @@ class Leveling(commands.Cog):
 		author_data = await level.find_one({ "_id": message.author.id })
 
 		if await level.count_documents({ "_id": message.author.id, f"{message.guild.id}": "ENABLED" }) == 0:
-			return await level.update_one({ "_id": message.author.id }, { "_id": message.author.id, f"{message.guild.id}": "ENABLED", f"{message.guild.id}_XP": len(message.content), f"{message.guild.id}_LEVEL": 1, "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content)})
+			return await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id, f"{message.guild.id}": "ENABLED", f"{message.guild.id}_XP": len(message.content), f"{message.guild.id}_LEVEL": 1, "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content)}})
 
-		await level.update_one({ "_id": message.guild.id }, { "_id": message.guild.id, f"{message.guild.id}_XP": author_data[f'{message.guild.id}_XP'] + len(message.content), f"GLOBAL_XP": author_data[f'GLOBAL_XP'] + len(message.content), "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content) })
+		await level.update_one({ "_id": message.guild.id }, { "$set": { "_id": message.guild.id, f"{message.guild.id}_XP": author_data[f'{message.guild.id}_XP'] + len(message.content), f"GLOBAL_XP": author_data[f'GLOBAL_XP'] + len(message.content), "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content) } })
 
 		if author_data[f"{message.author.id}_XP"] >= int((50 * (author_data[f"{message.guild.id}_LEVEL"] ** 2)) + (50 * author_data[f"{message.guild.id}_LEVEL"])):
-			await level.update_one({ "_id": message.author.id }, { "_id": message.author.id,  f"{message.author.id}_XP": 0, f"{message.guild.id}_LEVEL": author_data[f"{message.guild.id}_LEVEL"] + 1 })
+			await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id,  f"{message.author.id}_XP": 0, f"{message.guild.id}_LEVEL": author_data[f"{message.guild.id}_LEVEL"] + 1 }})
 			if message.guild.id != 336642139381301249:
 				if greet == None:
 					greet = f"<:confetti:854263610284441600> You've Leveled up! Now, you're in level {author_data[f'{message.author.id}_LEVEL']}!"
 				await message.channel.send(greet)
 
 		if author_data[f"GLOBAL_XP"] >= int((50 * (author_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * author_data[f"GLOBAL_LEVEL"])):
-			await level.update_one({ "_id": message.author.id }, { "_id": message.author.id, f"GLOBAL_XP": 0, f"GLOBAL_LEVEL": author_data["GLOBAL_LEVEL"] + 1 })
+			await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id, f"GLOBAL_XP": 0, f"GLOBAL_LEVEL": author_data["GLOBAL_LEVEL"] + 1 } })
 
 		self.cooldown.append(message.author.id)
 		time.sleep(1.2)

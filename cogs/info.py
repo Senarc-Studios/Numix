@@ -29,7 +29,7 @@ class general(commands.Cog):
 		if user is None:
 			user = ctx.message.author
 		
-		if leveling.count_documents({ "_id": user.id, f"{ctx.guild.id}": "ENABLED" }) == 0:
+		if await leveling.count_documents({ "_id": user.id, f"{ctx.guild.id}": "ENABLED" }) == 0:
 			if user.id == ctx.author.id:
 				return await ctx.send(f"{self.config.forbidden} Please send some message before checking your rank.")
 			return await ctx.send(f"{self.config.forbiden} {user.name} hasn't sent any messages yet.")
