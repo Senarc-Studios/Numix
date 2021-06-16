@@ -1,23 +1,4 @@
 import os
-os.system(f"ls -l; pip install discord.py[voice]")
-os.system(f"ls -l; pip install discord.py")
-os.system(f"ls -l; pip install discordpy-slash")
-os.system(f"ls -l; pip install jishaku")
-os.system(f"ls -l; pip install psutil")
-os.system(f"ls -l; pip install pymongo")
-
-file1 = open('./requirements.txt', 'r')
-Line = file1.readlines()
-for Lines in Line:
-	if Lines.startswith("from"):
-		continue
-	Lines.replace("import ", "")
-	Lines.replace("_", "-")
-	try:
-		exec(f"import {Lines}")
-	except Exception:
-		os.system(f"ls -l; pip install {Lines}")
-
 from numix_imports import *
 import discord
 from discord.ext import commands
