@@ -35,12 +35,12 @@ class general(commands.Cog):
 			return await ctx.send(f"{self.config.forbiden} {user.name} hasn't sent any messages yet.")
 
 		user_data = await leveling.find_one({ "_id": user.id })
-		GLOBAL_FORMULA -= int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
-		GLOBAL_BAR = int(( GLOBAL_FORMULA/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
+		GLOBAL_FORMULA = int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
+		GLOBAL_BAR = int(( -(GLOBAL_FORMULA)/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
 		GLOBAL_RANKING = leveling.find().sort("TOTAL_XP", -1)
 
-		GUILD_FORMULA -= int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
-		GUILD_BAR = int(( GUILD_FORMULA/(200*((1/2) * user_data[f"{ctx.guild.id}_LEVEL"])))*20)
+		GUILD_FORMULA = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
+		GUILD_BAR = int(( -(GUILD_FORMULA)/(200*((1/2) * user_data[f"{ctx.guild.id}_LEVEL"])))*20)
 		GUILD_RANKING = leveling.find().sort(f"{ctx.guild.id}_TOTAL_XP", -1)
 
 		embed = discord.Embed(timestamp=ctx.message.created_at)
