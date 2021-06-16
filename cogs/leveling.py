@@ -50,7 +50,7 @@ class Leveling(commands.Cog):
 
 		self.cooldown.append(message.author.id)
 		time.sleep(1.2)
-		self.cooldown.pop(message.author.id)
+		self.cooldown.remove(message.author.id)
 		
 
 def setup(bot):
