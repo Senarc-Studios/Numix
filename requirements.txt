@@ -34,3 +34,4 @@ discord.py
 google-assistant-sdk[samples]
 dblpy
 html2text
+jishaku
