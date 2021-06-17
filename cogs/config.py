@@ -48,7 +48,7 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use Chat Bots.")
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 		elif trf == "True":
 			if option is None:
@@ -125,7 +125,7 @@ class admin(commands.Cog):
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
 					await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
 		else:
-			return
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
@@ -319,7 +319,7 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 		elif trf == "True":
 			if type is None:
@@ -343,7 +343,8 @@ class admin(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					profanity_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"Your Profanity filter has been `Enabled` for {ctx.guild.name}, all messages that contain profanity will be filtered on **non-NSFW** channels.", color=242424)
+					profanity_success = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Profanity filter has been `Enabled` for {ctx.guild.name}, all messages that contain profanity will be filtered on **non-NSFW** channels.", color=242424)
+					profanity_success.set_author(name="Profanity Filter", icon_url=ctx.guild.icon_url)
 					profanity_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=profanity_success)
 
@@ -360,13 +361,15 @@ class admin(commands.Cog):
 						newvalues = { "$set": { "_id": int(ctx.guild.id), "Profanity": "False" } }
 
 						collection.update_one(myquery, newvalues)
-					pro_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"Your Profanity filter has been `Disabled` for {ctx.guild.name}, all messages that contain Profanity will be allowed on every channel.", color=242424)
+					pro_success = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Profanity filter has been `Disabled` for {ctx.guild.name}, all messages that contain Profanity will be allowed on every channel.", color=242424)
+					pro_success.set_author(name="Profanity Filter", icon_url=ctx.guild.icon_url)
 					pro_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=pro_success)
 
 				else:
 					collection = self.db1.DataBase_1.filter
-					pron_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Profanity Filter.", color=242424)
+					pron_success = discord.Embed(timestamp=ctx.message.created_at, description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Profanity Filter.", color=242424)
+					pron_success.set_author(name="Profanity Filter", icon_url=ctx.guild.icon_url)
 					pron_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=pron_success)
 
@@ -386,7 +389,8 @@ class admin(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					success = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Links will be filtered on every channel.", color=242424)
+					success = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Links will be filtered on every channel.", color=242424)
+					success.set_author(name="External Links Filter", icon_url=ctx.guild.icon_url)
 					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=success)
 
@@ -403,13 +407,15 @@ class admin(commands.Cog):
 						newvalues = { "$set": { "_id": int(ctx.guild.id), "Link": "False" } }
 
 						collection.update_one(myquery, newvalues)
-					ssuccess = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Links will be allowed on every channel.", color=242424)
+					ssuccess = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Links will be allowed on every channel.", color=242424)
+					ssuccess.set_author(name="External Links Filter", icon_url=ctx.guild.icon_url)
 					ssuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=ssuccess)
 
 				else:
 					collection = self.db1.DataBase_1.filter
-					nsuccess = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Link Filter.", color=242424)
+					nsuccess = discord.Embed(timestamp=ctx.message.created_at, description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Link Filter.", color=242424)
+					nsuccess.set_author(name="External Links Filter", icon_url=ctx.guild.icon_url)
 					nsuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=nsuccess)
 
@@ -428,7 +434,8 @@ class admin(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					msuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Invites will be filtered on every channel.", color=242424)
+					msuccess = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Invites will be filtered on every channel.", color=242424)
+					msuccess.set_author(name="Invite Filter", icon_url=ctx.guild.icon_url)
 					msuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=msuccess)
 
@@ -448,16 +455,18 @@ class admin(commands.Cog):
 						collection.update_one(myquery, newvalues)
 
 					gsuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Invites will be allowed on every channel.", color=242424)
+					gsuccess.set_author(name="Invite Filter", icon_url=ctx.guild.icon_url)
 					gsuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=gsuccess)
 
 				else:
 					osuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Invite Filter.", color=242424)
+					osuccess.set_author(name="Invite Filter", icon_url=ctx.guild.icon_url)
 					osuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=osuccess)
 
 		else:
-			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 def setup(bot):
 	bot.add_cog(admin(bot))
