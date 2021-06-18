@@ -47,7 +47,7 @@ async def is_owner(ctx, user: discord.User):
 async def fetch(ctx):
 	if await is_owner(ctx, ctx.author) == False:
 		return
-	os.system(f"ls -l; git pull Numix master")
+	os.system(f"ls -l; git pull Numix Development")
 	await ctx.send(f"{config.success} Fetched all updates and reloading.")
 	for file in os.listdir("./cogs"):
 		if file.endswith(".py"):
