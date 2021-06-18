@@ -179,7 +179,8 @@ async def unload(ctx, *, name: str):
 @bot.command(hidden=True)
 @commands.is_owner()
 async def reload(ctx, *, name: str):
-	if reload == "all":
+	if name == "all":
+		await ctx.send("**All** Cogs are reloaded.")
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
 				name = file[:-3]
@@ -188,7 +189,7 @@ async def reload(ctx, *, name: str):
 		bot.reload_extension(f"cogs.{name}")
 	except Exception as e:
 		return await ctx.send(default.traceback_maker(e))
-	await ctx.send(f'All Cogs are reloaded')
+	await ctx.send(f'Cog "**`{name}`**" has been reloaded.')
 
 @bot.command(hidden=True)
 @commands.is_owner()
