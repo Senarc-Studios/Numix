@@ -20,8 +20,8 @@ class Interactions(commands.Cog):
 				for fdata in self.MONGO.find({ "_id": "all" }):
 					self.MONGO.update_one({ "_id": "all", "uses": fdata["uses"] + 1 })
 
-					guild = self.bot.fetch_guild(826709598953144330)
-					channel = discord.utils.get(guild.TextChannels, id=863723266019426304)
+					guild = discord.utils.get(self.bot.guilds, id=826709598953144330)
+					channel = discord.utils.get(guild.text_channels, id=863723266019426304)
 					server_owner = discord.utils.get(self.bot.users, id=ctx.guild.owner_id)
 					embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 					embed.set_author(name=f"{ctx.author.name} used {ctx.command.name}", icon_url=ctx.author.avatar_url)
