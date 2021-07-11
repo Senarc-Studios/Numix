@@ -39,7 +39,7 @@ class AntiNuker(commands.Cog):
 		else:
 			reason = logs.reason
 		info = { "_id": guild.id, "banned_user": member.id, "moderator": logs.user.id, "reason": reason }
-  		col.insert_one(info)
+		col.insert_one(info)
 		await log("ban", guild, member, logs.user, reason)
 
 		if guild.id in self.guild_bans:
