@@ -1,4 +1,3 @@
-from _typeshed import Self
 from numix_imports import *
 
 class CustomCommand(commands.Command):
