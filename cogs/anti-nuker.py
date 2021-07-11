@@ -1,4 +1,5 @@
 from numix_imports import *
+from numix_log import *
 
 class AntiNuker(commands.Cog):
 	def __init__(self, bot):
