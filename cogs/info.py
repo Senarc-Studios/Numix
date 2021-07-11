@@ -24,6 +24,13 @@ class general(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin" ])
+	async def skin(self, ctx, username=None):
+		if username == None:
+			return await ctx.send(f"{self.config.forbidden} Specify a Username to get the skin.")
+		embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+		embed.set_image(url="https://")
+
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!rank [member]", description="Gets information of the user's rank.", aliases=["level", "xp"])
 	async def rank(self, ctx, user: discord.Member=None):
 		if user is None:
@@ -236,7 +243,7 @@ class general(commands.Cog):
 			else:
 				pass
 			a = member.avatar_url
-			embed = discord.Embed(timestamp=ctx.message.created_at, color=0x3df08a)
+			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 			embed.set_author(name=f"{member.name}#{member.discriminator}'s avatar", icon_url=f"{a}")
 			embed.set_image(url=f"{a}")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -276,9 +283,9 @@ class general(commands.Cog):
 	async def lookup(self, ctx, user: discord.Member = None):
 		if user is None:
 			user = ctx.message.author
-		if user.activity == None:
-			game = user.activity.name
-		else:
+		try:
+			game = user.activities[0].name
+		except:
 			game = None
 		voice_state = None if not user.voice else user.voice.channel
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)

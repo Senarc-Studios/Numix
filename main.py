@@ -13,7 +13,7 @@ print("Bot Starting.")
 
 # Intents For Numix
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 
 # Define Cogs
@@ -53,7 +53,6 @@ async def fetch(ctx):
 		if file.endswith(".py"):
 			name = file[:-3]
 			bot.reload_extension(f"cogs.{name}")
-	
 
 # Eval
 

@@ -1,3 +1,4 @@
+from _typeshed import Self
 from numix_imports import *
 
 class CustomCommand(commands.Command):
@@ -16,6 +17,29 @@ class admin(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
+	async def premium_validation(self, ctx):
+		premium = self.db1.DataBase_1.premium
+
+		premium_list = premium
+		premium_validation_check = premium_list.count_documents({ "_id": f"{ctx.guild.id}" })
+
+		if premium_validation_check == 0:
+			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use Chat Bots.")
+
+		for guilds in premium.find({ "_id": f"{ctx.guild.id}" }):
+			trf = guilds["premium"]
+			trf = f"{trf}"
+
+		if trf == "False":
+			raise RuntimeError("PREMIUM CHECK FAILURE")
+
+		elif trf == "True":
+			return True
+
+		else:
+			raise RuntimeError("PREMIUM CHECK FAILURE")
+		
+
 	@commands.Cog.listener()
 	async def on_message(self, message):
 		if message.content == "<@!744865990810271785>":
@@ -31,6 +55,95 @@ class admin(commands.Cog):
 			for info in collection.find(guild_prefix):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
+
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!autorole <option> [role]", description="Manages the auto-role setting in premium servers.", aliases=["auto-role", "arole", "a-role", "ar", "a-r"])
+	@commands.has_permissions(administrator=True)
+	async def autorole(self, ctx, option=None, role: discord.Role=None):
+		if await self.premium_validation(ctx) == True:
+			if option is None:
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
+
+			elif option == "enable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "ar": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "ar": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "enabled" } })
+					return await ctx.send(f"{self.config.success} Auto-Roles has been enabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["ar"] == "enabled":
+							return await ctx.send(f"{self.config.forbidden} Auto-Roles is already enabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "enabled" } })
+							await ctx.send(f"{self.config.success} Auto-Roles has been enabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "enabled" } })
+						await ctx.send(f"{self.config.success} Auto-Roles has been enabled.")
+			
+			elif option == "disable":
+				collection = self.db1.DataBase_1.settings
+
+				if collection.count_documents({ "_id": int(ctx.guild.id), "ar": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "ar": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "disabled" } })
+					return await ctx.send(f"{self.config.success} Auto-Roles has been disabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["ar"] == "disabled":
+							return await ctx.send(f"{self.config.forbidden} Auto-Roles is not enabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "disabled" } })
+							return await ctx.send(f"{self.config.success} Auto-Roles has been disabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "disabled" } })
+						return await ctx.send(f"{self.config.success} Auto-Roles has been disabled.")
+
+			elif option == "add":
+				if role == None:
+					return await ctx.send(f"{self.config.forbidden} Specify a role to add.")
+
+				collection = self.db1.DataBase_1.settings
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+				await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+	
+					try:
+						if int(role.id) in data["roles"]:
+							return await ctx.send(f"{self.config.forbidden} That role is already in the added to Auto-Roles.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+						await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
+
+					else:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+					await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
+
+			elif option == "remove":
+				if role == None:
+					return await ctx.send(f"{self.config.forbidden} Specify a role to add.")
+
+				collection = self.db1.DataBase_1.settings
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+				await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+	
+					try:
+						if int(role.id) not in data["roles"]:
+							return await ctx.send(f"{self.config.forbidden} That role was never added to Auto-Roles.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+						await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+
+					else:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+					await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+			
+			else:
+				return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
+
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!cb <option> [channel]", description="Manage ChatBots on premium servers.", aliases=["chat-bot", "chat", "bot", "ai"])
 	@commands.has_permissions(administrator=True)
@@ -124,6 +237,8 @@ class admin(commands.Cog):
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
 					await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
+			else:
+				return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
 		else:
 			raise RuntimeError("PREMIUM CHECK FAILURE")
 
@@ -161,6 +276,9 @@ class admin(commands.Cog):
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Disabled" } }
 			collection.update_one(myquery, newvalues)
 			await ctx.send(f"{self.config.success} Leave Messages has been disabled in this server.")
+
+		else:
+			return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!joinmessages <option> [channel]", description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.has_guild_permissions(administrator=True)
