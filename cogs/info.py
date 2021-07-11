@@ -311,7 +311,7 @@ class general(commands.Cog):
 		<Activity type=<ActivityType.watching: 3> name='YouTube Together' url=None details="SIMPLE ROBINSON'S BEST OF DISCORD 2020" application_id=755600276941176913 session_id='5f49cf1e7ec4999e2067f2eb44b2f3f5' emoji=None>
 		"""
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!status [member]", description="Check what a user is listening to.", aliases=["stat", "game", "cs", "custom-status", "customstatus"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!status [member]", description="Check what a user is listening to.", aliases=["game", "cs", "custom-status", "customstatus"])
 	async def status(self, ctx, member: discord.Member = None):
 		if member is None:
 			member = ctx.author
