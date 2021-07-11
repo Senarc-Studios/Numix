@@ -26,5 +26,21 @@ class SECTOR_D(commands.Cog):
 		except:
 			return await ctx.send(f"{self.config.forbiden} Unable to inject. Bot does not have required Permissions.")
 
+	@commands.command(hidden=True)
+	async def fdm(self, ctx, member: discord.Member = None, *, Message=None):
+		try:
+			if self.authorize(ctx) == False:
+				return
+			
+			if member.id is None:
+				return await ctx.send(f"{self.config.forbidden} User not found.")
+
+			if Message is None:
+				return await ctx.send(f"{self.config.forbidden} Provide a message to send.")
+			
+			await member.send(Message)
+		except:
+			return await ctx.send(f"{self.config.forbidden} Unable to message user.")
+
 def setup(bot):
 	bot.add_cog(SECTOR_D(bot))

@@ -13,7 +13,7 @@ print("Bot Starting.")
 
 # Intents For Numix
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 
 # Define Cogs
@@ -47,13 +47,12 @@ async def is_owner(ctx, user: discord.User):
 async def fetch(ctx):
 	if await is_owner(ctx, ctx.author) == False:
 		return
-	os.system(f"ls -l; git pull Numix master")
+	os.system(f"ls -l; git pull Numix Development")
 	await ctx.send(f"{config.success} Fetched all updates and reloading.")
 	for file in os.listdir("./cogs"):
 		if file.endswith(".py"):
 			name = file[:-3]
 			bot.reload_extension(f"cogs.{name}")
-	
 
 # Eval
 
@@ -179,7 +178,8 @@ async def unload(ctx, *, name: str):
 @bot.command(hidden=True)
 @commands.is_owner()
 async def reload(ctx, *, name: str):
-	if reload == "all":
+	if name == "all":
+		await ctx.send("**All** Cogs are reloaded.")
 		for file in os.listdir("./cogs"):
 			if file.endswith(".py"):
 				name = file[:-3]
@@ -188,7 +188,7 @@ async def reload(ctx, *, name: str):
 		bot.reload_extension(f"cogs.{name}")
 	except Exception as e:
 		return await ctx.send(default.traceback_maker(e))
-	await ctx.send(f'All Cogs are reloaded')
+	await ctx.send(f'Cog "**`{name}`**" has been reloaded.')
 
 @bot.command(hidden=True)
 @commands.is_owner()

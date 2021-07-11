@@ -16,6 +16,36 @@ class admin(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Config" cog loaded')
 
+	async def premium_validation(self, ctx):
+		premium = self.db1.DataBase_1.premium
+
+		premium_list = premium
+		premium_validation_check = premium_list.count_documents({ "_id": f"{ctx.guild.id}" })
+
+		if premium_validation_check == 0:
+			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use Chat Bots.")
+
+		for guilds in premium.find({ "_id": f"{ctx.guild.id}" }):
+			trf = guilds["premium"]
+			trf = f"{trf}"
+
+		if trf == "False":
+			raise RuntimeError("PREMIUM CHECK FAILURE")
+
+		elif trf == "True":
+			return True
+
+		else:
+			raise RuntimeError("PREMIUM CHECK FAILURE")
+		
+	async def confirm_task(self, ctx):
+		collection = self.db1.DataBase_1.settings
+		if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+			return collection.insert_one({ "_id": int(ctx.guild.id) })
+
+		else:
+			return "Pass"
+
 	@commands.Cog.listener()
 	async def on_message(self, message):
 		if message.content == "<@!744865990810271785>":
@@ -32,9 +62,144 @@ class admin(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!antinuker <option>", description="Manages the Anti-Nuker on Premium Servers.")
+	@commands.has_permissions(administrator=True)
+	async def antinuker(self, ctx, option=None):
+		await self.confirm_task(ctx)
+		if await self.premium_validation(ctx) == True:
+			if option is None:
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
+			
+			elif option == "enable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "an": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "an": "disabled" }) == 0:
+					collection.insert_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
+					return await ctx.send(f"{self.config.success} Anti-Nuker has been enabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["an"] == "enabled":
+							return await ctx.send(f"{self.config.forbidden} Anti-Nuker is already enabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
+							await ctx.send(f"{self.config.success} Anti-Nuker has been enabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
+						await ctx.send(f"{self.config.success} Anti-Nuker has been enabled.")
+			
+			elif option == "disable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "an": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "an": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "disabled" } })
+					return await ctx.send(f"{self.config.success} Anti-Nuker has been disabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["an"] == "disabled":
+							return await ctx.send(f"{self.config.forbidden} Anti-Nuker is already disabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "disabled" } })
+							await ctx.send(f"{self.config.success} Anti-Nuker has been disabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "disabled" } })
+						await ctx.send(f"{self.config.success} Anti-Nuker has been disabled.")
+
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!autorole <option> [role]", description="Manages the auto-role setting in premium servers.", aliases=["auto-role", "arole", "a-role", "ar", "a-r"])
+	@commands.has_permissions(administrator=True)
+	async def autorole(self, ctx, option=None, role: discord.Role=None):
+		await self.confirm_task(ctx)
+		if await self.premium_validation(ctx) == True:
+			if option is None:
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
+
+			elif option == "enable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "ar": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "ar": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "enabled" } })
+					return await ctx.send(f"{self.config.success} Auto-Roles has been enabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["ar"] == "enabled":
+							return await ctx.send(f"{self.config.forbidden} Auto-Roles is already enabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "enabled" } })
+							await ctx.send(f"{self.config.success} Auto-Roles has been enabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "enabled" } })
+						await ctx.send(f"{self.config.success} Auto-Roles has been enabled.")
+			
+			elif option == "disable":
+				collection = self.db1.DataBase_1.settings
+
+				if collection.count_documents({ "_id": int(ctx.guild.id), "ar": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "ar": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "disabled" } })
+					return await ctx.send(f"{self.config.success} Auto-Roles has been disabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["ar"] == "disabled":
+							return await ctx.send(f"{self.config.forbidden} Auto-Roles is not enabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "disabled" } })
+							return await ctx.send(f"{self.config.success} Auto-Roles has been disabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "ar": "disabled" } })
+						return await ctx.send(f"{self.config.success} Auto-Roles has been disabled.")
+
+			elif option == "add":
+				if role == None:
+					return await ctx.send(f"{self.config.forbidden} Specify a role to add.")
+
+				collection = self.db1.DataBase_1.settings
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+				await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+	
+					try:
+						if int(role.id) in data["roles"]:
+							return await ctx.send(f"{self.config.forbidden} That role is already in the added to Auto-Roles.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+						await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
+
+					else:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+					await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
+
+			elif option == "remove":
+				if role == None:
+					return await ctx.send(f"{self.config.forbidden} Specify a role to add.")
+
+				collection = self.db1.DataBase_1.settings
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+				await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+	
+					try:
+						if int(role.id) not in data["roles"]:
+							return await ctx.send(f"{self.config.forbidden} That role was never added to Auto-Roles.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+						await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+
+					else:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+					await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+			
+			else:
+				return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
+
+
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!cb <option> [channel]", description="Manage ChatBots on premium servers.", aliases=["chat-bot", "chat", "bot", "ai"])
 	@commands.has_permissions(administrator=True)
 	async def cb(self, ctx, option=None, channel: discord.TextChannel=None):
+		await self.confirm_task(ctx)
 		premium = self.db1.DataBase_1.premium
 
 		premium_list = premium
@@ -48,7 +213,7 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use Chat Bots.")
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 		elif trf == "True":
 			if option is None:
@@ -124,8 +289,10 @@ class admin(commands.Cog):
 					else:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "cbc": int(channel.id) } })
 					await ctx.send(f"{self.config.success} Chat bot is set to channel <#{channel.id}>")
+			else:
+				return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
 		else:
-			return
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
@@ -161,6 +328,9 @@ class admin(commands.Cog):
 			newvalues = { "$set": { "_id": int(ctx.guild.id), "lmstatus": "Disabled" } }
 			collection.update_one(myquery, newvalues)
 			await ctx.send(f"{self.config.success} Leave Messages has been disabled in this server.")
+
+		else:
+			return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!joinmessages <option> [channel]", description="Change options on join messages.", aliases=["jm", "join-message", "join-msg", "greet", "greetings", "join_message"])
 	@commands.has_guild_permissions(administrator=True)
@@ -319,7 +489,7 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 		elif trf == "True":
 			if type is None:
@@ -343,7 +513,8 @@ class admin(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					profanity_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"Your Profanity filter has been `Enabled` for {ctx.guild.name}, all messages that contain profanity will be filtered on **non-NSFW** channels.", color=242424)
+					profanity_success = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Profanity filter has been `Enabled` for {ctx.guild.name}, all messages that contain profanity will be filtered on **non-NSFW** channels.", color=242424)
+					profanity_success.set_author(name="Profanity Filter", icon_url=ctx.guild.icon_url)
 					profanity_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=profanity_success)
 
@@ -360,13 +531,15 @@ class admin(commands.Cog):
 						newvalues = { "$set": { "_id": int(ctx.guild.id), "Profanity": "False" } }
 
 						collection.update_one(myquery, newvalues)
-					pro_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"Your Profanity filter has been `Disabled` for {ctx.guild.name}, all messages that contain Profanity will be allowed on every channel.", color=242424)
+					pro_success = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Profanity filter has been `Disabled` for {ctx.guild.name}, all messages that contain Profanity will be allowed on every channel.", color=242424)
+					pro_success.set_author(name="Profanity Filter", icon_url=ctx.guild.icon_url)
 					pro_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=pro_success)
 
 				else:
 					collection = self.db1.DataBase_1.filter
-					pron_success = discord.Embed(timestamp=ctx.message.created_at, title="Profanity Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Profanity Filter.", color=242424)
+					pron_success = discord.Embed(timestamp=ctx.message.created_at, description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Profanity Filter.", color=242424)
+					pron_success.set_author(name="Profanity Filter", icon_url=ctx.guild.icon_url)
 					pron_success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=pron_success)
 
@@ -386,7 +559,8 @@ class admin(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					success = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Links will be filtered on every channel.", color=242424)
+					success = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Links will be filtered on every channel.", color=242424)
+					success.set_author(name="External Links Filter", icon_url=ctx.guild.icon_url)
 					success.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=success)
 
@@ -403,13 +577,15 @@ class admin(commands.Cog):
 						newvalues = { "$set": { "_id": int(ctx.guild.id), "Link": "False" } }
 
 						collection.update_one(myquery, newvalues)
-					ssuccess = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Links will be allowed on every channel.", color=242424)
+					ssuccess = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Links will be allowed on every channel.", color=242424)
+					ssuccess.set_author(name="External Links Filter", icon_url=ctx.guild.icon_url)
 					ssuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=ssuccess)
 
 				else:
 					collection = self.db1.DataBase_1.filter
-					nsuccess = discord.Embed(timestamp=ctx.message.created_at, title="External Links Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Link Filter.", color=242424)
+					nsuccess = discord.Embed(timestamp=ctx.message.created_at, description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Link Filter.", color=242424)
+					nsuccess.set_author(name="External Links Filter", icon_url=ctx.guild.icon_url)
 					nsuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=nsuccess)
 
@@ -428,7 +604,8 @@ class admin(commands.Cog):
 
 						collection.update_one(myquery, newvalues)
 
-					msuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Invites will be filtered on every channel.", color=242424)
+					msuccess = discord.Embed(timestamp=ctx.message.created_at, description=f"Your Link filter has been `Enabled` for {ctx.guild.name}, all messages that contain Invites will be filtered on every channel.", color=242424)
+					msuccess.set_author(name="Invite Filter", icon_url=ctx.guild.icon_url)
 					msuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=msuccess)
 
@@ -448,16 +625,18 @@ class admin(commands.Cog):
 						collection.update_one(myquery, newvalues)
 
 					gsuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"Your Link filter has been `Disabled` for {ctx.guild.name}, all messages that contain Invites will be allowed on every channel.", color=242424)
+					gsuccess.set_author(name="Invite Filter", icon_url=ctx.guild.icon_url)
 					gsuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=gsuccess)
 
 				else:
 					osuccess = discord.Embed(timestamp=ctx.message.created_at, title="Invite Filter", description=f"No change has been done, please specify if you'd like to `Enable`, or `Disable` Invite Filter.", color=242424)
+					osuccess.set_author(name="Invite Filter", icon_url=ctx.guild.icon_url)
 					osuccess.set_footer(text="Numix Premium", icon_url=self.config.logo)
 					await ctx.send(embed=osuccess)
 
 		else:
-			return await ctx.send(f"{self.config.forbidden} You need Numix Premium to use filters.")
+			raise RuntimeError("PREMIUM CHECK FAILURE")
 
 def setup(bot):
 	bot.add_cog(admin(bot))

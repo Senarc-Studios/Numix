@@ -370,7 +370,7 @@ class music(commands.Cog):
 			ctx.voice_state.voice.stop()
 			await ctx.message.add_reaction('⏹')
 
-	@commands.command(cls=CustomCommand, description='Vote to skip the song')
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skip", description='Vote to skip the song')
 	async def skip(self, ctx: commands.Context):
 		"""Vote to skip a song. The requester can automatically skip.
 		3 skip votes are needed for the song to be skipped.
