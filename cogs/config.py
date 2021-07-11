@@ -38,6 +38,13 @@ class admin(commands.Cog):
 		else:
 			raise RuntimeError("PREMIUM CHECK FAILURE")
 		
+	async def confirm_task(self, ctx):
+		collection = self.db1.DataBase_1.settings
+		if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+			return collection.insert_one({ "_id": int(ctx.guild.id) })
+
+		else:
+			return "Pass"
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
@@ -55,9 +62,54 @@ class admin(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!antinuker <option>", description="Manages the Anti-Nuker on Premium Servers.")
+	@commands.has_permissions(administrator=True)
+	async def antinuker(self, ctx, option=None):
+		await self.confirm_task(ctx)
+		if await self.premium_validation(ctx) == True:
+			if option is None:
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
+			
+			elif option == "enable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "an": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "an": "disabled" }) == 0:
+					collection.insert_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
+					return await ctx.send(f"{self.config.success} Anti-Nuker has been enabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["an"] == "enabled":
+							return await ctx.send(f"{self.config.forbidden} Anti-Nuker is already enabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
+							await ctx.send(f"{self.config.success} Anti-Nuker has been enabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
+						await ctx.send(f"{self.config.success} Anti-Nuker has been enabled.")
+			
+			elif option == "disable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "an": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "an": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "disabled" } })
+					return await ctx.send(f"{self.config.success} Anti-Nuker has been disabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["an"] == "disabled":
+							return await ctx.send(f"{self.config.forbidden} Anti-Nuker is already disabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "disabled" } })
+							await ctx.send(f"{self.config.success} Anti-Nuker has been disabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "disabled" } })
+						await ctx.send(f"{self.config.success} Anti-Nuker has been disabled.")
+
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!autorole <option> [role]", description="Manages the auto-role setting in premium servers.", aliases=["auto-role", "arole", "a-role", "ar", "a-r"])
 	@commands.has_permissions(administrator=True)
 	async def autorole(self, ctx, option=None, role: discord.Role=None):
+		await self.confirm_task(ctx)
 		if await self.premium_validation(ctx) == True:
 			if option is None:
 				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
@@ -147,6 +199,7 @@ class admin(commands.Cog):
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!cb <option> [channel]", description="Manage ChatBots on premium servers.", aliases=["chat-bot", "chat", "bot", "ai"])
 	@commands.has_permissions(administrator=True)
 	async def cb(self, ctx, option=None, channel: discord.TextChannel=None):
+		await self.confirm_task(ctx)
 		premium = self.db1.DataBase_1.premium
 
 		premium_list = premium

@@ -9,7 +9,7 @@ class AutoRole(commands.Cog):
 		self.moderation_db = MongoClient(self.mongo_moderation_url)
 		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
 		self.db1 = MongoClient(self.mongo_DB1_url)
-		print('"ChatBot" cog loaded')
+		print('"AutoRole" cog loaded')
 
 	@commands.Cog.listener()
 	async def on_member_join(self, member):

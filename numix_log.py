@@ -11,7 +11,21 @@ def build_log_embed(action, member, mod, reason):
 		embed.add_field(name="Moderator:", value=f"{mod.name}#{mod.discriminator}(`{mod.id}`)")
 		embed.add_field(name="Member:", value=f"{member.name}#{member.discriminator}(`{member.id}`)")
 		embed.add_field(name="Reason:", value=f"{reason}")
-		embed.set_footer(text="Numix", icon_url=config.logo)
+		embed.set_footer(text="Numix Premium", icon_url=config.logo)
+	elif action == "kick":
+		embed = discord.Embed(timestamp=datetime.now().timestamp(), colour=242424)
+		embed.set_author(name=f"{member.name} {action.capitalize()}ed", icon_url=mod.avatar_url)
+		embed.add_field(name="Moderator:", value=f"{mod.name}#{mod.discriminator}(`{mod.id}`)")
+		embed.add_field(name="Member:", value=f"{member.name}#{member.discriminator}(`{member.id}`)")
+		embed.add_field(name="Reason:", value=f"{reason}")
+		embed.set_footer(text="Numix Premium", icon_url=config.logo)
+	elif action == "channel_delete":
+		embed = discord.Embed(timestamp=datetime.now().timestamp(), colour=242424)
+		embed.set_author(name=f"{mod.name} deleted {member.name}", icon_url=mod.avatar_url)
+		embed.add_field(name="Moderator:", value=f"{mod.name}#{mod.discriminator}(`{mod.id}`)")
+		embed.add_field(name="Channel:", value=f"{member.name}(`{member.id}`)")
+		embed.add_field(name="Reason:", value=f"{reason}")
+		embed.set_footer(text="Numix Premium", icon_url=config.logo)
 	return embed
 
 async def log(action, guild, member, mod, reason):

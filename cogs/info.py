@@ -285,6 +285,8 @@ class general(commands.Cog):
 			user = ctx.message.author
 		try:
 			game = user.activities[0].name
+			if game == "Spotify":
+				game = f"[Spotify](https://open.spotify.com/track/{user.activities[0].track_id})"
 		except:
 			game = None
 		voice_state = None if not user.voice else user.voice.channel
@@ -305,5 +307,27 @@ class general(commands.Cog):
 		embed.set_footer(text='Numix', icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
+		"""
+		<Activity type=<ActivityType.watching: 3> name='YouTube Together' url=None details="SIMPLE ROBINSON'S BEST OF DISCORD 2020" application_id=755600276941176913 session_id='5f49cf1e7ec4999e2067f2eb44b2f3f5' emoji=None>
+		"""
+
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!status [member]", description="Check what a user is listening to.", aliases=["stat", "game", "cs", "custom-status", "customstatus"])
+	async def status(self, ctx, member: discord.Member = None):
+		if member is None:
+			member = ctx.author
+		game = member.activities[-1].name
+		if game == "Spotify":
+			await ctx.send(f"https://open.spotify.com/track/{member.activities[0].track_id}")
+
+		elif game == "Straming":
+			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+			embed.set_author(name=f"{member} is Streaming on twitch", icon_url=member.avatar_url)
+			embed.add_field(name="Stream Title:", value=f"{game.title}")
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+		
+		else:
+			return await ctx.send(f"{self.config.forbidden} User is not listening to any spotify track currently or have a custom status.")
+
 def setup(bot):
-	bot.add_cog(general(bot))		
+	bot.add_cog(general(bot))
