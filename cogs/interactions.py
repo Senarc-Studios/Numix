@@ -15,10 +15,10 @@ class Interactions(commands.Cog):
 
 		else:
 			for data in self.MONGO.find({ "_id": ctx.command.name }):
-				self.MONGO.update_one({ "_id": ctx.command.name }, { "$set": { "_id": ctx.command.name, "uses": data["uses"] + 1 }})
+				self.MONGO.update_one({ "_id": ctx.command.name }, { "$set": { "_id": ctx.command.name, "uses": data["uses"] + 1 } })
 			
 				for fdata in self.MONGO.find({ "_id": "all" }):
-					self.MONGO.update_one({ "_id": "all", "uses": fdata["uses"] + 1 })
+					self.MONGO.update_one({ "_id": "all" }, { "$set": { "_id": "all", "uses": fdata["uses"] + 1 } })
 
 					guild = discord.utils.get(self.bot.guilds, id=826709598953144330)
 					channel = discord.utils.get(guild.text_channels, id=863723266019426304)
