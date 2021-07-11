@@ -6,7 +6,7 @@ class Interactions(commands.Cog):
 		self.bot = bot
 		self.config = default.get("./config.json")
 		self.MONGO_CONNECTION = MongoClient(f"{self.config.db1}")
-		self.MONGO = self.MONGO_CONNECTION.DataBase_1.global
+		self.MONGO = self.MONGO_CONNECTION.DataBase_1.interactions
 
 	@commands.Cog.listener()
 	async def on_command(self, ctx):
