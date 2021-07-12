@@ -18,19 +18,20 @@ class ErrorHandler(commands.Cog):
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, err):
 		if isinstance(err, errors.RuntimeError):
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The \"{ctx.command}\" is a Premium Command and this guild does not have the required Numix Premium. Therefore you can't execute/run/use this command in this guild.", color=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The \"`{ctx.command}`\" is a Premium Command and this guild does not have the required Numix Premium. Therefore you can't execute/run/use this command in this guild.", color=242424)
 			embed.set_author(name="Numix Premium", icon_url="https://cdn.tixte.com/uploads/cdn.numix.xyz/kp7zx04pm9a.png")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
 			print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
 			traceback.print_exception(type(err), err, err.__traceback__, file=sys.stderr)
 		if isinstance(err, errors.CommandOnCooldown):
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You're currently in cooldown, you won't be able yo execute/run/use that command until the cooldown is over. \n\nThe Cooldown ends in {err.retry_after:.2f}", color=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You're currently in cooldown, you won't be able to execute/run/use that command until the cooldown is over. \n\nThe Cooldown ends in {err.retry_after:.2f}", color=242424)
 			embed.set_author(name="Cooldown", icon_url="https://discord.com/assets/11d800c7b4c405d96e8e412163727a89.svg")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
 		elif isinstance(err, errors.MissingPermissions):
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You do not meet the required guild permissions the command \"{ctx.command}\" requires to be executed.\n\nYou need `{ctx.command.perms}` Permission in this Guild to be able to execute/run/use this command.", color=242424)
+			command = self.bot.get_command(ctx.command)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You do not meet the required guild permissions the command \"`{command.name}`\" requires to be executed.\n\nYou need `{command.perms}` Permission in this Guild to be able to execute/run/use this command.", color=242424)
 			embed.set_author(name="Insufficient Permissions", icon_url=self.config.forbidden_img)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
