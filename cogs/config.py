@@ -1,4 +1,5 @@
 from numix_imports import *
+from validation import *
 
 class CustomCommand(commands.Command):
 	def __init__(self,*args,**kwargs):
@@ -30,13 +31,13 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			raise RuntimeError("PREMIUM CHECK FAILURE")
+			return await self.notify_premium(ctx)
 
 		elif trf == "True":
 			return True
 
 		else:
-			raise RuntimeError("PREMIUM CHECK FAILURE")
+			return await self.notify_premium(ctx)
 		
 	async def confirm_task(self, ctx):
 		collection = self.db1.DataBase_1.settings
@@ -213,7 +214,7 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			raise RuntimeError("PREMIUM CHECK FAILURE")
+			return await self.notify_premium(ctx)
 
 		elif trf == "True":
 			if option is None:
@@ -292,7 +293,7 @@ class admin(commands.Cog):
 			else:
 				return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
 		else:
-			raise RuntimeError("PREMIUM CHECK FAILURE")
+			return await self.notify_premium(ctx)
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!leavemessages <option> [channel]", description="Change options on leave messages.", aliases=["lm", "leave_message", "leave_msg"])
 	@commands.has_guild_permissions(administrator=True)
@@ -489,7 +490,7 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			raise RuntimeError("PREMIUM CHECK FAILURE")
+			return await self.notify_premium(ctx)
 
 		elif trf == "True":
 			if type is None:
@@ -636,7 +637,7 @@ class admin(commands.Cog):
 					await ctx.send(embed=osuccess)
 
 		else:
-			raise RuntimeError("PREMIUM CHECK FAILURE")
+			return await self.notify_premium(ctx)
 
 def setup(bot):
 	bot.add_cog(admin(bot))

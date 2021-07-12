@@ -4,6 +4,12 @@ config = default.get("./config.json")
 mongo_DB1_url = f"{config.mongo1}DataBase_1{config.mongo2}"
 db1 = MongoClient(mongo_DB1_url)
 
+async def notify_premium(self, ctx):
+	embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The \"`{ctx.command}`\" is a Premium Command and this guild does not have the required Numix Premium. Therefore you can't execute/run/use this command in this guild.", color=242424)
+	embed.set_author(name="Numix Premium", icon_url="https://cdn.tixte.com/uploads/cdn.numix.xyz/kp7zx04pm9a.png")
+	embed.set_footer(text="Numix", icon_url=self.config.logo)
+	await ctx.send(embed=embed)
+
 async def premium(self, guild_id):
 	guild = discord.utils.get(self.bot.guilds, id=guild_id)
 	premium = db1.DataBase_1.premium
