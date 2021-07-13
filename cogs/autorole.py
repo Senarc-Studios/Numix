@@ -13,7 +13,7 @@ class AutoRole(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_member_join(self, member):
-		if await self.premium(member.guild.id) is True:
+		if await premium(self, member.guild.id) is True:
 			collection = self.db1.DataBase_1.settings
 			for data in collection.find({ "_id": int(member.guild.id) }):
 				if data["ar"] == "disabled":
