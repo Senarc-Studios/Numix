@@ -18,20 +18,19 @@ async def premium(self, guild_id):
 	premium_validation_check = premium_list.count_documents({ "_id": f"{guild.id}" })
 
 	if premium_validation_check == 0:
-		raise RuntimeError("PREMIUM CHECK FAILURE")
+		return False
 
 	for guilds in premium.find({ "_id": f"{guild.id}" }):
 		trf = guilds["premium"]
 		trf = f"{trf}"
 
 	if trf == "False":
-		raise RuntimeError("PREMIUM CHECK FAILURE")
-
+		return False
 	elif trf == "True":
 		return True
 
 	else:
-		raise RuntimeError("PREMIUM CHECK FAILURE")
+		return False
 
 def authorize(self, ctx):
 		if ctx.author.id in self.config.owners:
