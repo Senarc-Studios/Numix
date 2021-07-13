@@ -154,44 +154,42 @@ class admin(commands.Cog):
 			elif option == "add":
 				if role == None:
 					return await ctx.send(f"{self.config.forbidden} Specify a role to add.")
-
+				
 				collection = self.db1.DataBase_1.settings
-				collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
-				await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
 
 				for data in collection.find({ "_id": int(ctx.guild.id) }):
 	
 					try:
 						if int(role.id) in data["roles"]:
 							return await ctx.send(f"{self.config.forbidden} That role is already in the added to Auto-Roles.")
+						
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
+							return await ctx.send(f"{self.config.success} <@&{role.id}> has been added to Auto-Roles")
+
 					except Exception:
 						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
-						await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
-
-					else:
-						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
-					await ctx.send(f"{self.config.success} <&{role.id}> has been added to Auto-Roles")
+						await ctx.send(f"{self.config.success} <@&{role.id}> has been added to Auto-Roles")
 
 			elif option == "remove":
 				if role == None:
 					return await ctx.send(f"{self.config.forbidden} Specify a role to add.")
 
 				collection = self.db1.DataBase_1.settings
-				collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
-				await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
 
 				for data in collection.find({ "_id": int(ctx.guild.id) }):
 	
 					try:
 						if int(role.id) not in data["roles"]:
 							return await ctx.send(f"{self.config.forbidden} That role was never added to Auto-Roles.")
-					except Exception:
-						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
-						await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+							
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$removeFromSet": { "roles": int(role.id) } })
+							await ctx.send(f"{self.config.success} <@&{role.id}> has been removed from Auto-Roles")
 
-					else:
-						collection.update_one({ "_id": int(ctx.guild.id) }, { "$addToSet": { "roles": int(role.id) } })
-					await ctx.send(f"{self.config.success} <&{role.id}> has been removed from Auto-Roles")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$removeFromSet": { "roles": int(role.id) } })
+						await ctx.send(f"{self.config.success} <@&{role.id}> has been removed from Auto-Roles")
 			
 			else:
 				return await ctx.send(f"{self.config.forbidden} That is not a valid option.")
