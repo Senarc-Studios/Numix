@@ -184,11 +184,11 @@ class admin(commands.Cog):
 							return await ctx.send(f"{self.config.forbidden} That role was never added to Auto-Roles.")
 							
 						else:
-							collection.update_one({ "_id": int(ctx.guild.id) }, { "$removeFromSet": { "roles": int(role.id) } })
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$pull": { "roles": int(role.id) } })
 							await ctx.send(f"{self.config.success} <@&{role.id}> has been removed from Auto-Roles")
 
 					except Exception:
-						collection.update_one({ "_id": int(ctx.guild.id) }, { "$removeFromSet": { "roles": int(role.id) } })
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$pull": { "roles": int(role.id) } })
 						await ctx.send(f"{self.config.success} <@&{role.id}> has been removed from Auto-Roles")
 			
 			else:
