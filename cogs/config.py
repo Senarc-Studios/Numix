@@ -41,11 +41,13 @@ class admin(commands.Cog):
 		
 	async def confirm_task(self, ctx):
 		collection = self.db1.DataBase_1.settings
+
 		if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
 			return collection.insert_one({ "_id": int(ctx.guild.id) })
 
 		else:
 			return "Pass"
+		
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
@@ -69,13 +71,13 @@ class admin(commands.Cog):
 		await self.confirm_task(ctx)
 		if await self.premium_validation(ctx) == True:
 			if option is None:
-				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable` or `disable`.")
 			
 			elif option == "enable":
 				collection = self.db1.DataBase_1.settings
 				
 				if collection.count_documents({ "_id": int(ctx.guild.id), "an": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "an": "disabled" }) == 0:
-					collection.insert_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "an": "enabled" } })
 					return await ctx.send(f"{self.config.success} Anti-Nuker has been enabled.")
 
 				for data in collection.find({ "_id": int(ctx.guild.id) }):
@@ -113,7 +115,7 @@ class admin(commands.Cog):
 		await self.confirm_task(ctx)
 		if await self.premium_validation(ctx) == True:
 			if option is None:
-				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, or `set`.")
+				return await ctx.send(f"{self.config.forbidden} Please provide an option like `enable`, `disable`, `add`, or `remove`.")
 
 			elif option == "enable":
 				collection = self.db1.DataBase_1.settings
