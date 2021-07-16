@@ -78,7 +78,8 @@ class Leveling(commands.Cog):
 				time.sleep(1.2)
 				self.cooldown.remove(message.author.id)
 		except:
-			pass
+			mong_col = self.db1.DataBase_1.settings
+			mong_col.update_one({ "_id": int(message.guild.id) }, { "$set": { "_id": int(message.guild.id), "level_message_toggle": "enabled", "greeting": None } })
 		
 
 def setup(bot):
