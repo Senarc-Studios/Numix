@@ -44,8 +44,8 @@ class ChatBot(commands.Cog):
 
 					else:
 						return
-		except Exception as e:
-			print(e)
+		except:
+			pass
 
 def setup(bot):
 	bot.add_cog(ChatBot(bot))
