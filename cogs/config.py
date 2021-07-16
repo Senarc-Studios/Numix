@@ -31,13 +31,13 @@ class admin(commands.Cog):
 			trf = f"{trf}"
 
 		if trf == "False":
-			return await self.notify_premium(ctx)
+			return await notify_premium(self, ctx)
 
 		elif trf == "True":
 			return True
 
 		else:
-			return await self.notify_premium(ctx)
+			return await notify_premium(self, ctx)
 		
 	async def confirm_task(self, ctx):
 		collection = self.db1.DataBase_1.settings
@@ -64,6 +64,76 @@ class admin(commands.Cog):
 			for info in collection.find(guild_prefix):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
+
+	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!levelling <option> <argument> [optional_argument]", description="Manage what happens when someone levels up.")
+	@commands.has_permissions(administrator=True)
+	async def levelling(self, ctx, option=None, argument=None, *, text=None):
+		await self.confirm_task(ctx)
+		if option == None:
+			return await ctx.send(f"{self.config.forbidden} Please provide an option like `message` or `role`.")
+		
+		elif option == "message":
+			if argument == None:
+				return await ctx.send(f"{self.config.forbidden} Please provide an argument like `enable`, `disable`, or `edit`.")
+			
+			elif argument == "enable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "level_message_toggle": "enabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "level_message_toggle": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "level_message_toggle": "enabled" } })
+					return await ctx.send(f"{self.config.success} Levelling messages have been enabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["level_message_toggle"] == "enabled":
+							return await ctx.send(f"{self.config.forbidden} Levelling messages are already enabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "level_message_toggle": "enabled" } })
+							await ctx.send(f"{self.config.success} Levelling messages have been enabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "level_message_toggle": "enabled" } })
+						await ctx.send(f"{self.config.success} Levelling messages have been enabled.")
+
+			elif argument == "disable":
+				collection = self.db1.DataBase_1.settings
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id), "level_message_toggle": "disabled" }) == 0 or collection.count_documents({ "_id": int(ctx.guild.id), "level_message_toggle": "disabled" }) == 0:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "level_message_toggle": "disabled" } })
+					return await ctx.send(f"{self.config.success} Levelling messages have been disabled.")
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					try:
+						if data["level_message_toggle"] == "disabled":
+							return await ctx.send(f"{self.config.forbidden} Levelling messages are already disabled.")
+						else:
+							collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "level_message_toggle": "disabled" } })
+							await ctx.send(f"{self.config.success} Levelling messages have been disabled.")
+					except Exception:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "level_message_toggle": "disabled" } })
+						await ctx.send(f"{self.config.success} Levelling messages have been disabled.")
+
+			elif argument == "edit":
+				collection = self.db1.DataBase_1.settings
+
+				collection.update_one({ "_id": int(ctx.guild.id), "greeting": text })
+				if text == None:
+					return await ctx.send(f"{self.config.success} Level up messages have been reset.")
+
+				else:
+					return await ctx.send(f"{self.config.success} Level up messages have been updated.")
+
+			else:
+				return await ctx.send(f"{self.config.forbidden} Please provide a **VALID** argument like `enable`, `disable`, or `edit`. \"{argument}\" is not a valid argument.")
+		
+		if option == "role":
+			if await self.premium_validation(ctx) == True:
+				return await ctx.send(f"{self.config.forbidden} Numix Levelling roles handler has not been fully implemented yet.")
+
+			else:
+				await notify_premium(self, ctx)
+
+		else:
+			return await ctx.send(f"{self.config.forbidden} Please provide a **VALID** option like `message` or `role`. \"{argument}\" is not a valid option.")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!antinuker <option>", description="Manages the Anti-Nuker on Premium Servers.")
 	@commands.has_permissions(administrator=True)
