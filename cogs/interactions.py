@@ -25,7 +25,7 @@ class Interactions(commands.Cog):
 					server_owner = discord.utils.get(self.bot.users, id=ctx.guild.owner_id)
 					embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 					embed.set_author(name=f"{ctx.author.name} used {ctx.command.name}", icon_url=ctx.author.avatar_url)
-					embed.add_field(name="Guild ID:", value=f"`{ctx.guild.id}`")
+					embed.add_field(name="Guild ID:", value=f"{ctx.guild.name}(`{ctx.guild.id}`)")
 					embed.add_field(name="Guild Owner", value=f"{server_owner.name}#{server_owner.discriminator}(`{server_owner.id}`)", inline=False)
 					embed.add_field(name="Member:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", inline=False)
 					embed.add_field(name="Global Command Uses:", value=f"{data['uses']+1}", inline=False)

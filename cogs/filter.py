@@ -52,14 +52,50 @@ class Filter(commands.Cog):
 					link_filter = modules["Link"]
 					profanity_filter = modules["Profanity"]
 
+					if invite_filter == None:
+						invite_filter = "False"
+					
+					if link_filter == None:
+						link_filter = "False"
+
+					if profanity_filter == None:
+						profanity_filter = "False"
+
 					# Whitelists
 					invite_whitelisted_channels = [""]
 					link_whitelisted_channels = [""]
 					word_whitelisted_channels = [""]
 
+					msg = message.content.lower().replace("[", "")
+					msg = msg.replace("]", "")
+					msg = msg.replace("{", "")
+					msg = msg.replace("}", "")
+					msg = msg.replace(" ", "")
+					msg = msg.replace("<", "")
+					msg = msg.replace(",", "")
+					msg = msg.replace(">", "")
+					msg = msg.replace(".", "")
+					msg = msg.replace(";", "")
+					msg = msg.replace(":", "")
+					msg = msg.replace("~", "")
+					msg = msg.replace("`", "")
+					msg = msg.replace(")", "")
+					msg = msg.replace("(", "")
+					msg = msg.replace("*", "")
+					msg = msg.replace("&", "")
+					msg = msg.replace("%", "")
+					msg = msg.replace("\\", "")
+					msg = msg.replace("/", "")
+					msg = msg.replace("=", "")
+					msg = msg.replace("+", "")
+					msg = msg.replace("_", "")
+					msg = msg.replace("-", "")
+					msg = msg.replace('"', "")
+					msg = msg.replace("'", "")
+
 					if invite_filter == "True":
 						for x in blocked_invites:
-							if x in message.content.lower():
+							if x in msg:
 								if message.channel.id not in invite_whitelisted_channels:
 									await message.delete()
 									blocked_invite = discord.Embed(title='Blocked Message', description='Your message has been blocked because it contained a Discord Invite, you may delete the blocked link and send the message again.', color=242424)
@@ -68,7 +104,7 @@ class Filter(commands.Cog):
 
 					if link_filter == "True":
 						for x in blocked_links:
-							if x in message.content.lower():
+							if x in msg:
 								if message.channel.id not in link_whitelisted_channels:
 									await message.delete()
 									blocked_word = discord.Embed(title='Blocked Message', description='Your message has been blocked because it contained blocked Links, you may delete the blocked link and send the message again.', color=242424)
@@ -76,14 +112,9 @@ class Filter(commands.Cog):
 									await user.send(embed=blocked_word)
 
 					if profanity_filter == "True":
-						#with open("profanity.txt") as file: # bad-words.txt contains one blacklisted phrase per line
-						#	bad_words = file.split("\n")
-						#
-						#for bad_word in bad_words:
-						#	if bad_word in message.content:
-						check = self.pf.censor(f"{message.content}")
+						check = self.pf.censor(f"{msg}")
 
-						if message.content != check:
+						if msg != check:
 							await message.delete()
 							blocked_word = discord.Embed(title='Blocked Message', description='Your message has been blocked because it contained Blocked Words, you may delete the blocked word and send the message again.', color=242424)
 							blocked_word.set_footer(text='Numix Premium', icon_url=self.config.logo)
