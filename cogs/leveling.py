@@ -10,11 +10,12 @@ class Leveling(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
+		self.db1 = MongoClient(self.config.db1)
 		print('"Leveling" cog loaded')
 		self.cooldown = []
 
 	async def confirm_task(self, ctx):
-		collection = self.config.db1.DataBase_1.settings
+		collection = self.db1.DataBase_1.settings
 
 		if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
 			return collection.insert_one({ "_id": int(ctx.guild.id) })
@@ -25,7 +26,7 @@ class Leveling(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self, message):
 		await self.confirm_task(message)
-		mong_col = self.config.db1.DataBase_1.settings
+		mong_col = self.db1.DataBase_1.settings
 		for greeting in mong_col.find({ "_id": int(message.guild.id) }):
 			toggle = greeting["level_message_toggle"]
 			greet = greeting["greeting"]
