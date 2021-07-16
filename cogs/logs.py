@@ -84,7 +84,6 @@ class Logs(commands.Cog):
 
 			for x in collection.find({"_id": guild.id}):
 				logid = x["log"]
-				print(logid)
 				guild = get(self.bot.guilds, id=guild.id)
 				log = get(guild.text_channels, id=logid)
 
@@ -107,7 +106,6 @@ class Logs(commands.Cog):
 
 			for x in collection.find({"_id":message.guild.id}):
 				logid = x["log"]
-				print(logid)
 				guild = get(self.bot.guilds, id=message.guild.id)
 				log = get(guild.text_channels, id=logid)
 
