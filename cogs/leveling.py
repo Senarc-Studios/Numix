@@ -34,7 +34,7 @@ class Leveling(commands.Cog):
 				if "{" not in greet:
 					greet = greet
 				
-				elif "{" in greet:
+				else:
 					if "bot." in greet or "guild." in greet or "os." in greet or "self." in greet or "eval(" in greet:
 						return
 					else:
