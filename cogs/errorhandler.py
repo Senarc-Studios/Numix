@@ -3,6 +3,7 @@ from discord_webhook import DiscordWebhook
 import sys
 import traceback
 import datetime
+import os
 
 # Define Cogs
 
