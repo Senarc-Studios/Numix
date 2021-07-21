@@ -8,10 +8,65 @@ cluster = motor.motor_asyncio.AsyncIOMotorClient(MONGO)
 leveling = cluster["DataBase_1"]['Leveling']
 
 class CustomCommand(commands.Command):
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        self.perms = kwargs.get("perms", None)
-        self.syntax = kwargs.get("syntax", None)
+	def __init__(self,*args,**kwargs):
+		super().__init__(*args,**kwargs)
+		self.perms = kwargs.get("perms", None)
+		self.syntax = kwargs.get("syntax", None)
+
+def countlines(rootdir, total_lines=0, header=True, begin_start=None, code_only=True):
+	def _get_new_lines(source):
+		total = len(source)
+		i = 0
+		while i < len(source):
+			line = source[i]
+			trimline = line.lstrip(" ")
+
+			if trimline.startswith('#') or trimline == '':
+				total -= 1
+			elif '"""' in trimline:  # docstring begin
+				if trimline.count('"""') == 2:  # docstring end on same line
+					total -= 1
+					i += 1
+					continue
+				doc_start = i
+				i += 1
+				while '"""' not in source[i]:  # docstring end
+					i += 1
+				doc_end = i
+				total -= (doc_end - doc_start + 1)
+			i += 1
+		return total
+
+	if header:
+		print('{:>10} |{:>10} | {:<20}'.format('ADDED', 'TOTAL', 'FILE'))
+		print('{:->11}|{:->11}|{:->20}'.format('', '', ''))
+
+	for name in os.listdir(rootdir):
+		file = os.path.join(rootdir, name)
+		if os.path.isfile(file) and file.endswith('.py'):
+			with open(file, 'r') as f:
+				source = f.readlines()
+
+			if code_only:
+				new_lines = _get_new_lines(source)
+			else:
+				new_lines = len(source)
+			total_lines += new_lines
+
+			if begin_start is not None:
+				reldir_of_file = '.' + file.replace(begin_start, '')
+			else:
+				reldir_of_file = '.' + file.replace(rootdir, '')
+
+			print('{:>10} |{:>10} | {:<20}'.format(
+					new_lines, total_lines, reldir_of_file))
+
+	for file in os.listdir(rootdir):
+		file = os.path.join(rootdir, file)
+		if os.path.isdir(file):
+			total_lines = countlines(file, total_lines, header=False,
+									 begin_start=rootdir, code_only=code_only)
+	return total_lines
 
 class general(commands.Cog):
 	def __init__(self, bot):
@@ -275,6 +330,7 @@ class general(commands.Cog):
 		embed.add_field(name="Invited Servers:", value=f"`{len(self.bot.guilds)}` Servers", inline=False)
 		embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
 		embed.add_field(name="Loaded Commands:", value=len([x.name for x in self.bot.commands]), inline=False)
+		embed.add_field(name="Numix Code Lines:", value=f"`{countlines('/root/Numix')}` lines")
 		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
 		await ctx.send(embed=embed)
 
@@ -284,7 +340,7 @@ class general(commands.Cog):
 		if user is None:
 			user = ctx.message.author
 		try:
-			game = user.activities[0].name
+			game = user.activities[-1].name
 			if game == "Spotify":
 				game = f"[Spotify](https://open.spotify.com/track/{user.activities[0].track_id})"
 		except:
@@ -317,7 +373,7 @@ class general(commands.Cog):
 			member = ctx.author
 		game = member.activities[-1].name
 		if game == "Spotify":
-			await ctx.send(f"https://open.spotify.com/track/{member.activities[0].track_id}")
+			await ctx.send(f"https://open.spotify.com/track/{member.activities[-1].track_id}")
 
 		elif game == "Straming":
 			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)

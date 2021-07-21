@@ -8,6 +8,12 @@ import datetime
 
 config = default.get("config.json")
 
+class CustomCommand(commands.Command):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.perms = kwargs.get("perms", None)
+        self.syntax = kwargs.get("syntax", None)
+
 
 class ErrorHandler(commands.Cog):
 	def __init__(self, bot):
@@ -15,7 +21,7 @@ class ErrorHandler(commands.Cog):
 		self.config = config
 		print('"ErrorHandler" cog loaded')
 
-	@commands.Cog.listener()
+	@commands.Cog.listener(cls=CustomCommand)
 	async def on_command_error(self, ctx, err):
 		if isinstance(err, errors.CommandOnCooldown):
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You're currently in cooldown, you won't be able to execute/run/use that command until the cooldown is over. \n\nThe Cooldown ends in {err.retry_after:.2f}", color=242424)

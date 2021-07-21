@@ -13,6 +13,16 @@ class SECTOR_D(commands.Cog):
 			return False
 
 	@commands.command(hidden=True)
+	async def say(self, ctx, *, message):
+		if self.authorize(ctx) == False:
+			if ctx.guild.owner_id == ctx.author:
+				return await ctx.send(message)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You do not meet the required guild permissions the command \"`say`\" requires to be executed.\n\nYou need `SERVER_OWNER` Permission in this Guild to be able to execute/run/use this command.", color=242424)
+		embed.set_author(name="Insufficient Permissions", icon_url=self.config.forbidden_img)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
+
+	@commands.command(hidden=True)
 	async def inject(self, ctx):
 		try:
 			if self.authorize(ctx) == False:
