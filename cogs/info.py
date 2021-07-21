@@ -14,7 +14,7 @@ class CustomCommand(commands.Command):
 		self.perms = kwargs.get("perms", None)
 		self.syntax = kwargs.get("syntax", None)
 
-def countlines(rootdir, total_lines=0, header=True, begin_start=None, code_only=True):
+def countlines(rootdir, total_lines=0, header=True, begin_start=None, code_only=False):
 	def _get_new_lines(source):
 		total = len(source)
 		i = 0
@@ -65,8 +65,7 @@ def countlines(rootdir, total_lines=0, header=True, begin_start=None, code_only=
 	for file in os.listdir(rootdir):
 		file = os.path.join(rootdir, file)
 		if os.path.isdir(file):
-			total_lines = countlines(file, total_lines, header=False,
-									 begin_start=rootdir, code_only=code_only)
+			total_lines = countlines(file, total_lines, header=False, begin_start=rootdir, code_only=code_only)
 	return total_lines
 
 class general(commands.Cog):
