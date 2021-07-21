@@ -304,7 +304,7 @@ class music(commands.Cog):
 		ctx.voice_state.voice = await destination.connect()
 		await ctx.send(f'{config.success} Joined the Voice Channel.')
 
-	@commands.command(cls=CustomCommand, perms="MANAGE_GUILD", syntax="n!summon [channel]", description='Summons the bot to a voice channel')
+	@commands.command(cls=CustomCommand, perms="MANAGE_GUILD", syntax="n!summon [channel]", description='Summons the bot to a voice channel', aliases=["smn"])
 	@commands.has_permissions(manage_guild=True)
 	async def summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
 		"""Summons the bot to a voice channel.
@@ -431,7 +431,7 @@ class music(commands.Cog):
 		ctx.voice_state.songs.shuffle()
 		await ctx.message.add_reaction(f'{config.success}')
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!remove [index]", description='Remove the song from queue')
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!remove [index]", description='Remove the song from queue', aliases=["rm"])
 	async def remove(self, ctx: commands.Context, index: int):
 		"""Removes a song from the queue at a given index."""
 
@@ -441,7 +441,7 @@ class music(commands.Cog):
 		ctx.voice_state.songs.remove(index - 1)
 		await ctx.message.add_reaction(f'{config.success}')
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!play [song name]", description='Plays the given song')
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!play [song name]", description='Plays the given song', aliases=["p", "pl", "pla"])
 	async def play(self, ctx: commands.Context, *, search: str):
 
 		if not ctx.voice_state.voice:

@@ -24,12 +24,12 @@ class general(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin" ])
-	async def skin(self, ctx, username=None):
-		if username == None:
-			return await ctx.send(f"{self.config.forbidden} Specify a Username to get the skin.")
-		embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-		embed.set_image(url="https://")
+	# @commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin" ])
+	# async def skin(self, ctx, username=None):
+	# 	if username == None:
+	# 		return await ctx.send(f"{self.config.forbidden} Specify a Username to get the skin.")
+	# 	embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+	# 	embed.set_image(url="https://")
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!rank [member]", description="Gets information of the user's rank.", aliases=["level", "xp"])
 	async def rank(self, ctx, user: discord.Member=None):
@@ -238,20 +238,20 @@ class general(commands.Cog):
 	
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!avatar [member]", description="Shows the avatar of a mentioned user.", aliases=["av"])
 	async def avatar(self, ctx, member: discord.User = None):
-			if member is None:
-				member = ctx.message.author
-			else:
-				pass
-			a = member.avatar_url
-			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-			embed.set_author(name=f"{member.name}#{member.discriminator}'s avatar", icon_url=f"{a}")
-			embed.set_image(url=f"{a}")
-			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			await ctx.send(embed=embed)
+		if member is None:
+			member = ctx.message.author
+		else:
+			pass
+		a = member.avatar_url
+		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+		embed.set_author(name=f"{member.name}#{member.discriminator}'s avatar", icon_url=f"{a}")
+		embed.set_image(url=f"{a}")
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!links", description="Shows all the links related to Numix.", aliases=["inv", "invite", "link", "ss", "support", "supportserver"])
 	async def links(self, ctx):
-		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Website Link:** https://numix.xyz\n**Bot Invite:** https://numix.xyz/invite\n**Support Server:** https://numix.xyz/discord\n\nThis bot is made, managed, and maintained by **{self.config.devs}**", color=242424)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Website Link:** https://numix.xyz\n**Bot Invite:** https://numix.xyz/invite\n**Support Server:** https://numix.xyz/discord\n**Minecraft Discord:** https://numix.xyz/mc\n\nThis bot is made, managed, and maintained by **{self.config.devs}**", color=242424)
 		embed.set_author(name="Numix Related Links", icon_url=self.config.logo)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)

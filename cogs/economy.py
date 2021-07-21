@@ -39,6 +39,36 @@ class economy(commands.Cog):
 		credentials = { "_id": id, "password": password }
 		await self.bank_authorisation.insert_one(credentials)
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!shop [page]", description="List all the items in shop.", aliases=["sh", "shop-menu"])
+	async def shop(self, ctx, page: int=1):
+		try:
+			page = int(page)
+		except:
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"\"`{page}`\" is not a valid page, please enter a valid number, and there are only `{total_pages}` pages in total.", colour=242424)
+			embed.set_author(name="Invalid Page", icon_url="https://cdn.iconscout.com/icon/free/png-512/cancel-1534469-1300531.png")
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			return await ctx.send(embed=embed)
+
+		page = int(page)
+		total_pages = 1
+		if page == 1:
+			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+			embed.set_author(name="Shopping Centre", icon_url=self.config.logo)
+			embed.add_field(name="Item #0001", value="Description: A cookie that you can keep or give away. *(collectables)*\nPrice: $10", inline=False)
+			embed.add_field(name="Item #0002", value="Description: Numix Premium redeem code for 1 day. *(investment)*\nPrice: $500000", inline=False)
+			embed.add_field(name="Item #0003", value="Description: Worthless Token. *(collectables)*\nPrice: $20000", inline=False)
+			embed.add_field(name="Item #0004", value="Description: Gucci Banana. *(collectables)*\nPrice: $10000", inline=False)
+			embed.add_field(name="Item #0005", value="Description: 2x Global Levelling Booster. *(investment)*\nPrice: $5000", inline=False)
+			embed.add_field(name="NOTE!", value="Keep in mind that this \"shop\" feature is still in beta and not released. So things might not work could be buggy.")
+			embed.set_footer(text="Numix | Page 1/1", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+
+		else:
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Page \"`{page}`\" is not a valid page in the shopping centre, there are only `{total_pages}` pages in total.", colour=242424)
+			embed.set_author(name="Invalid Page", icon_url="https://cdn.iconscout.com/icon/free/png-512/cancel-1534469-1300531.png")
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!bal [member]", description="Check your account balance.", aliases=['balance','money','b', "wallet", "bank", "account", "open-account"])
 	async def bal(self, ctx, member: discord.Member = None):
 		if member is None:
@@ -311,7 +341,7 @@ class economy(commands.Cog):
 		await ctx.send(f"{self.config.success} {ctx.author.mention} Your money has been withdrawn.")
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!deposit <amount>", description="Deposit money to your bank account.", aliases=["dep", "depo"])
-	async def deposit(self, ctx, money: int=None):
+	async def deposit(self, ctx, money=None):
 		username = ctx.author.id
 		id = username
 		bank_authorisation = await self.bank_authorisation.find_one({ "_id": username })
