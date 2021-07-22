@@ -311,7 +311,7 @@ class general(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
-	async def send_data(self, ctx, msg):
+	async def send_data(self, ctx, msg, before_ws, ping):
 		ram = self.process.memory_full_info().rss / 1024**2
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -336,7 +336,7 @@ class general(commands.Cog):
 		msg = await ctx.send("Loading Data")
 		ping = (time.monotonic() - before) * 1000
 		Loaded = False
-		while await self.send_data(ctx, msg) != True:
+		while await self.send_data(ctx, msg, before_ws, ping) != True:
 			await asyncio.sleep(1)
 			await msg.edit("Loading Data.")
 			await asyncio.sleep(1)
