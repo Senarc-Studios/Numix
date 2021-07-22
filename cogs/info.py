@@ -97,9 +97,14 @@ class general(commands.Cog):
 				discriminator = int(discriminator)
 			
 			disc_list = list(discriminator)
+			count = 0
 			
-			if len(disc_list) >= 4:
+			for i in disc_list:
+				count = count + 1
+
+			if count > 4 or count < 4:
 				return await ctx.send(f"{self.config.forbidden} Enter a valid discriminator.")
+	
 		except:
 			return await ctx.send(f"{self.config.forbidden} Enter a valid discriminator.")
 
