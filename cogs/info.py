@@ -336,7 +336,7 @@ class general(commands.Cog):
 		embed.set_author(name="Numix Bot", icon_url=self.config.logo)
 		embed.add_field(name="Developers:", value=f"{self.config.devs}", inline=False)
 		embed.add_field(name="Bot Version:", value=f"{self.config.botversion}", inline=False)
-		embed.add_field(name="Ping:", value=f"`Loading...`")
+		embed.add_field(name="Ping:", value=f"WS: `{before_ws}`ms | REST: `{int(ping)}`ms")
 		embed.add_field(name="Support Server:", value=f"{self.config.supportserver}", inline=False)
 		embed.add_field(name="Invited Servers:", value=f"`{len(self.bot.guilds)}` Servers", inline=False)
 		embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
