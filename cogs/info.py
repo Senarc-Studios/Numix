@@ -103,8 +103,13 @@ class general(commands.Cog):
 				count = count + 1
 
 			number = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-			for i in disc_list:
-				if i not in number:
+			
+			for i in number:
+				
+				if i in discriminator:
+					continue
+
+				else:
 					return await ctx.send(f"{self.config.forbidden} Enter a valid discriminator.")
 
 			if count > 4 or count < 4:
