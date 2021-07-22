@@ -104,9 +104,9 @@ class general(commands.Cog):
 
 			number = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 			
-			for i in number:
+			for i in disc_list:
 				
-				if i in discriminator:
+				if i in number:
 					continue
 
 				else:
