@@ -355,7 +355,7 @@ class general(commands.Cog):
 		embed.add_field(name="Invited Servers:", value=f"`{len(self.bot.guilds)}` Servers", inline=False)
 		embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
 		embed.add_field(name="Loaded Commands:", value=len([x.name for x in self.bot.commands]), inline=False)
-		embed.add_field(name="Numix Code Lines:", value=f"`{countlines('/')}` lines", inline=False)
+		embed.add_field(name="Numix Code Lines:", value=f"`{countlines('/root/Numix')}` lines", inline=False)
 		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
 		await msg.edit(content="", embed=embed)
 
