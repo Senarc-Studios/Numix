@@ -86,7 +86,7 @@ class general(commands.Cog):
 	# 	embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 	# 	embed.set_image(url="https://")
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!discriminator",description="Get's people who have a discriminator that you asked.", aliases=["discrim", "discrm", "disc"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!discriminator [discriminator]",description="Get's people who have a discriminator that you asked.", aliases=["discrim", "discrm", "disc"])
 	async def discriminator(self, ctx, discriminator=None):
 		try:
 			if discriminator == None:
@@ -117,7 +117,7 @@ class general(commands.Cog):
 				count = count + 1
 			if count == 6:
 				break
-			
+
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{discs}", colour=242424)
 		embed.set_author(name=f"Users with Discriminator #{discriminator}", icon_url=self.config.logo)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
