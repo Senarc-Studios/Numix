@@ -8,7 +8,7 @@ class CustomCommand(commands.Command):
         self.perms = kwargs.get("perms", None)
         self.syntax = kwargs.get("syntax", None)
 
-class moderation(commands.Cog, name='Moderation'):
+class moderation(commands.Cog, name='moderation'):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
