@@ -336,7 +336,7 @@ class general(commands.Cog):
 		msg = await ctx.send("Loading Data")
 		ping = (time.monotonic() - before) * 1000
 		Loaded = False
-		while await self.send_data(ctx, msg) == False:
+		while await self.send_data(ctx, msg) != True:
 			await asyncio.sleep(1)
 			await msg.edit("Loading Data.")
 			await asyncio.sleep(1)
