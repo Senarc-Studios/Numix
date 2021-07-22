@@ -90,11 +90,11 @@ class general(commands.Cog):
 	async def discriminator(self, ctx, discriminator=None):
 		try:
 			if discriminator == None:
-				discriminator = ctx.author.discriminator
+				discriminator = str(ctx.author.discriminator)
 			
 			else:
 				discriminator = discriminator.replace("#", "")
-				discriminator = int(discriminator)
+				discriminator = discriminator
 			
 			disc_list = list(discriminator)
 			count = 0
@@ -115,7 +115,7 @@ class general(commands.Cog):
 			if count == 5:
 				break
 			count = count + 1
-			if i.discriminator == discriminator:
+			if str(i.discriminator) == discriminator:
 				discs.append(f"{i.name}#{i.discriminator}\n")
 			else:
 				continue
