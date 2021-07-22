@@ -317,15 +317,15 @@ class general(commands.Cog):
 		before = time.monotonic()
 		before_ws = int(round(self.bot.latency * 1000, 1))
 		msg = await ctx.send("Loading Data")
-		
-		await msg.edit("Loading Data.")
-		await msg.edit("Loading Data..")
-		await msg.edit("Loading Data...")
 
-		await msg.edit("Loading Data")
-		await msg.edit("Loading Data.")
-		await msg.edit("Loading Data..")
-		await msg.edit("Loading Data...")
+		await msg.edit(content="Loading Data.")
+		await msg.edit(content="Loading Data..")
+		await msg.edit(content="Loading Data...")
+
+		await msg.edit(content="Loading Data")
+		await msg.edit(content="Loading Data.")
+		await msg.edit(content="Loading Data..")
+		await msg.edit(content="Loading Data...")
 		
 		ping = (time.monotonic() - before) * 1000
 		
