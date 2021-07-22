@@ -101,12 +101,10 @@ class general(commands.Cog):
 			
 			for i in disc_list:
 				count = count + 1
-
-			number = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-			
+				
 			for i in disc_list:
 				
-				if number in i:
+				if i == 0 or i == 1 or i == 2 or i == 3 or i == 4 or i == 5 or i == 6 or i == 7 or i == 8 or i == 9:
 					continue
 
 				else:
