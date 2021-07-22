@@ -106,7 +106,7 @@ class general(commands.Cog):
 			
 			for i in disc_list:
 				
-				if i in number:
+				if number in i:
 					continue
 
 				else:
