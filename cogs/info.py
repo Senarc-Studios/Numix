@@ -86,6 +86,47 @@ class general(commands.Cog):
 	# 	embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 	# 	embed.set_image(url="https://")
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!discriminator",description="Get's people who have a discriminator that you asked.", aliases=["discrim", "discrm", "disc"])
+	async def discriminator(self, ctx, discriminator=None):
+		try:
+			if discriminator == None:
+				discriminator = ctx.author.discriminator
+			
+			else:
+				discriminator = discriminator.replace("#", "")
+				discriminator = int(discriminator)
+			
+			disc_list = list(discriminator)
+			
+			if len(list) >= 4:
+				return await ctx.send(f"{self.config.forbidden} Enter a valid discriminator.")
+		except:
+			return await ctx.send(f"{self.config.forbidden} Enter a valid discriminator.")
+
+		count = 0
+		discs = []
+		
+		for i in self.bot.users:
+			if count == 5:
+				break
+			count = count + 1
+			if i.discriminator == discriminator:
+				discs.append(f"{i.name}#{i.discriminator}\n")
+			else:
+				continue
+		
+		all_discs = ""
+		count = 0
+
+		for discs in discs:
+			count = count + 1
+			all_discs += f"{count}. {discs}\n"
+		
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=all_discs, colour=242424)
+		embed.set_author(name=f"Users with Discriminator #{discriminator}", icon_url=self.config.logo)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
+
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!rank [member]", description="Gets information of the user's rank.", aliases=["level", "xp"])
 	async def rank(self, ctx, user: discord.Member=None):
 		if user is None:
