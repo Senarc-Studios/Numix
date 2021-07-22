@@ -343,7 +343,7 @@ class general(commands.Cog):
 		embed.add_field(name="Loaded Commands:", value=len([x.name for x in self.bot.commands]), inline=False)
 		embed.add_field(name="Numix Code Lines:", value=f"`Loading...`", inline=False)
 		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
-		await msg.edit(embed=embed)
+		await msg.edit(content="", embed=embed)
 
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -357,7 +357,7 @@ class general(commands.Cog):
 		embed.add_field(name="Loaded Commands:", value=len([x.name for x in self.bot.commands]), inline=False)
 		embed.add_field(name="Numix Code Lines:", value=f"`{countlines('/')}` lines", inline=False)
 		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
-		await msg.edit(embed=embed)
+		await msg.edit(content="", embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!lookup [member]", description="Lookup information about the user.")
 	@commands.has_permissions(manage_messages=True)
