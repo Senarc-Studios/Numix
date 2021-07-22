@@ -108,26 +108,17 @@ class general(commands.Cog):
 		except:
 			return await ctx.send(f"{self.config.forbidden} Enter a valid discriminator.")
 
-		count = 0
-		discs = []
-		
+		count = 1
+		discs = ""
+        
 		for i in self.bot.users:
-			if count == 5:
+			if i.discriminator == discriminator:
+				discs = discs + f"**{count}.** `{i.name}#{i.discriminator}`\n\n"
+				count = count + 1
+			if count == 6:
 				break
-			count = count + 1
-			if str(i.discriminator) == discriminator:
-				discs.append(f"{i.name}#{i.discriminator}\n")
-			else:
-				continue
-		
-		all_discs = ""
-		count = 0
-
-		for discs in discs:
-			count = count + 1
-			all_discs += f"{count}. {discs}\n"
-		
-		embed = discord.Embed(timestamp=ctx.message.created_at, description=all_discs, colour=242424)
+			
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{discs}", colour=242424)
 		embed.set_author(name=f"Users with Discriminator #{discriminator}", icon_url=self.config.logo)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
