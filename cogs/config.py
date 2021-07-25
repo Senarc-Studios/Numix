@@ -48,6 +48,29 @@ class admin(commands.Cog):
 		else:
 			return "Pass"
 		
+	async def setup(self, ctx):
+		collection = self.db1.DataBase_1.settings
+		# Checking if the command has been executed before.
+		if collection.count_documents({ "_id": int(ctx.guild.id), "setup_used": True }) == 1:
+			global setup_complete
+			setup_complete = "Fail Code 1"
+			return True
+		# Create "Numix Setup" Category
+		category = ctx.guild.create_category("Numix Setup (Staff Only)")
+		await category.set_permissions(ctx.guild.default_role, view_channels=False)
+		log_channel = await ctx.guild.create_text_channel(name="numix-logs", category=category)
+		# Create Mute Role
+		mute_role_perms = discord.Permissions(send_message=False)
+		mute_role = await ctx.guild.create_role(name="[Muted]", permissions=mute_role_perms)
+		# Create Report Channel
+		report_channel = await ctx.guild.create_text_channel(name="reports", category=category)
+		try:
+			# Inserting MongoDB document with all the data on it.
+			collection.insert_one({ "_id": int(ctx.guild.id), "log": log_channel.id, "mute": mute_role.id, "report": int(report_channel), "setup_used": True })
+		except:
+			global setup_complete
+			setup_complete = "Fail Code 1"
+			return True
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
@@ -64,6 +87,23 @@ class admin(commands.Cog):
 			for info in collection.find(guild_prefix):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
+
+	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!setup", description="Sets up Numix on the server.", aliases=["set-up"])
+	@commands.has_permissions(administator=True)
+	async def setup(self, ctx):
+		# Variables
+		setup_complete = False
+		message = await ctx.send(":stopwatch: Setting up guild with Numix")
+		await self.setup(ctx, message)
+		# Loop
+		while setup_complete == False:
+			await message.edit(content=":stopwatch: Setting up guild with Numix.")
+			await message.edit(content=":stopwatch: Setting up guild with Numix..")
+			await message.edit(content=":stopwatch: Setting up guild with Numix...")
+			await message.edit(content=":stopwatch: Setting up guild with Numix")
+		# Setup Output Checks
+		if setup_complete == "Fail Code 1":
+			await message.edit(content=f"{self.config.forbidden} This command has been used before, or This guild has already been manually setup with Numix.")
 
 	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!levelling <option> <argument> [optional_argument]", description="Manage what happens when someone levels up.")
 	@commands.has_permissions(administrator=True)

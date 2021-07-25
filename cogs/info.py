@@ -86,7 +86,32 @@ class general(commands.Cog):
 	# 	embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 	# 	embed.set_image(url="https://")
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!discriminator [discriminator]",description="Get's people who have a discriminator that you asked.", aliases=["discrim", "discrm", "disc"])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!emoji <emoji_name>", description="Get's the ID and tag of the emoji.", aliases=["emoji-id", "eid", "emoid", "emojiid", "emoji_id"])
+	async def emoji(self, ctx, *, emoji=None):
+		if emoji == None:
+			return await ctx.send(f"{self.config.forbidden} Please provide a emoji name as a parameter.")
+
+		emojis = emoji.split(" ")
+		emoji_tags = []
+
+		for i in emojis:
+			try:
+				emoji = discord.utils.get(self.bot.emojis, name=i)
+				emoji_tags.append(f"**Static:** <:{emoji.name}:{emoji.id}>\n**Animated:** <a:{emoji.name}:{emoji.id}>")
+				continue
+			except:
+				emoji_tags.append(f"{self.config.forbidden} `unable to find emoji \"{i}\"`")
+				continue
+
+		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+		embed.set_author(name="Emoji Query", icon_url=ctx.author.avatar_url)
+		for i in emoji_tags:
+			for a in emojis:
+				embed.add_field(name=f"{a}", value=i, inline=False)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
+
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!discriminator [discriminator]", description="Get's people who have a discriminator that you asked.", aliases=["discrim", "discrm", "disc"])
 	async def discriminator(self, ctx, discriminator=None):
 		try:
 			if discriminator == None:
