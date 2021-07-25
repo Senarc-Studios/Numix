@@ -25,7 +25,8 @@ class ErrorHandler(commands.Cog):
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, err):
 		if isinstance(err, errors.CommandOnCooldown):
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You're currently in cooldown, you won't be able to execute/run/use that command until the cooldown is over. \n\nThe Cooldown ends in {err.retry_after:.2f}", color=242424)
+			timeout_duration = int(err.retry_after)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You're currently in cooldown, you won't be able to execute/run/use that command until the cooldown is over. \n\nThe Cooldown ends in `{timeout_duration}`", color=242424)
 			embed.set_author(name="Cooldown", icon_url="https://discord.com/assets/11d800c7b4c405d96e8e412163727a89.svg")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
