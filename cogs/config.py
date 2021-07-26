@@ -69,7 +69,7 @@ class admin(commands.Cog):
 	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!setup", description="Sets up Numix on the server.", aliases=["set-up"])
 	@commands.has_permissions(administator=True)
 	async def setup(self, ctx):
-
+		global setup_complete
 		async def setup_(self, ctx):
 			global setup_complete
 			collection = self.db1.DataBase_1.settings
@@ -106,11 +106,9 @@ class admin(commands.Cog):
 		# Setup Output Checks
 		if setup_complete == "Fail Code 1":
 			await message.edit(content=f"{self.config.forbidden} This command has been used before, or This guild has already been manually setup with Numix.")
-			global setup_complete
 			setup_complete = False
 		else:
 			await message.edit(content=f"{self.config.success} Numix has been setup on this guild.")
-			global setup_complete
 			setup_complete = False
 
 	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!levelling <option> <argument> [optional_argument]", description="Manage what happens when someone levels up.")
