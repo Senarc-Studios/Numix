@@ -67,7 +67,7 @@ class admin(commands.Cog):
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
 	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!setup", description="Sets up Numix on the server.", aliases=["set-up"])
-	@commands.has_permissions(administator=True)
+	@commands.has_permissions(administrator=True)
 	async def setup(self, ctx):
 		global setup_complete
 		async def setup_(self, ctx):
