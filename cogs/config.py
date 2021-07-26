@@ -71,10 +71,10 @@ class admin(commands.Cog):
 	async def setup(self, ctx):
 
 		async def setup_(self, ctx):
+			global setup_complete
 			collection = self.db1.DataBase_1.settings
 			# Checking if the command has been executed before.
 			if collection.count_documents({ "_id": int(ctx.guild.id), "setup_used": True }) == 1:
-				global setup_complete
 				setup_complete = "Fail Code 1"
 				return True
 			# Create "Numix Setup" Category
@@ -92,7 +92,6 @@ class admin(commands.Cog):
 				return True
 			except:
 				print("")
-			global setup_complete
 			setup_complete = "Fail Code 1"
 			return True
 
