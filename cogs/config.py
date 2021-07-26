@@ -89,10 +89,12 @@ class admin(commands.Cog):
 			try:
 				# Inserting MongoDB document with all the data on it.
 				collection.insert_one({ "_id": int(ctx.guild.id), "log": log_channel.id, "mute": mute_role.id, "report": int(report_channel), "setup_used": True })
-			except:
-				global setup_complete
-				setup_complete = "Fail Code 1"
 				return True
+			except:
+				print("")
+			global setup_complete
+			setup_complete = "Fail Code 1"
+			return True
 
 		message = await ctx.send(":stopwatch: Setting up guild with Numix")
 		await setup_(self, ctx)
