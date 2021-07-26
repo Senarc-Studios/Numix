@@ -7,6 +7,8 @@ class CustomCommand(commands.Command):
 		self.perms = kwargs.get("perms", None)
 		self.syntax = kwargs.get("syntax", None)
 
+setup_complete = False
+
 class admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -67,8 +69,6 @@ class admin(commands.Cog):
 	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!setup", description="Sets up Numix on the server.", aliases=["set-up"])
 	@commands.has_permissions(administator=True)
 	async def setup(self, ctx):
-		# Variables
-		setup_complete = False
 
 		async def setup_(self, ctx):
 			collection = self.db1.DataBase_1.settings
@@ -105,9 +105,12 @@ class admin(commands.Cog):
 		# Setup Output Checks
 		if setup_complete == "Fail Code 1":
 			await message.edit(content=f"{self.config.forbidden} This command has been used before, or This guild has already been manually setup with Numix.")
-
+			global setup_complete
+			setup_complete = False
 		else:
 			await message.edit(content=f"{self.config.success} Numix has been setup on this guild.")
+			global setup_complete
+			setup_complete = False
 
 	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!levelling <option> <argument> [optional_argument]", description="Manage what happens when someone levels up.")
 	@commands.has_permissions(administrator=True)
