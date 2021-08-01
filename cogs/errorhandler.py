@@ -15,7 +15,6 @@ class CustomCommand(commands.Command):
         self.perms = kwargs.get("perms", None)
         self.syntax = kwargs.get("syntax", None)
 
-
 class ErrorHandler(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -23,21 +22,25 @@ class ErrorHandler(commands.Cog):
 		print('"ErrorHandler" cog loaded')
 
 	@commands.Cog.listener()
-	async def on_command_error(self, ctx, err):
+	async def on_command_error(self, ctx, err, cls=CustomCommand):
+
 		if isinstance(err, errors.CommandOnCooldown):
 			timeout_duration = int(err.retry_after)
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You're currently in cooldown, you won't be able to execute/run/use that command until the cooldown is over. \n\nThe Cooldown ends in `{timeout_duration}`", color=242424)
 			embed.set_author(name="Cooldown", icon_url="https://discord.com/assets/11d800c7b4c405d96e8e412163727a89.svg")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
+
 		elif isinstance(err, errors.MissingPermissions):
 			command = self.bot.get_command(ctx.command)
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You do not meet the required guild permissions the command \"`{command.name}`\" requires to be executed.\n\nYou need `{command.perms}` Permission in this Guild to be able to execute/run/use this command.", color=242424)
 			embed.set_author(name="Insufficient Permissions", icon_url=self.config.forbidden_img)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
+
 		elif isinstance(err, errors.CommandNotFound):
 			pass
+
 		else:
 			e = "`"
 			webhook = DiscordWebhook(url="https://ptb.discord.com/api/webhooks/827098788295606283/MdIajYdY98zaEM8DrygakRceR0XBQimMIBdU4kOJq4ogCo3Ur7TgwsJc85dnkkgsjTgP")
