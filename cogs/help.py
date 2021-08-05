@@ -13,7 +13,7 @@ class Help(commands.Cog):
 		self.config = default.get("./config.json")
 		print('"Help" cog loaded')
 
-	@commands.command(cls=CustomCommand, description="Shows all of Numix's commands.")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!help <command/category>", description="Shows all of Numix's commands.")
 	@commands.has_permissions(add_reactions=True,embed_links=True)
 	async def help(self, ctx, command=None):
 		cog = command

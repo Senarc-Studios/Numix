@@ -9,7 +9,7 @@ import os
 
 config = default.get("config.json")
 
-class CustomCommand(commands.Command):
+class CustomCommand(commands.Cog.listener):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
         self.perms = kwargs.get("perms", None)
@@ -21,8 +21,8 @@ class ErrorHandler(commands.Cog):
 		self.config = config
 		print('"ErrorHandler" cog loaded')
 
-	@commands.Cog.listener()
-	async def on_command_error(self, ctx, err, cls=CustomCommand):
+	@commands.Cog.listener(cls=CustomCommand)
+	async def on_command_error(self, ctx, err):
 
 		if isinstance(err, errors.CommandOnCooldown):
 			timeout_duration = int(err.retry_after)

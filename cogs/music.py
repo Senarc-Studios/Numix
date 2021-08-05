@@ -58,7 +58,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
 	ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)
 
-	def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 0.5):
+	def __init__(self, ctx, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 0.5):
 		super().__init__(source, volume)
 
 		self.requester = ctx.author
@@ -84,7 +84,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 		return '**{0.title}** by **{0.uploader}**'.format(self)
 
 	@classmethod
-	async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
+	async def create_source(cls, ctx, search: str, *, loop: asyncio.BaseEventLoop = None):
 		loop = loop or asyncio.get_event_loop()
 
 		partial = functools.partial(cls.ytdl.extract_info, search, download=False, process=False)
@@ -186,7 +186,7 @@ class SongQueue(asyncio.Queue):
 
 
 class VoiceState:
-	def __init__(self, bot: commands.AutoShardedBot, ctx: commands.Context):
+	def __init__(self, bot: commands.AutoShardedBot, ctx):
 		self.bot = bot
 		self._ctx = ctx
 
@@ -267,7 +267,7 @@ class music(commands.Cog):
 		self.bot = bot
 		self.voice_states = {}
 
-	def get_voice_state(self, ctx: commands.Context):
+	def get_voice_state(self, ctx):
 		state = self.voice_states.get(ctx.guild.id)
 		if not state:
 			state = VoiceState(self.bot, ctx)
@@ -279,20 +279,20 @@ class music(commands.Cog):
 		for state in self.voice_states.values():
 			self.bot.loop.create_task(state.stop())
 
-	def cog_check(self, ctx: commands.Context):
+	def cog_check(self, ctx):
 		if not ctx.guild:
 			raise commands.NoPrivateMessage(f'{config.forbidden} This command can\'t be used in DMs.')
 
 		return True
 
-	async def cog_before_invoke(self, ctx: commands.Context):
+	async def cog_before_invoke(self, ctx):
 		ctx.voice_state = self.get_voice_state(ctx)
 
-	async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
+	async def cog_command_error(self, ctx, error: commands.CommandError):
 		await ctx.send(f'{config.forbidden}' + '{}'.format(str(error)))
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!join", invoke_without_subcommand=True,description="Joins a voice channel")
-	async def join(self, ctx: commands.Context):
+	async def join(self, ctx):
 		"""Joins a voice channel."""
 
 		destination = ctx.author.voice.channel
@@ -306,7 +306,7 @@ class music(commands.Cog):
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_GUILD", syntax="n!summon [channel]", description='Summons the bot to a voice channel', aliases=["smn"])
 	@commands.has_permissions(manage_guild=True)
-	async def summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
+	async def summon(self, ctx, *, channel: discord.VoiceChannel = None):
 		"""Summons the bot to a voice channel.
 
 		If no channel was specified, it joins your channel.
@@ -325,7 +325,7 @@ class music(commands.Cog):
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_GUILD", syntax="n!leave", aliases=['disconnect'],description="Clear the queue and leave any voice channel")
 	@commands.has_permissions(manage_guild=True)
-	async def leave(self, ctx: commands.Context):
+	async def leave(self, ctx):
 		"""Clears the queue and leaves the voice channel."""
 		if not ctx.voice_state.voice:
 			return await ctx.send(f'{config.forbidden} Not connected to any voice channels.')
@@ -334,13 +334,13 @@ class music(commands.Cog):
 		del self.voice_states[ctx.guild.id]
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!np", aliases=['current', 'playing'],description='Shows current song')
-	async def np(self, ctx: commands.Context):
+	async def np(self, ctx):
 		"""Displays the currently playing song."""
 
 		await ctx.send(embed=ctx.voice_state.current.create_embed())
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!pause", description='Pause the current song')
-	async def pause(self, ctx: commands.Context):
+	async def pause(self, ctx):
 		"""Pauses the currently playing song."""
 
 		if ctx.voice_state.is_playing and ctx.voice_state.voice.is_playing():
@@ -350,7 +350,7 @@ class music(commands.Cog):
 			await ctx.send(f"{config.forbidden} No music playing.")
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!resume", description='Resume the paused song')
-	async def resume(self, ctx: commands.Context):
+	async def resume(self, ctx):
 		"""Resumes a currently paused song."""
 
 		if ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
@@ -361,7 +361,7 @@ class music(commands.Cog):
 
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!stop", description='Stops playing the song and clears the queue')
-	async def stop(self, ctx: commands.Context):
+	async def stop(self, ctx):
 		"""Stops playing song and clears the queue."""
 
 		ctx.voice_state.songs.clear()
@@ -371,7 +371,7 @@ class music(commands.Cog):
 			await ctx.message.add_reaction('⏹')
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skip", description='Vote to skip the song')
-	async def skip(self, ctx: commands.Context):
+	async def skip(self, ctx):
 		"""Vote to skip a song. The requester can automatically skip.
 		3 skip votes are needed for the song to be skipped.
 		"""
@@ -402,7 +402,7 @@ class music(commands.Cog):
 				await ctx.send(f'{config.forbidden} You already voted to skip.')
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!queue [page]", description='Shows the player queue')
-	async def queue(self, ctx: commands.Context, *, page: int = 1):
+	async def queue(self, ctx, *, page: int = 1):
 
 		if len(ctx.voice_state.songs) == 0:
 			return await ctx.send(f'{config.forbidden} Empty queue.')
@@ -422,7 +422,7 @@ class music(commands.Cog):
 		await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!shuffle", description='Shuffle the playing song')
-	async def shuffle(self, ctx: commands.Context):
+	async def shuffle(self, ctx):
 		"""Shuffles the queue."""
 
 		if len(ctx.voice_state.songs) == 0:
@@ -432,7 +432,7 @@ class music(commands.Cog):
 		await ctx.message.add_reaction(f'{config.success}')
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!remove [index]", description='Remove the song from queue', aliases=["rm"])
-	async def remove(self, ctx: commands.Context, index: int):
+	async def remove(self, ctx, index: int):
 		"""Removes a song from the queue at a given index."""
 
 		if len(ctx.voice_state.songs) == 0:
@@ -441,8 +441,8 @@ class music(commands.Cog):
 		ctx.voice_state.songs.remove(index - 1)
 		await ctx.message.add_reaction(f'{config.success}')
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!play [song name]", description='Plays the given song', aliases=["p", "pl", "pla"])
-	async def play(self, ctx: commands.Context, *, search: str):
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!play <song name>", description='Plays the given song', aliases=["p", "pl", "pla"])
+	async def play(self, ctx, *, search: str):
 
 		if not ctx.voice_state.voice:
 			destination = ctx.author.voice.channel
@@ -465,7 +465,7 @@ class music(commands.Cog):
 
 	@join.before_invoke
 	@play.before_invoke
-	async def ensure_voice_state(self, ctx: commands.Context):
+	async def ensure_voice_state(self, ctx):
 		if not ctx.author.voice or not ctx.author.voice.channel:
 			raise commands.CommandError(f'{config.forbidden} You are currently not connected to any voice channel.')
 
