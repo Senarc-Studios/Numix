@@ -151,12 +151,12 @@ class Song:
 		self.requester = source.requester
 
 	def create_embed(self):
-		embed = discord.Embed(description='```css\n{0.source.title}\n```'.format(self), color=242424)
+		embed = discord.Embed(description=f'```css\n{self.source.title}\n```', color=242424)
 		embed.set_author(name="Now Playing", icon_url=self.requester.avatar_url)
-		embed.add_field(name='Duration:', value=self.source.duration)
+		embed.add_field(name='Duration:', value=f"`{self.source.duration}`")
 		embed.add_field(name='Requested by:', value=self.requester.mention)
-		embed.add_field(name='Uploader:', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self))
-		embed.add_field(name='YouTube URL:', value='{0.source.url}'.format(self))
+		embed.add_field(name='Uploader:', value=f'[{self.source.uploader}]({self.source.uploader_url})')
+		embed.add_field(name='YouTube URL:', value=f'{self.source.url}')
 		embed.set_footer(text="Numix Music", icon_url=config.logo)
 
 		return embed
@@ -375,7 +375,11 @@ class music(commands.Cog):
 		"""Vote to skip a song. The requester can automatically skip.
 		3 skip votes are needed for the song to be skipped.
 		"""
-		if ctx.author.server_permissions.manage_messages:
+		if ctx.author.guild_permissions.manage_messages:
+
+			if not ctx.voice_state.is_playing:
+				return await ctx.send(f'{config.forbidden} No music playing.')
+
 			ctx.voice_state.skip()
 
 		else:
