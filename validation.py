@@ -13,12 +13,12 @@ async def permission(self, ctx, permission, command):
 	elif ctx.message.author.guild_permissions.administrator:
 		return True
 
-	elif:
+	else:
 
-	embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You do not meet the required guild permissions the command \"`{command}`\" requires to be executed.\n\nYou need `{permission}` Permission in this Guild to be able to execute/run/use this command.", color=242424)
-	embed.set_author(name="Insufficient Permissions", icon_url=self.config.forbidden_img)
-	embed.set_footer(text="Numix", icon_url=self.config.logo)
-	await ctx.send(embed=embed)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You do not meet the required guild permissions the command \"`{command}`\" requires to be executed.\n\nYou need `{permission}` Permission in this Guild to be able to execute/run/use this command.", color=242424)
+		embed.set_author(name="Insufficient Permissions", icon_url=self.config.forbidden_img)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
 
 async def notify_premium(self, ctx):
 	embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The \"`{ctx.command}`\" is a Premium Command and this guild does not have the required Numix Premium. Therefore you can't execute/run/use this command in this guild.", color=242424)
