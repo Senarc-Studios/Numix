@@ -375,7 +375,7 @@ class music(commands.Cog):
 		"""Vote to skip a song. The requester can automatically skip.
 		3 skip votes are needed for the song to be skipped.
 		"""
-		if ctx.author.server_premission.manage_messages:
+		if ctx.author.server_permissions.manage_messages:
 			ctx.voice_state.skip()
 
 		else:
