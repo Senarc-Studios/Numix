@@ -151,12 +151,11 @@ class Song:
 		self.requester = source.requester
 
 	def create_embed(self):
-		embed = discord.Embed(description=f'```css\n{self.source.title}\n```', color=242424)
-		embed.set_author(name="Now Playing", icon_url=self.requester.avatar_url)
-		embed.add_field(name='Duration:', value=f"`{self.source.duration}`")
-		embed.add_field(name='Requested by:', value=self.requester.mention)
-		embed.add_field(name='Uploader:', value=f'[{self.source.uploader}]({self.source.uploader_url})')
-		embed.add_field(name='YouTube URL:', value=f'{self.source.url}')
+		embed = discord.Embed(color=242424)
+		embed.set_author(name="Playing", icon_url=self.requester.avatar_url)
+		embed.add_field(name="Song:", value=f"[{self.source.title}]({self.source.url}) by [{self.source.uploader}]({self.source.uploader_url})")
+		embed.add_field(name='Duration:', value=f"`{self.source.duration}`", inline=False)
+		embed.add_field(name='Requested by:', value=self.requester.mention, inline=False)
 		embed.set_footer(text="Numix Music", icon_url=config.logo)
 
 		return embed
