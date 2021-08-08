@@ -79,7 +79,7 @@ class general(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin", "mc-user", "player", "mc-player", "mc-name" ])
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin", "mc-user", "player", "mc-player", "mc-name", "uuid" ])
 	async def skin(self, ctx, username=None):
 		if username == None:
 			return await ctx.send(f"{self.config.forbidden} Specify a Username to get the skin.")
