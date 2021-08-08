@@ -79,12 +79,25 @@ class general(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
 
-	# @commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin" ])
-	# async def skin(self, ctx, username=None):
-	# 	if username == None:
-	# 		return await ctx.send(f"{self.config.forbidden} Specify a Username to get the skin.")
-	# 	embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-	# 	embed.set_image(url="https://")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin", "mc-user", "player", "mc-player", "mc-name" ])
+	async def skin(self, ctx, username=None):
+		if username == None:
+			return await ctx.send(f"{self.config.forbidden} Specify a Username to get the skin.")
+		uuid = requests.get('https://api.mojang.com/users/profiles/minecraft/{}'.format(username)).json()['id']
+
+		url = json.loads(base64.b64decode(requests.get('https://sessionserver.mojang.com/session/minecraft/profile/{}'.format(uuid)).json()['properties'][0]['value']).decode('utf-8'))['textures']['SKIN']['url']
+	
+		names = requests.get('https://api.mojang.com/user/profiles/{}/names'.format(uuid)).json()
+		history = "**Name History:**\n"
+		for name in reversed(names):
+			history += name['name']+"\n"
+
+		embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+		embed.set_author(name=f"Results for {username}", icon_url=ctx.author.avatar_url)
+		embed.add_field(name=f"UUID:", value=f"`{uuid}`")
+		embed.set_image(url=f"{url}")
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!emoji <emoji_name>", description="Get's the ID and tag of the emoji.", aliases=["emoji-id", "eid", "emoid", "emojiid", "emoji_id"])
 	async def emoji(self, ctx, *, emoji=None):
@@ -143,7 +156,7 @@ class general(commands.Cog):
 
 		count = 1
 		discs = ""
-        
+		
 		for i in self.bot.users:
 			if i.discriminator == discriminator:
 				discs = discs + f"**{count}.** `{i.name}#{i.discriminator}`\n\n"
