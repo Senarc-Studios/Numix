@@ -72,6 +72,33 @@ class fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
+	@commands.command(cls=CustomCommand, perms="MANAGE_MESSAGES", sytnax="n!randomuser", aliases=["random-user", "random-mention", "randmember", "randuser", "randusr"], description="Mentions a random user.")
+	@commands.has_permissions(manage_messages=True)
+	async def randomuser(self, ctx):
+		user = random.choice(ctx.guild.users)
+		await ctx.send(user.name)
+
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!kill <user>", aliases=["mc-kill", "mckill"], description="Sends a Minecraft Death Message.")
+	async def kill(self, ctx, user: discord.Member="You"):
+		user = user.name.replace(" ", "")
+		user = user.replace("@", "")
+		await ctx.send(f"{user} fell out of the world")
+
+	# INCOMPLETE
+
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!sudo <user> <message>", aliases=["force-message", "user-say"])
+	@commands.has_permissions(administrator=True)
+	async def sudo(self, ctx, user: discord.Member=None, *, message=None):
+		if user == None:
+			return await ctx.send(f"{self.config.forbidden} Specify who you're messaging as.")
+
+		elif message == None:
+			return await ctx.send(f"{self.config.forbidden} Specify what your message is.")
+			
+		webhook = await ctx.channel.create_webhook(name=user.name, avatar=user.avatar_url, reason=f"\"{ctx.author.name}\" Used the sudo command on \"{user.name}\"")
+		await webhook.send(message)
+		await webhook.delete()
+
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!embed <title> <description> [footer] [icon]", aliases=["em"], description="Use this command to create an Embed.")
 	@commands.has_permissions(administrator=True)
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
