@@ -66,7 +66,86 @@ class admin(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
-	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!setup", description="Sets up Numix on the server.", aliases=["set-up"])
+	# INCOMPLETE
+
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!automod <module> <setting> [option]", aliases=["auto-mod", "aumo"], description="Manage Auto-Moderation on premium servers.")
+	@commands.has_permissions(administrator=True)
+	async def automod(self, ctx, module=None, setting=None, option: discord.TextChannel=None):
+		collection = self.db1.DataBase_1.settings
+
+		if module == None:
+			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+			embed.set_author(name="Auto-Mod Modules", icon_url=ctx.guild.icon_url)
+			embed.add_field(name="Spam Filter", value=f"Description: Deletes Spam messages and performs customized moderation functions.\nSetting Arguments: `n!automod spam on/off/whitelist channel`")
+			embed.add_field(name="Mass Mention", value=f"Description: Deletes messages containing more than set amount of mentions in a message.\nSetting Arguments: `n!automod mention on/off/set [ammount]`")
+			embed.add_field(name="Mass Join", value=f"Description: Bans or Kicks users more than 5 users at the same time.\nSetting Arguments: `n!automod join on/off/set [ban/kick]`")
+			embed.add_field(name="Customize", value=f"Description: Customize your Numix Auto-Mod Moderations after each module trigger.\nSetting Argument: `n!automod customize mention/spam warn/mute/kick/ban`")
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+		
+		elif module == "spam":
+			if setting == None:
+				embed = discord.Embed(timestamp=ctx.message.created_at, description="Please provide a setting for the module to follow, and a option if required. If you're unsure, please take a look at `n!automod`.", colour=242424)
+				embed.set_author(name="Auto-Mod Spam Filter", icon_url=ctx.guild.icon_url)
+				embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+				await ctx.send(embed=embed)
+
+			elif setting == "on":
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Auto-Moderation module spam has been enabled for guild id `{ctx.guild.id}`.", colour=242424)
+				embed.set_author(name="Auto-Mod Spam Filter", icon_url=self.config.success_img)
+				embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+					collection.insert_one({ "_id": int(ctx.guild.id), "spam_automod": True })
+					return await ctx.send(embed=embed)
+
+				elif collection.count_documents({ "_id": int(ctx.guild.id), "spam_automod": True }) == 1:
+					return await ctx.send(f"{self.config.forbidden} Auto-Mod Spam filter is already enabled on this guild.")
+
+				elif collection.count_documents({ "_id": int(ctx.guild.id), "spam_automod": False }) == 1:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "spam_automod": True } })
+					return await ctx.send(embed=embed)
+
+			elif setting == "off":
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Auto-Moderation module spam has been disabled for guild id `{ctx.guild.id}`.", colour=242424)
+				embed.set_author(name="Auto-Mod Spam Filter", icon_url=self.config.success_img)
+				embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+				
+				if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+					collection.insert_one({ "_id": int(ctx.guild.id), "spam_automod": False })
+					return await ctx.send(embed=embed)
+
+				elif collection.count_documents({ "_id": int(ctx.guild.id), "spam_automod": False }) == 1:
+					return await ctx.send(f"{self.config.forbidden} Auto-Mod Spam filter is already disabled on this guild.")
+
+				elif collection.count_documents({ "_id": int(ctx.guild.id), "spam_automod": True }) == 1:
+					collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "spam_automod": False } })
+					return await ctx.send(embed=embed)
+
+			elif setting == "whitelist":
+				channel = option
+				if option == None:
+					channel = ctx.channel
+
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"The channel <#{channel.id}> has been added to the Auto-Mod Spam filter whitelist")
+				embed.set_author(name="Auto-Mod Spam Filter", icon_url=self.config.success_img)
+				embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+
+				if collection.count_documents({ "_id": int(ctx.guild.id) }):
+					collection.insert_one({ "_id": int(ctx.guild.id), "spam_whitelist": [channel.id] })
+					return await ctx.send(embed=embed)
+
+				for data in collection.find({ "_id": int(ctx.guild.id) }):
+					if data["spam_whitelist"] == None:
+						collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "spam_whitelist": [channel.id] } })
+						return await ctx.send(embed=embed)
+
+					elif channel.id in data["spam_whitelist"]:
+						return await ctx.send(f"{self.config.forbidden} Channel <#{channel.id}>")
+				
+				# INCOMPLETE
+
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!setup", description="Sets up Numix on the server.", aliases=["set-up"])
 	@commands.has_permissions(administrator=True)
 	async def setup(self, ctx):
 		global setup_complete
