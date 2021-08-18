@@ -31,13 +31,6 @@ class ErrorHandler(commands.Cog):
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
 
-		elif isinstance(err, errors.MissingPermissions):
-			command = self.bot.get_command(ctx.command)
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You do not meet the required guild permissions the command \"`{command.name}`\" requires to be executed.\n\nYou need `{command.perms}` Permission in this Guild to be able to execute/run/use this command.", color=242424)
-			embed.set_author(name="Insufficient Permissions", icon_url=self.config.forbidden_img)
-			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			await ctx.send(embed=embed)
-
 		elif isinstance(err, errors.CommandNotFound):
 			pass
 
