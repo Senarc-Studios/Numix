@@ -465,6 +465,7 @@ class general(commands.Cog):
 		embed.set_author(name="Numix Quick Info", icon_url=self.config.logo)
 		embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/6ZaNzxocvA0LBs_7spxKpNSU8dGqsmKyApoDFnvdF0E/https/cdn.discordapp.com/emojis/855604380571795487.gif?width=76&height=76")
 		msg = await ctx.send(embed=embed)
+		await asyncio.sleep(5)
 		
 		ping = (time.monotonic() - before) * 1000
 		
