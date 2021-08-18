@@ -460,33 +460,28 @@ class general(commands.Cog):
 
 		before = time.monotonic()
 		before_ws = int(round(self.bot.latency * 1000, 1))
-		msg = await ctx.send("Loading Data")
-
-		await msg.edit(content="Loading Data.")
-		await msg.edit(content="Loading Data..")
-		await msg.edit(content="Loading Data...")
-
-		await msg.edit(content="Loading Data")
-		await msg.edit(content="Loading Data.")
-		await msg.edit(content="Loading Data..")
-		await msg.edit(content="Loading Data...")
+		embed = discord.Embed(timestamp=ctx.message.created_at, description="Hello there! I'm a unique and simple Discord bot, with various features. You will be able to see more about me in 5 seconds, You can always look at my commands and features with `n!help`.", colour=242424)
+		embed.set_footer(text="Numix", icon_url=self.config.logo)
+		embed.set_author(name="Numix Quick Info", icon_url=self.config.logo)
+		embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/6ZaNzxocvA0LBs_7spxKpNSU8dGqsmKyApoDFnvdF0E/https/cdn.discordapp.com/emojis/855604380571795487.gif?width=76&height=76")
+		msg = await ctx.send(embed=embed)
 		
 		ping = (time.monotonic() - before) * 1000
 		
 		ram = self.process.memory_full_info().rss / 1024**2
 
-		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"`[Support](https://numix.xyz/discord)・[Invite](https://numix.xyz/invite)・[Vote](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `Loading...`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord)•[`Invite`](https://numix.xyz/invite)•[`Vote`](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `Loading...`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		embed.set_author(name="Information about Numix", icon_url=self.config.logo)
 		await msg.edit(content="", embed=embed)
 
 		try:
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"`[Support](https://numix.xyz/discord)・[Invite](https://numix.xyz/invite)・[Vote](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `{countlines('/root/Numix')}` lines\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord)•[`Invite`](https://numix.xyz/invite)•[`Vote`](https://top.gg/bot/744865990810271785)\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `{countlines('/root/Numix')}` lines\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			embed.set_author(name="Information about Numix", icon_url=self.config.logo)
 			await msg.edit(content="", embed=embed)
 		except Exception:
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"`[Support](https://numix.xyz/discord)・[Invite](https://numix.xyz/invite)・[Vote](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `Internal Error`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord)•[`Invite`](https://numix.xyz/invite)•[`Vote`](https://top.gg/bot/744865990810271785)\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `Internal Error`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			embed.set_author(name="Information about Numix", icon_url=self.config.logo)
 			await msg.edit(content="", embed=embed)
