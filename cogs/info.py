@@ -1,4 +1,5 @@
 from numix_imports import *
+from permission_handler import *
 import motor.motor_asyncio
 import os
 
@@ -414,36 +415,24 @@ class general(commands.Cog):
 		
 		ram = self.process.memory_full_info().rss / 1024**2
 
-		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"`[Support](https://numix.xyz/discord)・[Invite](https://numix.xyz/invite)・[Vote](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `Loading...`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
-		embed.set_author(name="Numix Bot", icon_url=self.config.logo)
-		embed.add_field(name="Developers:", value=f"{self.config.devs}", inline=False)
-		embed.add_field(name="Bot Version:", value=f"{self.config.botversion}", inline=False)
-		embed.add_field(name="Ping:", value=f"WS: `{before_ws}`ms | REST: `{int(ping)}`ms")
-		embed.add_field(name="Support Server:", value=f"{self.config.supportserver}", inline=False)
-		embed.add_field(name="Invited Servers:", value=f"`{len(self.bot.guilds)}` Servers", inline=False)
-		embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
-		embed.add_field(name="Loaded Commands:", value=len([x.name for x in self.bot.commands]), inline=False)
-		embed.add_field(name="Numix Code Lines:", value=f"`Loading...`", inline=False)
-		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
+		embed.set_author(name="Information about Numix", icon_url=self.config.logo)
 		await msg.edit(content="", embed=embed)
 
-		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-		embed.set_footer(text="Numix", icon_url=self.config.logo)
-		embed.set_author(name="Numix Bot", icon_url=self.config.logo)
-		embed.add_field(name="Developers:", value=f"{self.config.devs}", inline=False)
-		embed.add_field(name="Bot Version:", value=f"{self.config.botversion}", inline=False)
-		embed.add_field(name="Ping:", value=f"WS: `{before_ws}`ms | REST: `{int(ping)}`ms")
-		embed.add_field(name="Support Server:", value=f"{self.config.supportserver}", inline=False)
-		embed.add_field(name="Invited Servers:", value=f"`{len(self.bot.guilds)}` Servers", inline=False)
-		embed.add_field(name="All Members:", value=f"`{len(self.bot.users)}` Members", inline=False)
-		embed.add_field(name="Loaded Commands:", value=len([x.name for x in self.bot.commands]), inline=False)
-		embed.add_field(name="Numix Code Lines:", value=f"`{countlines('/root/Numix')}` lines", inline=False)
-		embed.add_field(name="Ram Usage:", value=f"{ram} MB", inline=False)
-		await msg.edit(content="", embed=embed)
+		try:
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"`[Support](https://numix.xyz/discord)・[Invite](https://numix.xyz/invite)・[Vote](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `{countlines('/root/Numix')}` lines\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			embed.set_author(name="Information about Numix", icon_url=self.config.logo)
+			await msg.edit(content="", embed=embed)
+		except Exception:
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"`[Support](https://numix.xyz/discord)・[Invite](https://numix.xyz/invite)・[Vote](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** {self.config.botversion}\n<:commands:877400920705617921> **Loaded Commands:** {len([x.name for x in self.bot.commands])}\n<:folder:877402950077657218> **Lines of Code:** `Internal Error`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** {len(self.bot.users)}", color=242424)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			embed.set_author(name="Information about Numix", icon_url=self.config.logo)
+			await msg.edit(content="", embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!lookup [member]", description="Lookup information about the user.")
-	@commands.has_permissions(manage_messages=True)
+	@permission("manage_messages")
 	async def lookup(self, ctx, user: discord.Member = None):
 		if user is None:
 			user = ctx.message.author

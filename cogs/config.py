@@ -1,3 +1,4 @@
+from permission_handler import *
 from numix_imports import *
 from validation import *
 
@@ -69,8 +70,9 @@ class admin(commands.Cog):
 	# INCOMPLETE
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!automod <module> <setting> [option]", aliases=["auto-mod", "aumo"], description="Manage Auto-Moderation on premium servers.")
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def automod(self, ctx, module=None, setting=None, option: discord.TextChannel=None):
+
 		collection = self.db1.DataBase_1.settings
 
 		if module == None:
@@ -146,7 +148,7 @@ class admin(commands.Cog):
 				# INCOMPLETE
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!setup", description="Sets up Numix on the server.", aliases=["set-up"])
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def setup(self, ctx):
 		global setup_complete
 		async def setup_(self, ctx):
@@ -191,7 +193,7 @@ class admin(commands.Cog):
 			setup_complete = False
 
 	@commands.command(cls=CustomCommand, perms="ADMINITRATOR", syntax="n!levelling <option> <argument> [optional_argument]", description="Manage what happens when someone levels up.")
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def levelling(self, ctx, option=None, argument=None, *, text=None):
 		await self.confirm_task(ctx)
 		if option == None:
@@ -261,7 +263,7 @@ class admin(commands.Cog):
 			return await ctx.send(f"{self.config.forbidden} Please provide a **VALID** option like `message` or `role`. \"{argument}\" is not a valid option.")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!antinuker <option>", description="Manages the Anti-Nuker on Premium Servers.")
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def antinuker(self, ctx, option=None):
 		await self.confirm_task(ctx)
 		if await self.premium_validation(ctx) == True:
@@ -305,7 +307,7 @@ class admin(commands.Cog):
 						await ctx.send(f"{self.config.success} Anti-Nuker has been disabled.")
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!autorole <option> [role]", description="Manages the auto-role setting in premium servers.", aliases=["auto-role", "arole", "a-role", "ar", "a-r"])
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def autorole(self, ctx, option=None, role: discord.Role=None):
 		await self.confirm_task(ctx)
 		if await self.premium_validation(ctx) == True:
@@ -393,7 +395,7 @@ class admin(commands.Cog):
 
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!cb <option> [channel]", description="Manage ChatBots on premium servers.", aliases=["chat-bot", "chat", "bot", "ai"])
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def cb(self, ctx, option=None, channel: discord.TextChannel=None):
 		await self.confirm_task(ctx)
 		premium = self.db1.DataBase_1.premium
@@ -636,7 +638,7 @@ class admin(commands.Cog):
 		' Reports Config '
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!reports <channel>", description="Sets the channel that reports are sent.", alisases=["set-report", "report-channel"])
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def reports(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Report Channel set to <#{log.id}>')
 		collection = self.db1.DataBase_1.settings
@@ -650,7 +652,7 @@ class admin(commands.Cog):
 		' Log Config '
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!log <channel>", description="Sets the log channel.", alisases=["logs", "set-logs", "audit-log"])
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def log(self, ctx, log: discord.TextChannel):
 		await ctx.send(f'{self.config.success} Log Channel set to <#{log.id}>')
 		collection = self.db1.DataBase_1.settings
@@ -666,7 +668,7 @@ class admin(commands.Cog):
 		' Filter Setting '
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!filter <type> <option>", description="Customising server filters on premium servers.")
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def filter(self, ctx, type=None, *, option=None):
 
 		links = ["link", "links"]

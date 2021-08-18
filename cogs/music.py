@@ -14,6 +14,7 @@ from discord.utils import get
 from utils import default
 from async_timeout import timeout
 from discord.ext import commands
+from permission_handler import *
 
 # Silence useless bug reports messages
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -304,7 +305,7 @@ class music(commands.Cog):
 		await ctx.send(f'{config.success} Joined the Voice Channel.')
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_GUILD", syntax="n!summon [channel]", description='Summons the bot to a voice channel', aliases=["smn"])
-	@commands.has_permissions(manage_guild=True)
+	@permission("manage_guild")
 	async def summon(self, ctx, *, channel: discord.VoiceChannel = None):
 		"""Summons the bot to a voice channel.
 
@@ -323,7 +324,7 @@ class music(commands.Cog):
 		await ctx.send(f'{config.success} Bot summoned!')
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_GUILD", syntax="n!leave", aliases=['disconnect'],description="Clear the queue and leave any voice channel")
-	@commands.has_permissions(manage_guild=True)
+	@permission("manage_guild")
 	async def leave(self, ctx):
 		"""Clears the queue and leaves the voice channel."""
 		if not ctx.voice_state.voice:

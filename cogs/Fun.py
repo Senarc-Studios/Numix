@@ -1,4 +1,5 @@
 from numix_imports import *
+from permission_handler import *
 import numix_encrypt
 
 class CustomCommand(commands.Command):
@@ -73,7 +74,7 @@ class fun(commands.Cog):
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_MESSAGES", sytnax="n!randomuser", aliases=["random-user", "random-mention", "randmember", "randuser", "randusr"], description="Mentions a random user.")
-	@commands.has_permissions(manage_messages=True)
+	@permission("manage_messages")
 	async def randomuser(self, ctx):
 		user = random.choice(ctx.guild.users)
 		await ctx.send(user.name)
@@ -87,7 +88,7 @@ class fun(commands.Cog):
 	# INCOMPLETE
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!sudo <user> <message>", aliases=["force-message", "user-say"])
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def sudo(self, ctx, user: discord.Member=None, *, message=None):
 		if user == None:
 			return await ctx.send(f"{self.config.forbidden} Specify who you're messaging as.")
@@ -100,7 +101,7 @@ class fun(commands.Cog):
 		await webhook.delete()
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!embed <title> <description> [footer] [icon]", aliases=["em"], description="Use this command to create an Embed.")
-	@commands.has_permissions(administrator=True)
+	@permission("administrator")
 	async def embed(self, ctx, e_title=None, e_description=None, e_footer=None, e_icon=None):
 		
 		if e_title is None or e_description is None:

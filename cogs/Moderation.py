@@ -1,4 +1,5 @@
 from numix_imports import *
+from permission_handler import *
 import string
 import random
 
@@ -152,7 +153,7 @@ class moderation(commands.Cog, name='moderation'):
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_MESSAGES", syntax="n!clear <ammount>", description="Clears the specified amount of messages", name="clear")
 	@commands.guild_only()
-	@commands.has_permissions(manage_messages=True)
+	@permission("manage_messages")
 	async def clear(self, ctx, *, amount: int=None):
 		
 		if amount is None:
@@ -325,7 +326,7 @@ class moderation(commands.Cog, name='moderation'):
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_MESSAGES", syntax="n!infractions <member>", description="Shows all the warning a user has.")
 	@commands.guild_only()
-	@commands.has_permissions(manage_messages=True)
+	@permission("manage_messages")
 	async def infractions(self, ctx, user: discord.Member=None):
 		cluster = MongoClient(MONGO)
 		collection = cluster.Moderation.warns
