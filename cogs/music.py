@@ -14,7 +14,6 @@ from discord.utils import get
 from utils import default
 from async_timeout import timeout
 from discord.ext import commands
-from permission_handler import *
 
 config = default.get("./config.json")
 
