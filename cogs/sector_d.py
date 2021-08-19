@@ -4,6 +4,7 @@ class SECTOR_D(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
+		self.db1 = MongoClient(self.config.db1)
 		print("\"Sector D\" Loaded")
 
 	def authorize(self, ctx):
@@ -11,6 +12,14 @@ class SECTOR_D(commands.Cog):
 			return True
 		else:
 			return False
+
+	@commands.command(hidden=True)
+	async def gb(self, ctx, user: discord.Member, badge):
+		self.authorize(ctx)
+		collection = self.db1.DataBase_1.assets
+		badge = badge.lower()
+		collection.update_one({ "_id": "badges" }, { "$addToSet": { f"{badge}": user.id  } })
+		await ctx.send(f"{self.config.success} *`{badge.upper()}`* badge has been added to {user.name}")
 
 	@commands.command(hidden=True)
 	async def say(self, ctx, *, message):
