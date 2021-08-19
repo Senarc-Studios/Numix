@@ -22,6 +22,14 @@ class SECTOR_D(commands.Cog):
 		await ctx.send(f"{self.config.success} *`{badge.upper()}`* badge has been added to {user.name}")
 
 	@commands.command(hidden=True)
+	async def tb(self, ctx, user: discord.Member, badge):
+		self.authorize(ctx)
+		collection = self.db1.DataBase_1.assets
+		badge = badge.lower()
+		collection.update_one({ "_id": "badges" }, { "$pull": { f"{badge}": user.id  } })
+		await ctx.send(f"{self.config.success} *`{badge.upper()}`* badge has been removed from {user.name}")
+
+	@commands.command(hidden=True)
 	async def say(self, ctx, *, message):
 		if self.authorize(ctx) == False:
 			if ctx.guild.owner_id == ctx.author.id:
