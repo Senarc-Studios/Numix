@@ -5,10 +5,18 @@ import os
 
 config = default.get('./config.json')
 
-def badges(id: int):
+def badges(self, id: int):
 	MONGO = MongoClient(f"{config.db1}")
 	collection = MONGO.DataBase_1.assets
+	premium_collection = MONGO.DataBase_1.premium
+	premium_users = []
+	
 	for data in collection.find({ "_id": "badges" }):
+		for server in self.bot.guilds:
+			if premium_collection.count_documents({ "_id": f"{server.id}", "premium": "True" }) == 1:
+				owner_id = server.owner_id
+				premium_users.append(owner_id)
+
 		all_badges = ""
 		if id in config.owners:
 			all_badges = all_badges + " " + config.developer
@@ -22,7 +30,7 @@ def badges(id: int):
 		if id in data["beta_tester"]:
 			all_badges = all_badges + " " + config.beta_tester
 
-		if id in data["premium_user"]:
+		if id in premium_users:
 			all_badges = all_badges + " " + config.premium
 
 	return f"{all_badges} <:members:877398159368814623>"
@@ -179,7 +187,7 @@ class general(commands.Cog):
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
-				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} No bio set.", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				return await ctx.send(embed=embed)
@@ -188,7 +196,7 @@ class general(commands.Cog):
 				bio = data["bio"]
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
-				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} {bio}", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
@@ -203,7 +211,7 @@ class general(commands.Cog):
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
-				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} No bio set.", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				return await ctx.send(embed=embed)
@@ -212,7 +220,7 @@ class general(commands.Cog):
 				bio = data["bio"]
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
-				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} {bio}", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
@@ -705,7 +713,7 @@ class general(commands.Cog):
 		
 		embed.add_field(name='**Server-Side Info**', value=f"{self.config.arrow} **Nick:** `{user.nick}`\n{self.config.arrow} **In Voice:** {voice_state}\n{self.config.arrow} **Highest Role:** <@&{user.top_role.id}>\n{self.config.arrow} **Joined Date:** `{user.joined_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Joined Time:** `{user.joined_at.__format__('%H:%M:%S')}`", inline=False)
 		
-		embed.add_field(name='**Account-Side Info**', value=f"{self.config.arrow} **Numix Badges:** {badges(ctx.author.id)}\n{self.config.arrow} **Status:** {user.status}\n{self.config.arrow} **Game/Custom Status:** {game}\n{self.config.arrow} **On Mobile:** `{user.is_on_mobile()}`\n{self.config.arrow} **Bot User:** `{user.bot}`\n{self.config.arrow} **Account Creation Date:** `{user.created_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Account Creation Time:** `{user.created_at.__format__('%H:%M:%S')}`", inline=False)
+		embed.add_field(name='**Account-Side Info**', value=f"{self.config.arrow} **Numix Badges:** {badges(self, ctx.author.id)}\n{self.config.arrow} **Status:** {user.status}\n{self.config.arrow} **Game/Custom Status:** {game}\n{self.config.arrow} **On Mobile:** `{user.is_on_mobile()}`\n{self.config.arrow} **Bot User:** `{user.bot}`\n{self.config.arrow} **Account Creation Date:** `{user.created_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Account Creation Time:** `{user.created_at.__format__('%H:%M:%S')}`", inline=False)
 
 		embed.set_author(name=user.name, icon_url=user.avatar_url)
 		embed.set_footer(text='Numix', icon_url=self.config.logo)
