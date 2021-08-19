@@ -5,11 +5,11 @@ import os
 
 config = default.get('./config.json')
 
-MONGO = MongoClient(f"{config.db1}")
 def badges(self, id: int):
 	collection = MONGO.DataBase_1.assets
 	premium_collection = MONGO.DataBase_1.premium
 	premium_users = []
+	MONGO = MongoClient(f"{config.db1}")
 	
 	for data in collection.find({ "_id": "badges" }):
 		for server in self.bot.guilds:
@@ -685,6 +685,7 @@ class general(commands.Cog):
 
 		for feature, label in all_features.items():
 			if feature in features:
+				MONGO = MongoClient(f"{self.config.db1}")
 				premium_collection = MONGO.DataBase_1.premium
 				if "Numix Premium" not in info:
 					if premium_collection.count_documents({ "_id": f"{ctx.guild.id}", "premium": "True" }) == 1:
