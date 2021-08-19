@@ -6,21 +6,24 @@ import os
 config = default.get('./config.json')
 
 def badges(id: int):
-	all_badges = ""
-	if id in config.owners:
-		all_badges = all_badges + " " + config.developer
-	
-	if id in config.partnered_users:
-		all_badges = all_badges + " " + config.partnered
+	MONGO = MongoClient(f"{config.db1}")
+	collection = MONGO.DataBase_1.assets
+	for data in collection.find({ "_id": "badges" }):
+		all_badges = ""
+		if id in config.owners:
+			all_badges = all_badges + " " + config.developer
+		
+		if id in data["partnered_users"]:
+			all_badges = all_badges + " " + config.partnered
 
-	if id in config.verified_users:
-		all_badges = all_badges + " " + config.verified
+		if id in data["verified_users"]:
+			all_badges = all_badges + " " + config.verified
 
-	if id in config.beta_testers:
-		all_badges = all_badges + " " + config.beta_tester
+		if id in data["beta_tester"]:
+			all_badges = all_badges + " " + config.beta_tester
 
-	if id in config.premium_users:
-		all_badges = all_badges + " " + config.premium
+		if id in data["premium_user"]:
+			all_badges = all_badges + " " + config.premium
 
 	return f"{all_badges} <:members:877398159368814623>"
 
