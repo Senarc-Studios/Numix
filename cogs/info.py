@@ -27,7 +27,7 @@ def badges(self, id: int):
 		if id in data["verified_users"]:
 			all_badges = all_badges + " " + config.verified
 
-		if id in data["beta_tester"]:
+		if id in data["beta_testers"]:
 			all_badges = all_badges + " " + config.beta_tester
 
 		if id in premium_users:
