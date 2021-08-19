@@ -20,7 +20,7 @@ class Help(commands.Cog):
 		"""Gets all cogs and commands of mine."""
 		try: 
 			if cog is None:
-				e = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.ref_buttons}" color=242424)
+				e = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.ref_buttons}", color=242424)
 				e.set_author(name="Numix Commands", icon_url=self.config.logo)
 				e.add_field(name="•── Information:", value="\nYou can change the bot's prefix using `n!prefix set <prefix>`, and if you forget your prefix just ping the bot. You can see all the command help categories, to look at the commands, type *`n!help <category>`* and if you need help with a specific command you can type *`n!help <command>`*.", inline=False)
 				e.add_field(name="•── Command Categories:", value=f"\n{self.config.arrow} `n!help general` - Shows all the general commands.\n\n{self.config.arrow} `n!help music` - Shows all the music commands.\n\n{self.config.arrow} `n!help fun` - Shows all the api and fun commands.\n\n{self.config.arrow} `n!help economy` - Shows all the commands related to the economy.\n\n{self.config.arrow} `n!help moderation` - Shows all the moderation commands.\n\n{self.config.arrow} `n!help admin` - Shows all the commands that are accessable to admins.", inline=False)
