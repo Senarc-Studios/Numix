@@ -2,8 +2,20 @@
     "owners": [
         529499034495483926
     ],
+    "premium_users": [
+        529499034495483926
+    ],
+    "partnered_users": [
+        529499034495483926, 526711399137673232
+    ],
+    "verified_users": [
+        529499034495483926,526711399137673232
+    ],
+    "beta_testers": [
+        529499034495483926, 526711399137673232
+    ],
     "token": "NzQ0ODY1OTkwODEwMjcxNzg1.Xzpcgw.3izcuNNTQJFf94kUKWFYA_3TsF8",
-    "botversion": "1.1.3 (CC11210819)",
+    "botversion": "1.1.5 (CE11210819)",
     "devs": "`Benitz Original#1317`",
     "logo": "https://cdn.discordapp.com/avatars/744865990810271785/d4da704d65f395fbb51122d70f7731f6.png?size=1024",
 	"supportserver": "https://numix.xyz/discord",
@@ -11,6 +23,12 @@
     "ref_buttons": "[`Support`](https://numix.xyz/discord) • [`Invite`](https://numix.xyz/invite) • [`Vote`](https://top.gg/bot/744865990810271785)",
     "success": "<:S:792611551726796800>",
     "forbidden": "<:F:795909145760104480>",
+    "arrow": "<:right_arrow:877847438247993355>",
+    "premium": "<:premium:877857164260180008>",
+    "verified": "<:verified:877850058345820171>",
+    "partnered": "<:partner:877857985404239892>",
+    "beta_tester": "<:beta_tester:877859239564034068>",
+    "developer": "<:dev:877394314433531947>",
     "success_img": "https://cdn.discordapp.com/emojis/792611551726796800.png?v=1",
     "forbidden_img": "https://cdn.discordapp.com/emojis/780326063120318465.png?v=1",
     "mongo1": "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/",

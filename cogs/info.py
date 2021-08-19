@@ -5,7 +5,22 @@ import os
 
 config = default.get('./config.json')
 
-config = default.get("./config.json")
+def badges(id: int):
+	all_badges = "<:members:877398159368814623> "
+	if id in config.owners:
+		all_badges = all_badges + " " + config.developer
+	
+	if id in config.partnered_users:
+		all_badges = all_badges + " " + config.partnered
+
+	if id in config.verified_users:
+		all_badges = all_badges + " " + config.verified
+
+	if id in config.beta_testers:
+		all_badges = all_badges + " " + config.beta_tester
+
+	if id in config.premium_users:
+		all_badges = all_badges + " " + config.premium
 
 def format_dt(dt, style=None):
 	if style is None:
@@ -148,6 +163,74 @@ class general(commands.Cog):
 		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
+
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!profile <edit/member> [bio]", description="Show other's profile or edit your profile.", aliases=["prfil", "profil"])
+	async def profile(self, ctx, option=None, *, bio=None):
+		if option == None:
+			option = ctx.author
+
+			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+			embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+			embed.add_field(name="**Numix Badges**", value=badges(option.id))
+
+			collection = self.db1.DataBase_1.profiles
+			try:
+				for data in collection.find({ "_id": int(option.id) }):
+					bio = data["data"]
+					embed.add_field(name="**Bio**", value=f"{self.config.arrow} {bio}")
+			
+			except:
+				embed.add_field(name="**Bio**", value=f"{self.config.arrow} No bio set.")
+
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+
+		elif option.startswith("<@!"):
+			option.replace("<@!", "")
+			option.replace(">", "")
+			option = discord.utils.get(self.bot.users, id=int(option))
+
+			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+			embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+			embed.add_field(name="**Numix Badges**", value=badges(option.id))
+
+			collection = self.db1.DataBase_1.profiles
+			try:
+				for data in collection.find({ "_id": int(option.id) }):
+					bio = data["data"]
+					embed.add_field(name="**Bio**", value=f"{self.config.arrow} {bio}")
+			
+			except:
+				embed.add_field(name="**Bio**", value=f"{self.config.arrow} No bio set.")
+
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+
+		elif option == "edit":
+			if bio == None:
+				return await ctx.send(f"{self.config.forbidden} Please specify your new bio.")
+
+			if len(bio) >= 300:
+				return await ctx.send(f"{self.config.forbidden} Your bio can't be longer than 300 characters.")
+
+			collection = self.db1.DataBase_1.profiles
+			if collection.count_documents({ "_id": int(ctx.author.id) }) == 0:
+				collection.insert_one({ "_id": int(ctx.author.id), "bio": bio })
+
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Your bio has been updated from `No bio set.` to `{bio}`", colour=242424)
+				embed.set_author(name="Bio Updated", icon_url=ctx.author.avatar_url)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await ctx.send(embed=embed)
+			
+			else:
+				collection.update_one({ "_id": int(ctx.author.id) }, { "$set": { "_id": int(ctx.author.id), "bio": bio } })
+				for data in collection.find({ "_id": int(ctx.author.id) }):
+					old_bio = data["bio"]
+
+					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Your bio has been updated from `{old_bio}` to `{bio}`", colour=242424)
+					embed.set_author(name="Bio Updated", icon_url=ctx.author.avatar_url)
+					embed.set_footer(text="Numix", icon_url=self.config.logo)
+					await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!skin", description="Gets a Minecraft Skin of a player.", aliases=[ "mc-skin", "mc-user", "player", "mc-player", "mc-name", "uuid" ])
 	async def skin(self, ctx, username=None):
@@ -497,12 +580,12 @@ class general(commands.Cog):
 
 
 		if ctx.guild.premium_tier != 0:
-			Level = f'\U000025ab **Boosts Level:** {ctx.guild.premium_tier}'
-			Boosts = f'\U000025ab **Server Boosts:** {ctx.guild.premium_subscription_count}'
+			Level = f'<:right_arrow:877847438247993355> **Boosts Level:** {ctx.guild.premium_tier}'
+			Boosts = f'<:right_arrow:877847438247993355> **Server Boosts:** {ctx.guild.premium_subscription_count}'
 
 			last_boost = max(ctx.guild.members, key=lambda m: m.premium_since or ctx.guild.created_at)
 			if last_boost.premium_since is not None:
-				Last = f'\U000025ab **Last Booster:** `{last_boost}` {format_relative(last_boost.premium_since)}'
+				Last = f'<:right_arrow:877847438247993355> **Last Booster:** `{last_boost}` {format_relative(last_boost.premium_since)}'
 			else:
 				Last = ""
 		else:
@@ -522,40 +605,40 @@ class general(commands.Cog):
 				emoji_stats['regular'] += 1
 				emoji_stats['disabled'] += not emoji.available
 
-		fmt = f'\U000025ab **Regular:** {emoji_stats["regular"]}/{ctx.guild.emoji_limit}\n' \
-				f'\U000025ab **Animated:** {emoji_stats["animated"]}/{ctx.guild.emoji_limit}\n' \
+		fmt = f'<:right_arrow:877847438247993355> **Regular:** {emoji_stats["regular"]}/{ctx.guild.emoji_limit}\n' \
+				f'<:right_arrow:877847438247993355> **Animated:** {emoji_stats["animated"]}/{ctx.guild.emoji_limit}\n' \
 
 		if emoji_stats['disabled'] or emoji_stats['animated_disabled']:
 			fmt = f'{fmt}**Disabled:** {emoji_stats["disabled"]} regular, {emoji_stats["animated_disabled"]} animated.'
 
-		fmt = f'{fmt}\U000025ab **Total Emoji:** {len(ctx.guild.emojis)}/{ctx.guild.emoji_limit*2}'
+		fmt = f'{fmt}<:right_arrow:877847438247993355> **Total Emoji:** {len(ctx.guild.emojis)}/{ctx.guild.emoji_limit*2}'
 
 
 		embed2.add_field(name = "General information", value = f"""
-		\U000025ab **Server Name**: {ctx.guild.name}
-		\U000025ab **Server Owner**: {ctx.guild.owner.mention}
-		\U000025ab **Server Region**: {region}
-		\U000025ab **Verification Level**: {verify}
-		\U000025ab **Rules Channel**: {rules}
-		\U000025ab **System Channel**: {system}
-		\U000025ab **AFK Channel**: {afk}
-		\U000025ab **AFK Timer**: {afk_timer}
+		<:right_arrow:877847438247993355> **Server Name**: {ctx.guild.name}
+		<:right_arrow:877847438247993355> **Server Owner**: {ctx.guild.owner.mention}
+		<:right_arrow:877847438247993355> **Server Region**: {region}
+		<:right_arrow:877847438247993355> **Verification Level**: {verify}
+		<:right_arrow:877847438247993355> **Rules Channel**: {rules}
+		<:right_arrow:877847438247993355> **System Channel**: {system}
+		<:right_arrow:877847438247993355> **AFK Channel**: {afk}
+		<:right_arrow:877847438247993355> **AFK Timer**: {afk_timer}
 		""", inline=True)
 
 		embed2.add_field(name = "Statistics", value = f"""
-		\U000025ab **Server Members**: {ctx.guild.member_count} Members
-		\U000025ab **Server Bots**: {sum(m.bot for m in ctx.guild.members)} Bots
-		\U000025ab **Server Roles**: {str(role_count)} Roles
-		\U000025ab **Server Categories**: {(category_count)} Categories
-		\U000025ab **Text Channels**: {txt_count} Channels
-		\U000025ab **Voice Channels**: {voice_count} Channels
-		\U000025ab **Stage Channels**: {stage_count} Channels
+		<:right_arrow:877847438247993355> **Server Members**: {ctx.guild.member_count} Members
+		<:right_arrow:877847438247993355> **Server Bots**: {sum(m.bot for m in ctx.guild.members)} Bots
+		<:right_arrow:877847438247993355> **Server Roles**: {str(role_count)} Roles
+		<:right_arrow:877847438247993355> **Server Categories**: {(category_count)} Categories
+		<:right_arrow:877847438247993355> **Text Channels**: {txt_count} Channels
+		<:right_arrow:877847438247993355> **Voice Channels**: {voice_count} Channels
+		<:right_arrow:877847438247993355> **Stage Channels**: {stage_count} Channels
 		""", inline=True)
 		embed2.add_field(name = "Other information", value = f"""
-		\U000025ab **Online Members**: {sum(member.status==discord.Status.online and not member.bot for member in ctx.message.guild.members)}
-		\U000025ab **Offline Members**: {sum(member.status==discord.Status.offline and not member.bot for member in ctx.message.guild.members)}
-		\U000025ab **Idle Members**: {sum(member.status==discord.Status.idle and not member.bot for member in ctx.message.guild.members)}
-		\U000025ab **DND Members**: {sum(member.status==discord.Status.dnd and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877847438247993355> **Online Members**: {sum(member.status==discord.Status.online and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877847438247993355> **Offline Members**: {sum(member.status==discord.Status.offline and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877847438247993355> **Idle Members**: {sum(member.status==discord.Status.idle and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877847438247993355> **DND Members**: {sum(member.status==discord.Status.dnd and not member.bot for member in ctx.message.guild.members)}
 		{Level}
 		{Boosts}
 		{Last}
@@ -582,7 +665,7 @@ class general(commands.Cog):
 
 		for feature, label in all_features.items():
 			if feature in features:
-				info.append(f'<a:verifiedblack:847914401431945246> : {label}')
+				info.append(f'**<:verified:877850058345820171>:** {label}')
 
 		if info:
 			embed2.add_field(name='Features', value='\n'.join(info), inline=True)
@@ -593,7 +676,7 @@ class general(commands.Cog):
 
 		await ctx.send(embed=embed2)
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!lookup [member]", description="Lookup information about the user.")
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!lookup [member]", description=f"Lookup information about the user.")
 	@permission("manage_messages")
 	async def lookup(self, ctx, user: discord.Member = None):
 		if user is None:
@@ -604,27 +687,17 @@ class general(commands.Cog):
 				game = f"[Spotify](https://open.spotify.com/track/{user.activities[0].track_id})"
 		except:
 			game = None
+		
 		voice_state = None if not user.voice else user.voice.channel
-		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-		embed.add_field(name='User:', value=f"{user.name}#{user.discriminator}(`{user.id}`)", inline=False)
-		embed.add_field(name='Nick:', value=user.nick, inline=False)
-		embed.add_field(name='Status:', value=user.status, inline=False)
-		embed.add_field(name='On Mobile:', value=user.is_on_mobile(), inline=False)
-		embed.add_field(name='In Voice:', value=voice_state, inline=False)
-		embed.add_field(name='Game / Custom Status:', value=game, inline=False)
-		embed.add_field(name='Highest Role:', value=user.top_role.name, inline=False)
-		embed.add_field(name="Bot User:", value=f"{user.bot}", inline=False)
-		embed.add_field(name='Account Created Date:', value=user.created_at.__format__('%A, %d. %B %Y'), inline=False)
-		embed.add_field(name='Account Creation Time:', value=user.created_at.__format__('%H:%M:%S'), inline=False)
-		embed.add_field(name='Join Date:', value=user.joined_at.__format__('%A, %d. %B %Y'), inline=False)
-		embed.add_field(name='Joined Time:', value=user.joined_at.__format__('%H:%M:%S'), inline=False)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.ref_buttons}\n\n{self.config.arrow} **User:** {user.name}#{user.discriminator}(`{user.id}`)", colour=242424)
+		
+		embed.add_field(name='**Server-Side Info**', value=f"{self.config.arrow} **Nick:** `{user.nick}`\n{self.config.arrow} **In Voice:** {voice_state}\n{self.config.arrow} **Highest Role:** <@&{user.top_role.id}>\n{self.config.arrow} **Joined Date:** `{user.joined_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Joined Time:** `{user.joined_at.__format__('%H:%M:%S')}`", inline=False)
+		
+		embed.add_field(name='**Account-Side Info**', value=f"{self.config.arrow} **Numix Badges:** {badges(ctx.author.id)}\n{self.config.arrow} **Status:** {user.status}\n{self.config.arrow} **Game/Custom Status:** {game}\n{self.config.arrow} **On Mobile:** `{user.is_on_mobile()}`\n{self.config.arrow} **Bot User:** `{user.bot}`\n{self.config.arrow} **Account Creation Date:** `{user.created_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Account Creation Time:** `{user.created_at.__format__('%H:%M:%S')}`", inline=False)
+
 		embed.set_author(name=user.name, icon_url=user.avatar_url)
 		embed.set_footer(text='Numix', icon_url=self.config.logo)
 		await ctx.send(embed=embed)
-
-		"""
-		<Activity type=<ActivityType.watching: 3> name='YouTube Together' url=None details="SIMPLE ROBINSON'S BEST OF DISCORD 2020" application_id=755600276941176913 session_id='5f49cf1e7ec4999e2067f2eb44b2f3f5' emoji=None>
-		"""
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!status [member]", description="Check what a user is listening to.", aliases=["game", "cs", "custom-status", "customstatus"])
 	async def status(self, ctx, member: discord.Member = None):
