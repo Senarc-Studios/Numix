@@ -588,12 +588,12 @@ class general(commands.Cog):
 
 
 		if ctx.guild.premium_tier != 0:
-			Level = f'<:right_arrow:877847438247993355> **Boosts Level:** {ctx.guild.premium_tier}'
-			Boosts = f'<:right_arrow:877847438247993355> **Server Boosts:** {ctx.guild.premium_subscription_count}'
+			Level = f'<:right_arrow:877884586678419507> **Boosts Level:** {ctx.guild.premium_tier}'
+			Boosts = f'<:right_arrow:877884586678419507> **Server Boosts:** {ctx.guild.premium_subscription_count}'
 
 			last_boost = max(ctx.guild.members, key=lambda m: m.premium_since or ctx.guild.created_at)
 			if last_boost.premium_since is not None:
-				Last = f'<:right_arrow:877847438247993355> **Last Booster:** `{last_boost}` {format_relative(last_boost.premium_since)}'
+				Last = f'<:right_arrow:877884586678419507> **Last Booster:** `{last_boost}` {format_relative(last_boost.premium_since)}'
 			else:
 				Last = ""
 		else:
@@ -613,40 +613,40 @@ class general(commands.Cog):
 				emoji_stats['regular'] += 1
 				emoji_stats['disabled'] += not emoji.available
 
-		fmt = f'<:right_arrow:877847438247993355> **Regular:** {emoji_stats["regular"]}/{ctx.guild.emoji_limit}\n' \
-				f'<:right_arrow:877847438247993355> **Animated:** {emoji_stats["animated"]}/{ctx.guild.emoji_limit}\n' \
+		fmt = f'<:right_arrow:877884586678419507> **Regular:** {emoji_stats["regular"]}/{ctx.guild.emoji_limit}\n' \
+				f'<:right_arrow:877884586678419507> **Animated:** {emoji_stats["animated"]}/{ctx.guild.emoji_limit}\n' \
 
 		if emoji_stats['disabled'] or emoji_stats['animated_disabled']:
 			fmt = f'{fmt}**Disabled:** {emoji_stats["disabled"]} regular, {emoji_stats["animated_disabled"]} animated.'
 
-		fmt = f'{fmt}<:right_arrow:877847438247993355> **Total Emoji:** {len(ctx.guild.emojis)}/{ctx.guild.emoji_limit*2}'
+		fmt = f'{fmt}<:right_arrow:877884586678419507> **Total Emoji:** {len(ctx.guild.emojis)}/{ctx.guild.emoji_limit*2}'
 
 
 		embed2.add_field(name = "General information", value = f"""
-		<:right_arrow:877847438247993355> **Server Name**: {ctx.guild.name}
-		<:right_arrow:877847438247993355> **Server Owner**: {ctx.guild.owner.mention}
-		<:right_arrow:877847438247993355> **Server Region**: {region}
-		<:right_arrow:877847438247993355> **Verification Level**: {verify}
-		<:right_arrow:877847438247993355> **Rules Channel**: {rules}
-		<:right_arrow:877847438247993355> **System Channel**: {system}
-		<:right_arrow:877847438247993355> **AFK Channel**: {afk}
-		<:right_arrow:877847438247993355> **AFK Timer**: {afk_timer}
+		<:right_arrow:877884586678419507> **Server Name**: {ctx.guild.name}
+		<:right_arrow:877884586678419507> **Server Owner**: {ctx.guild.owner.mention}
+		<:right_arrow:877884586678419507> **Server Region**: {region}
+		<:right_arrow:877884586678419507> **Verification Level**: {verify}
+		<:right_arrow:877884586678419507> **Rules Channel**: {rules}
+		<:right_arrow:877884586678419507> **System Channel**: {system}
+		<:right_arrow:877884586678419507> **AFK Channel**: {afk}
+		<:right_arrow:877884586678419507> **AFK Timer**: {afk_timer}
 		""", inline=True)
 
 		embed2.add_field(name = "Statistics", value = f"""
-		<:right_arrow:877847438247993355> **Server Members**: {ctx.guild.member_count} Members
-		<:right_arrow:877847438247993355> **Server Bots**: {sum(m.bot for m in ctx.guild.members)} Bots
-		<:right_arrow:877847438247993355> **Server Roles**: {str(role_count)} Roles
-		<:right_arrow:877847438247993355> **Server Categories**: {(category_count)} Categories
-		<:right_arrow:877847438247993355> **Text Channels**: {txt_count} Channels
-		<:right_arrow:877847438247993355> **Voice Channels**: {voice_count} Channels
-		<:right_arrow:877847438247993355> **Stage Channels**: {stage_count} Channels
+		<:right_arrow:877884586678419507> **Server Members**: {ctx.guild.member_count} Members
+		<:right_arrow:877884586678419507> **Server Bots**: {sum(m.bot for m in ctx.guild.members)} Bots
+		<:right_arrow:877884586678419507> **Server Roles**: {str(role_count)} Roles
+		<:right_arrow:877884586678419507> **Server Categories**: {(category_count)} Categories
+		<:right_arrow:877884586678419507> **Text Channels**: {txt_count} Channels
+		<:right_arrow:877884586678419507> **Voice Channels**: {voice_count} Channels
+		<:right_arrow:877884586678419507> **Stage Channels**: {stage_count} Channels
 		""", inline=True)
 		embed2.add_field(name = "Other information", value = f"""
-		<:right_arrow:877847438247993355> **Online Members**: {sum(member.status==discord.Status.online and not member.bot for member in ctx.message.guild.members)}
-		<:right_arrow:877847438247993355> **Offline Members**: {sum(member.status==discord.Status.offline and not member.bot for member in ctx.message.guild.members)}
-		<:right_arrow:877847438247993355> **Idle Members**: {sum(member.status==discord.Status.idle and not member.bot for member in ctx.message.guild.members)}
-		<:right_arrow:877847438247993355> **DND Members**: {sum(member.status==discord.Status.dnd and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877884586678419507> **Online Members**: {sum(member.status==discord.Status.online and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877884586678419507> **Offline Members**: {sum(member.status==discord.Status.offline and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877884586678419507> **Idle Members**: {sum(member.status==discord.Status.idle and not member.bot for member in ctx.message.guild.members)}
+		<:right_arrow:877884586678419507> **DND Members**: {sum(member.status==discord.Status.dnd and not member.bot for member in ctx.message.guild.members)}
 		{Level}
 		{Boosts}
 		{Last}
