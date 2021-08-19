@@ -475,7 +475,7 @@ class general(commands.Cog):
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!links", description="Shows all the links related to Numix.", aliases=["inv", "invite", "link", "ss", "support", "supportserver"])
 	async def links(self, ctx):
-		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Website Link:** https://numix.xyz\n**Bot Invite:** https://numix.xyz/invite\n**Support Server:** https://numix.xyz/discord\n**Minecraft Discord:** https://numix.xyz/mc\n\nThis bot is made, managed, and maintained by **{self.config.devs}**", color=242424)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} **Website Link:** https://numix.xyz\n{self.config.arrow} **Bot Invite:** https://numix.xyz/invite\n{self.config.arrow} **Support Server:** https://numix.xyz/discord\n{self.config.arrow} **Minecraft Discord:** https://numix.xyz/mc\n\nThis bot is made, managed, and maintained by **{self.config.devs}**", color=242424)
 		embed.set_author(name="Numix Related Links", icon_url=self.config.logo)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
