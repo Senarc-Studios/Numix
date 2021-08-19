@@ -6,10 +6,10 @@ import os
 config = default.get('./config.json')
 
 def badges(self, id: int):
+	MONGO = MongoClient(f"{config.db1}")
 	collection = MONGO.DataBase_1.assets
 	premium_collection = MONGO.DataBase_1.premium
 	premium_users = []
-	MONGO = MongoClient(f"{config.db1}")
 	
 	for data in collection.find({ "_id": "badges" }):
 		for server in self.bot.guilds:
