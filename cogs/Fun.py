@@ -1,4 +1,7 @@
 from numix_imports import *
+from discord.utils import _URL_REGEX
+from aiohttp import request
+import requests
 import numix_encrypt
 
 config = default.get("./config.json")
@@ -63,10 +66,10 @@ def permission(permission):
 	return commands.check(predicate)
 
 class CustomCommand(commands.Command):
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
-        self.perms = kwargs.get("perms", None)
-        self.syntax = kwargs.get("syntax", None)
+	def __init__(self,*args,**kwargs):
+		super().__init__(*args,**kwargs)
+		self.perms = kwargs.get("perms", None)
+		self.syntax = kwargs.get("syntax", None)
 
 class fun(commands.Cog):
 	def __init__(self, bot):
@@ -133,6 +136,32 @@ class fun(commands.Cog):
 			bio.seek(0)
 			await ctx.send(content=content, file=discord.File(bio, filename=filename))
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!urlshortener <link>", description="Shortens a URL.", aliases=["urlshorten", "urlshrt", "url"])
+	async def urlshortener(self, ctx, link):
+		if link == None:
+			return await ctx.send(f"{self.config.forbidden} Provide a url to shorten.")
+
+		url1 = link.strip('<>')
+		if not re.match(_URL_REGEX, url1):
+			embed = discord.Embed(description="Re-enter the command with a **valid** url like [`numix.xyz`](https://numix.xyz) in order to shorten the URL.", color=0x000)
+			embed.set_author(name="Invalid URL", icon_url=self.config.forbidden_img)
+			embed.set_footer(text="Numix", icon_url=self.config.logo)
+			return await ctx.send(embed=embed, mention_author=True)
+
+		url = f"https://api.toxy.ga/api/shorten?url={link}"
+		async with request("GET", url) as response:
+		
+			if response.status == 200:
+				data = await response.read()
+				hashrate = json.loads(data)
+				resp = hashrate["url"]
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Your shortened URL is: {resp}", colour=242424)
+				embed.set_author(name="URL Shortened", icon_url=self.config.success_img)
+				await ctx.send(embed=embed, mention_author=False)
+		
+			else:
+				await ctx.send("An Internal Error has occured while connecting to the API.", mention_author=False)
+
 	@commands.command(cls=CustomCommand, perms="MANAGE_MESSAGES", sytnax="n!randomuser", aliases=["random-user", "random-mention", "randmember", "randuser", "randusr"], description="Mentions a random user.")
 	@permission("manage_messages")
 	async def randomuser(self, ctx):
@@ -176,7 +205,7 @@ class fun(commands.Cog):
 			e_description = e_description.replace(";;", " ")
 			e_footer = e_footer.replace(";;", " ")
 
-			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
+			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,	color=242424)
 			e.set_footer(text=e_footer)
 			await ctx.send(embed=e)
 
@@ -186,7 +215,7 @@ class fun(commands.Cog):
 			e_description = e_description.replace(";;", " ")
 			e_footer = e_footer.replace(";;", " ")
 
-			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
+			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,	color=242424)
 			e.set_footer(text=e_footer, icon_url=e_icon)
 			await ctx.send(embed=e)
 
@@ -195,7 +224,7 @@ class fun(commands.Cog):
 			e_title = e_title.replace(";;", " ")
 			e_description = e_description.replace(";;", " ")
 
-			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,  color=242424)
+			e = discord.Embed(timestamp=ctx.message.created_at, title=e_title, description=e_description,	color=242424)
 			await ctx.send(embed=e)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!cat", description="Sends a random cat image.")

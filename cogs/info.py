@@ -1,10 +1,19 @@
 from numix_imports import *
+from collections import OrderedDict, deque, Counter
 import motor.motor_asyncio
 import os
 
 config = default.get('./config.json')
 
 config = default.get("./config.json")
+
+def format_dt(dt, style=None):
+	if style is None:
+		return f'<t:{int(dt.timestamp())}>'
+	return f'<t:{int(dt.timestamp())}:{style}>'
+
+def format_relative(dt):
+	return format_dt(dt, 'R')
 
 def permission(permission):
 
@@ -85,14 +94,14 @@ def countlines(rootdir, total_lines=0, header=False, begin_start=None, code_only
 
 			if trimline.startswith('#') or trimline == '':
 				total -= 1
-			elif '"""' in trimline:  # docstring begin
-				if trimline.count('"""') == 2:  # docstring end on same line
+			elif '"""' in trimline:	# docstring begin
+				if trimline.count('"""') == 2:	# docstring end on same line
 					total -= 1
 					i += 1
 					continue
 				doc_start = i
 				i += 1
-				while '"""' not in source[i]:  # docstring end
+				while '"""' not in source[i]:	# docstring end
 					i += 1
 				doc_end = i
 				total -= (doc_end - doc_start + 1)
@@ -471,21 +480,193 @@ class general(commands.Cog):
 		
 		ram = self.process.memory_full_info().rss / 1024**2
 
-		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord)•[`Invite`](https://numix.xyz/invite)•[`Vote`](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** `{self.config.botversion}`\n<:commands:877400920705617921> **Loaded Commands:** `{len([x.name for x in self.bot.commands])}`\n<:folder:877402950077657218> **Lines of Code:** `Loading...`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** `{len(self.bot.users)}`", color=242424)
+		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord) • [`Invite`](https://numix.xyz/invite) • [`Vote`](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** {self.config.devs}\n<:version:877394315045924864> **Bot Version:** `{self.config.botversion}`\n<:speed:877394314781655061> **Ping:** {ping}\n<:commands:877400920705617921> **Loaded Commands:** `{len([x.name for x in self.bot.commands])}`\n<:folder:877402950077657218> **Lines of Code:** `Loading...`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** `{len(self.bot.users)}`", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		embed.set_author(name="Information about Numix", icon_url=self.config.logo)
 		await msg.edit(content="", embed=embed)
 
 		try:
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord)•[`Invite`](https://numix.xyz/invite)•[`Vote`](https://top.gg/bot/744865990810271785)\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** `{self.config.botversion}`\n<:commands:877400920705617921> **Loaded Commands:** `{len([x.name for x in self.bot.commands])}`\n<:folder:877402950077657218> **Lines of Code:** `{countlines('/root/Numix')}` lines\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** `{len(self.bot.users)}`", color=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord) • [`Invite`](https://numix.xyz/invite) • [`Vote`](https://top.gg/bot/744865990810271785)\n\n<:dev:877394314433531947> **Developer:** {self.config.devs}\n<:version:877394315045924864> **Bot Version:** `{self.config.botversion}`\n<:speed:877394314781655061> **Ping:** {ping}\n<:commands:877400920705617921> **Loaded Commands:** `{len([x.name for x in self.bot.commands])}`\n<:folder:877402950077657218> **Lines of Code:** `{countlines('/root/Numix')}` lines\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** `{len(self.bot.users)}`", color=242424)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			embed.set_author(name="Information about Numix", icon_url=self.config.logo)
 			await msg.edit(content="", embed=embed)
 		except Exception:
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord)•[`Invite`](https://numix.xyz/invite)•[`Vote`](https://top.gg/bot/744865990810271785)\n\n<:dev:877394314433531947> **Developer:** `{self.config.devs}`\n<:version:877394315045924864> **Bot Version:** `{self.config.botversion}`\n<:commands:877400920705617921> **Loaded Commands:** `{len([x.name for x in self.bot.commands])}`\n<:folder:877402950077657218> **Lines of Code:** `Internal Error`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** `{len(self.bot.users)}`", color=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord) • [`Invite`](https://numix.xyz/invite) • [`Vote`](https://top.gg/bot/744865990810271785)\n\n<:dev:877394314433531947> **Developer:** {self.config.devs}\n<:version:877394315045924864> **Bot Version:** `{self.config.botversion}`\n<:speed:877394314781655061> **Ping:** {ping}\n<:commands:877400920705617921> **Loaded Commands:** `{len([x.name for x in self.bot.commands])}`\n<:folder:877402950077657218> **Lines of Code:** `Internal Error`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** `{len(self.bot.users)}`", color=242424)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			embed.set_author(name="Information about Numix", icon_url=self.config.logo)
 			await msg.edit(content="", embed=embed)
+
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!serverinfo", description="Gives informaiton about the server.", aliases=["server", "srvinfo"])
+	@commands.bot_has_permissions(embed_links=True)
+	@commands.cooldown(1, 5, commands.BucketType.user)
+	async def serverinfo(self, ctx):
+		role_count = len(ctx.guild.roles)
+		txt_count = len(ctx.guild.text_channels)
+		voice_count = len(ctx.guild.voice_channels)
+		category_count = len(ctx.guild.categories)
+		info1 = []
+		features1 = set(ctx.guild.region)
+		all_features1 = {
+			'amsterdam': '🇳🇱 Amsterdam',
+			'brazil': '🇧🇷 Brazil',
+			'dubai': '🇦🇪 Dubai',
+			'eu_central': '🇪🇺 Central Europe',
+			'eu_west': '🇪🇺 West Europe',
+			'europe': '🇪🇺 Europe',
+			'frankfurt': '🇩🇪 Frankfurt',
+			'hongkong': '🇭🇰 HongKong',
+			'india': '🇮🇳 India',
+			'japan': '🇯🇵 Japan',
+			'london': '🇬🇧 London',
+			'russia': '🇷🇺 Russia',
+			'singapore': '🇸🇬 Singapore',
+			'south_korea': '🇰🇷 South Korea',
+			'sydney': '🇦🇺 Sydney',
+			'us_central': '🇺🇸 US Central',
+			'us_east': '🇺🇸 US East',
+			'us_south': '🇺🇸 US South',
+			'us_west': '🇺🇸 US West',
+			'southafrica': '🇿🇦 South Africa'
+		}
+
+		for feature1, label1 in all_features1.items():
+			if feature1 in features1:
+				info1.append(f'{label1}')
+		okay = ''.join(info1)
+		region = okay
+		info2 = []
+		features2 = set(ctx.guild.verification_level)
+		all_features2 = {
+			'none': 'None',
+			'low': 'Low',
+			'medium': 'Medium',
+			'high': 'High',
+			'table_flip': 'High',
+			'extreme': 'Extreme',
+			'double_table_flip': 'Extreme',
+			'very_high': 'Extreme'
+		}
+		for feature2, label2 in all_features2.items():
+			if feature2 in features2:
+				info2.append(f'{label2}')
+		okay2 = ''.join(info2)
+		verify = okay2
+		if ctx.guild.rules_channel is not None:
+			rules = ctx.guild.rules_channel.mention
+		else:
+			rules = "Not Set."
+
+		if ctx.guild.system_channel is not None:
+			system = ctx.guild.system_channel.mention
+		else:
+			system = "Not Set."
+
+		if	ctx.guild.afk_channel is not None:
+			afk = ctx.guild.afk_channel.mention
+			afk_timer = f"{int(ctx.guild.afk_timeout/60)} Minutes"
+		else:
+			afk = "Not Set."
+			afk_timer = "Not Set."
+
+		stage_count = len(ctx.guild.stage_channels)
+
+
+		if ctx.guild.premium_tier != 0:
+			Level = f'\U000025ab **Boosts Level:** {ctx.guild.premium_tier}'
+			Boosts = f'\U000025ab **Server Boosts:** {ctx.guild.premium_subscription_count}'
+
+			last_boost = max(ctx.guild.members, key=lambda m: m.premium_since or ctx.guild.created_at)
+			if last_boost.premium_since is not None:
+				Last = f'\U000025ab **Last Booster:** `{last_boost}` {format_relative(last_boost.premium_since)}'
+			else:
+				Last = ""
+		else:
+			Level = " "
+			Boosts = " "
+			
+		embed2 = discord.Embed(timestamp=ctx.message.created_at, color=242424)
+		embed2.set_author(name=f"{ctx.guild.name} Info", icon_url=ctx.guild.icon_url)
+
+
+		emoji_stats = Counter()
+		for emoji in ctx.guild.emojis:
+			if emoji.animated:
+				emoji_stats['animated'] += 1
+				emoji_stats['animated_disabled'] += not emoji.available
+			else:
+				emoji_stats['regular'] += 1
+				emoji_stats['disabled'] += not emoji.available
+
+		fmt = f'\U000025ab **Regular:** {emoji_stats["regular"]}/{ctx.guild.emoji_limit}\n' \
+				f'\U000025ab **Animated:** {emoji_stats["animated"]}/{ctx.guild.emoji_limit}\n' \
+
+		if emoji_stats['disabled'] or emoji_stats['animated_disabled']:
+			fmt = f'{fmt}**Disabled:** {emoji_stats["disabled"]} regular, {emoji_stats["animated_disabled"]} animated.'
+
+		fmt = f'{fmt}\U000025ab **Total Emoji:** {len(ctx.guild.emojis)}/{ctx.guild.emoji_limit*2}'
+
+
+		embed2.add_field(name = "General information", value = f"""
+		\U000025ab **Server Name**: {ctx.guild.name}
+		\U000025ab **Server Owner**: {ctx.guild.owner.mention}
+		\U000025ab **Server Region**: {region}
+		\U000025ab **Verification Level**: {verify}
+		\U000025ab **Rules Channel**: {rules}
+		\U000025ab **System Channel**: {system}
+		\U000025ab **AFK Channel**: {afk}
+		\U000025ab **AFK Timer**: {afk_timer}
+		""", inline=True)
+
+		embed2.add_field(name = "Statistics", value = f"""
+		\U000025ab **Server Members**: {ctx.guild.member_count} Members
+		\U000025ab **Server Bots**: {sum(m.bot for m in ctx.guild.members)} Bots
+		\U000025ab **Server Roles**: {str(role_count)} Roles
+		\U000025ab **Server Categories**: {(category_count)} Categories
+		\U000025ab **Text Channels**: {txt_count} Channels
+		\U000025ab **Voice Channels**: {voice_count} Channels
+		\U000025ab **Stage Channels**: {stage_count} Channels
+		""", inline=True)
+		embed2.add_field(name = "Other information", value = f"""
+		\U000025ab **Online Members**: {sum(member.status==discord.Status.online and not member.bot for member in ctx.message.guild.members)}
+		\U000025ab **Offline Members**: {sum(member.status==discord.Status.offline and not member.bot for member in ctx.message.guild.members)}
+		\U000025ab **Idle Members**: {sum(member.status==discord.Status.idle and not member.bot for member in ctx.message.guild.members)}
+		\U000025ab **DND Members**: {sum(member.status==discord.Status.dnd and not member.bot for member in ctx.message.guild.members)}
+		{Level}
+		{Boosts}
+		{Last}
+		{fmt}
+		""", inline=False)
+		info = []
+		features = set(ctx.guild.features)
+		all_features = {
+			'PARTNERED': 'Partnered',
+			'VERIFIED': 'Verified',
+			'DISCOVERABLE': 'Server Discovery',
+			'COMMUNITY': 'Community Server',
+			'FEATURABLE': 'Featured',
+			'WELCOME_SCREEN_ENABLED': 'Welcome Screen',
+			'INVITE_SPLASH': 'Invite Splash',
+			'VIP_REGIONS': 'VIP Voice Servers',
+			'VANITY_URL': 'Vanity Invite',
+			'COMMERCE': 'Commerce',
+			'LURKABLE': 'Lurkable',
+			'NEWS': 'News Channels',
+			'ANIMATED_ICON': 'Animated Icon',
+			'BANNER': 'Banner'
+		}
+
+		for feature, label in all_features.items():
+			if feature in features:
+				info.append(f'<a:verifiedblack:847914401431945246> : {label}')
+
+		if info:
+			embed2.add_field(name='Features', value='\n'.join(info), inline=True)
+
+		embed2.set_thumbnail(url=ctx.guild.icon_url)
+
+		embed2.set_footer(text='Numix | Created at ', icon_url=self.config.logo).timestamp = ctx.guild.created_at
+
+		await ctx.send(embed=embed2)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!lookup [member]", description="Lookup information about the user.")
 	@permission("manage_messages")

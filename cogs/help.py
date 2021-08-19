@@ -14,14 +14,14 @@ class Help(commands.Cog):
 		print('"Help" cog loaded')
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!help <command/category>", description="Shows all of Numix's commands.")
-	@commands.has_permissions(add_reactions=True,embed_links=True)
+	@commands.has_permissions(embed_links=True)
 	async def help(self, ctx, command=None):
 		cog = command
 		"""Gets all cogs and commands of mine."""
 		try: 
 			if cog is None:
 				e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-				e.set_author(name="Numix Commands", icon_url=self.config.logo)
+				e.set_author(name="Numix Commands", description=f"{self.config.ref_buttons}", icon_url=self.config.logo)
 				e.add_field(name="•── Information:", value="\nYou can change the bot's prefix using `n!prefix set <prefix>`, and if you forget your prefix just ping the bot. You can see all the command help categories, to look at the commands, type `n!help <category>` and if you need help with a specific command you can type `n!help <command>`.", inline=False)
 				e.add_field(name="•── Command Categories:", value="\n:arrow_right: `n!help general` - Shows all the general commands.\n\n:arrow_right: `n!help music` - Shows all the music commands.\n\n:arrow_right: `n!help fun` - Shows all the api and fun commands.\n\n:arrow_right: `n!help economy` - Shows all the commands related to the economy.\n\n:arrow_right: `n!help moderation` - Shows all the moderation commands.\n\n:arrow_right: `n!help admin` - Shows all the commands that are accessable to admins.", inline=False)
 				e.set_footer(text="Numix", icon_url=self.config.logo)
