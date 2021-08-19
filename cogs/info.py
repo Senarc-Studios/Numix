@@ -6,7 +6,7 @@ import os
 config = default.get('./config.json')
 
 def badges(id: int):
-	all_badges = "<:members:877398159368814623> "
+	all_badges = ""
 	if id in config.owners:
 		all_badges = all_badges + " " + config.developer
 	
@@ -21,6 +21,8 @@ def badges(id: int):
 
 	if id in config.premium_users:
 		all_badges = all_badges + " " + config.premium
+
+	return f"{all_badges} <:members:877398159368814623>"
 
 def format_dt(dt, style=None):
 	if style is None:
@@ -169,42 +171,48 @@ class general(commands.Cog):
 		if option == None:
 			option = ctx.author
 
-			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-			embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
-			embed.add_field(name="**Numix Badges**", value=badges(option.id))
-
 			collection = self.db1.DataBase_1.profiles
-			try:
-				for data in collection.find({ "_id": int(option.id) }):
-					bio = data["data"]
-					embed.add_field(name="**Bio**", value=f"{self.config.arrow} {bio}")
-			
-			except:
-				embed.add_field(name="**Bio**", value=f"{self.config.arrow} No bio set.")
+			if collection.count_documents({ "_id": option.id }) == 0:
 
-			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			await ctx.send(embed=embed)
+				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Bio", value=f"{self.config.arrow} No bio set.", inline=False)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				return await ctx.send(embed=embed)
+
+			for data in collection.find({ "_id": int(option.id) }):
+				bio = data["bio"]
+				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Bio", value=f"{self.config.arrow} {bio}", inline=False)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await ctx.send(embed=embed)
 
 		elif option.startswith("<@!"):
-			option.replace("<@!", "")
-			option.replace(">", "")
+			option = option.replace("<@!", "")
+			option = option.replace(">", "")
 			option = discord.utils.get(self.bot.users, id=int(option))
 
-			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-			embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
-			embed.add_field(name="**Numix Badges**", value=badges(option.id))
-
 			collection = self.db1.DataBase_1.profiles
-			try:
-				for data in collection.find({ "_id": int(option.id) }):
-					bio = data["data"]
-					embed.add_field(name="**Bio**", value=f"{self.config.arrow} {bio}")
-			
-			except:
-				embed.add_field(name="**Bio**", value=f"{self.config.arrow} No bio set.")
+			if collection.count_documents({ "_id": option.id }) == 0:
 
-			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			await ctx.send(embed=embed)
+				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Bio", value=f"{self.config.arrow} No bio set.", inline=False)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				return await ctx.send(embed=embed)
+
+			for data in collection.find({ "_id": int(option.id) }):
+				bio = data["bio"]
+				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.add_field(name="Numix Badges", value=badges(option.id))
+				embed.add_field(name="Bio", value=f"{self.config.arrow} {bio}", inline=False)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await ctx.send(embed=embed)
 
 		elif option == "edit":
 			if bio == None:
