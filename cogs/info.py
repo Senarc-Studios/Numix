@@ -599,6 +599,7 @@ class general(commands.Cog):
 		else:
 			Level = " "
 			Boosts = " "
+			Last = ""
 			
 		embed2 = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 		embed2.set_author(name=f"{ctx.guild.name} Info", icon_url=ctx.guild.icon_url)
