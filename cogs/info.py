@@ -687,7 +687,7 @@ class general(commands.Cog):
 			if feature in features:
 				MONGO = MongoClient(f"{self.config.db1}")
 				premium_collection = MONGO.DataBase_1.premium
-				if "Numix Premium" not in info:
+				if "**<:verified:877850058345820171>:** Numix Premium" not in info:
 					if premium_collection.count_documents({ "_id": f"{ctx.guild.id}", "premium": "True" }) == 1:
 						info.append(f"**<:verified:877850058345820171>:** Numix Premium")
 				info.append(f'**<:verified:877850058345820171>:** {label}')
