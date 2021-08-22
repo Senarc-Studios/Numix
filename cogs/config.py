@@ -131,7 +131,7 @@ class admin(commands.Cog):
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!automod <module> <setting> [option]", aliases=["auto-mod", "aumo"], description="Manage Auto-Moderation on premium servers.")
 	@permission("administrator")
-	async def automod(self, ctx, module=None, setting=None, option: discord.TextChannel=None):
+	async def automod(self, ctx, module=None, setting=None, option=None):
 
 		collection = self.db1.DataBase_1.settings
 
@@ -185,7 +185,7 @@ class admin(commands.Cog):
 					return await ctx.send(embed=embed)
 
 			elif setting == "whitelist":
-				channel = option
+				channel = option.replace("<#")
 				if option == None:
 					channel = ctx.channel
 

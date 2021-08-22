@@ -146,7 +146,7 @@ class fun(commands.Cog):
 			embed = discord.Embed(description="Re-enter the command with a **valid** url like [`numix.xyz`](https://numix.xyz) in order to shorten the URL.", color=0x000)
 			embed.set_author(name="Invalid URL", icon_url=self.config.forbidden_img)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			return await ctx.send(embed=embed, mention_author=True)
+			return await ctx.send(embed=embed)
 
 		url = f"https://api.toxy.ga/api/shorten?url={link}"
 		async with request("GET", url) as response:
@@ -157,10 +157,10 @@ class fun(commands.Cog):
 				resp = hashrate["url"]
 				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Your shortened URL is: {resp}", colour=242424)
 				embed.set_author(name="URL Shortened", icon_url=self.config.success_img)
-				await ctx.send(embed=embed, mention_author=False)
+				await ctx.send(embed=embed)
 		
 			else:
-				await ctx.send("An Internal Error has occured while connecting to the API.", mention_author=False)
+				await ctx.send("An Internal Error has occured while connecting to the API.")
 
 	@commands.command(cls=CustomCommand, perms="MANAGE_MESSAGES", sytnax="n!randomuser", aliases=["random-user", "random-mention", "randmember", "randuser", "randusr"], description="Mentions a random user.")
 	@permission("manage_messages")
