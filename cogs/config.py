@@ -151,7 +151,7 @@ class admin(commands.Cog):
 				return await ctx.send(embed=embed)
 
 			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 0 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 0:
-				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": True })
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": True } })
 				return await ctx.send(embed=embed)
 
 		elif option == "disable":
@@ -172,7 +172,7 @@ class admin(commands.Cog):
 				return await ctx.send(embed=embed)
 
 			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 0 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 0:
-				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": False })
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": False } })
 				return await ctx.send(embed=embed)
 
 		elif option == "set":
