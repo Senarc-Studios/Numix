@@ -200,7 +200,7 @@ class general(commands.Cog):
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} **User:** {ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)\n{self.config.arrow} **Suggestion:**\n```\n{suggestion}\n```", colour=242424)
 			embed.set_author(name="New Suggesion", icon_url=ctx.author.avatar_url)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			await ctx.send(embed=embed)
+			await channel.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!profile <edit/member> [bio]", description="Show other's profile or edit your profile.", aliases=["prfil", "profil"])
 	async def profile(self, ctx, option=None, *, bio=None):
