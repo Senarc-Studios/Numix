@@ -187,7 +187,7 @@ class general(commands.Cog):
 			return await ctx.send(f"{self.config.forbidden} The suggestion module has not been set-up or enabled in this server.")
 		
 		for data in collection.find({ "_id": int(ctx.guild.id) }):
-			channel = data["suggestion_channel"]
+			channel = data["suggestions_channel"]
 			if channel == None:
 				return await ctx.send(f"{self.config.forbidden} The suggestion module has not been set-up or enabled in this server.")
 
