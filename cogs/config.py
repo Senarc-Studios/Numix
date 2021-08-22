@@ -150,7 +150,7 @@ class admin(commands.Cog):
 				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": True } })
 				return await ctx.send(embed=embed)
 
-			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 1 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 1:
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 0 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 0:
 				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": True })
 				return await ctx.send(embed=embed)
 
@@ -171,7 +171,7 @@ class admin(commands.Cog):
 				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": False } })
 				return await ctx.send(embed=embed)
 
-			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 1 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 1:
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 0 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 0:
 				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": False })
 				return await ctx.send(embed=embed)
 
