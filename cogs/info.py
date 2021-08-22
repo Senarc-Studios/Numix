@@ -183,7 +183,7 @@ class general(commands.Cog):
 			return await ctx.send(f"{self.config.forbidden} You forgot to write the suggestion.")
 
 		collection = self.db1.DataBase_1.settings
-		if collection.count_document({ "_id": int(ctx.guild.id), "suggestions": True }) == 0:
+		if collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 0:
 			return await ctx.send(f"{self.config.forbidden} The suggestion module has not been set-up or enabled in this server.")
 		
 		for data in collection.find({ "_id": int(ctx.guild.id) }):
