@@ -127,6 +127,66 @@ class admin(commands.Cog):
 				prefix = info['prefix']
 				await message.channel.send(f"The assigned prefix for this Server is `{prefix}`")
 
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!suggestions set <channel>", description="Manage suggestion channels in premium servers.", aliases=["setsuggestions", "suggestchannel"])
+	@permission("administrator")
+	async def suggestions(self, ctx, option=None, channel: discord.TextChannel=None):
+		if option is None:
+			return await ctx.send(f"{self.config.forbidden} Please provide an option like `set`, `enable`, or `disable`.")
+
+		elif option == "enable":
+			collection = self.db1.DataBase_1.settings
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The Suggestions module spam has been enabled for guild id `{ctx.guild.id}`.", colour=242424)
+			embed.set_author(name="Suggestions", icon_url=self.config.success_img)
+			embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+			
+			if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": True })
+				return await ctx.send(embed=embed)
+
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 1:
+				return await ctx.send(f"{self.config.forbidden} The Suggestions module is already enabled on this guild.")
+
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 1:
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": True } })
+				return await ctx.send(embed=embed)
+
+		elif option == "disable":
+			collection = self.db1.DataBase_1.settings
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The Suggestions module spam has been disabled for guild id `{ctx.guild.id}`.", colour=242424)
+			embed.set_author(name="Suggestions", icon_url=self.config.success_img)
+			embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+			
+			if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": False })
+				return await ctx.send(embed=embed)
+
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": False }) == 1:
+				return await ctx.send(f"{self.config.forbidden} The Suggestions module is already disabled on this guild.")
+
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": True }) == 1:
+				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": False } })
+				return await ctx.send(embed=embed)
+
+		elif option == "set":
+			if channel == None:
+				channel = ctx.channel
+
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The channel <#{channel.id}> has been set as the suggestion channel, all suggestions will be sent to that channel.")
+			embed.set_author(name="Suggestions", icon_url=self.config.success_img)
+			embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+
+			collection = self.db1.DataBase_1.settings
+
+			if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
+				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions_channel": channel.id })
+				return await ctx.send(embed=embed)
+
+			collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "suggestions_channel": channel.id } })
+			return await ctx.send(embed=embed)
+
+		else:
+			return await ctx.send(f"{self.config.forbidden} You've entered an **invalid** option, please provide an **valid** option like `set`, `enable`, or `disable`.")
+
 	# INCOMPLETE
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!automod <module> <setting> [option]", aliases=["auto-mod", "aumo"], description="Manage Auto-Moderation on premium servers.")
@@ -186,6 +246,8 @@ class admin(commands.Cog):
 
 			elif setting == "whitelist":
 				channel = option.replace("<#")
+				channel = option.replace(">")
+				channel = discord.utils.get(ctx.guild.text_channels, id=channel)
 				if option == None:
 					channel = ctx.channel
 

@@ -177,6 +177,25 @@ class general(commands.Cog):
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!suggest <suggestion>", description="Suggest something to the server.", aliases=["sugst"])
+	async def suggest(self, ctx, *, suggestion=None):
+		if suggestion == None:
+			return await ctx.send(f"{self.config.forbidden} You forgot to write the suggestion.")
+
+		collection = self.db1.DataBase_1.settings
+		if collection.count_document({ "_id": int(ctx.guild.id), "suggestions": True }) == 0:
+			return await ctx.send(f"{self.config.forbidden} The suggestion module has not been set-up or enabled in this server.")
+		
+		for data in collection.find({ "_id": int(ctx.guild.id) }):
+			channel = data["suggestion_channel"]
+			if channel == None:
+				return await ctx.send(f"{self.config.forbidden} The suggestion module has not been set-up or enabled in this server.")
+
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} Your suggestion has been recorded, the staff team will review it.", colour=242424)
+			embed.set_author(name="Suggestion", icon_url=ctx.author.avatar_url)
+			embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
+			await ctx.send(embed=embed)
+
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!profile <edit/member> [bio]", description="Show other's profile or edit your profile.", aliases=["prfil", "profil"])
 	async def profile(self, ctx, option=None, *, bio=None):
 		if option == None:
