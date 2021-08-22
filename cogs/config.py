@@ -135,7 +135,7 @@ class admin(commands.Cog):
 
 		elif option == "enable":
 			collection = self.db1.DataBase_1.settings
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The Suggestions module spam has been enabled for guild id `{ctx.guild.id}`.", colour=242424)
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The Suggestions module has been enabled for guild id `{ctx.guild.id}`.", colour=242424)
 			embed.set_author(name="Suggestions", icon_url=self.config.success_img)
 			embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
 			
@@ -171,11 +171,15 @@ class admin(commands.Cog):
 				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": False } })
 				return await ctx.send(embed=embed)
 
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 1 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 1:
+				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": False })
+				return await ctx.send(embed=embed)
+
 		elif option == "set":
 			if channel == None:
 				channel = ctx.channel
 
-			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The channel <#{channel.id}> has been set as the suggestion channel, all suggestions will be sent to that channel.")
+			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The channel <#{channel.id}> has been set as the suggestion channel, all suggestions will be sent to that channel.", colour=242424)
 			embed.set_author(name="Suggestions", icon_url=self.config.success_img)
 			embed.set_footer(text="Numix Premium", icon_url=self.config.logo)
 
