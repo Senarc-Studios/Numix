@@ -174,9 +174,8 @@ class fun(commands.Cog):
 		user = user.replace("@", "")
 		await ctx.send(f"{user} fell out of the world")
 
-	# INCOMPLETE
 
-	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!sudo <user> <message>", aliases=["force-message", "user-say"])
+	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!sudo <user> <message>", description="Send a message as a another member.", aliases=["force-message", "user-say"])
 	@permission("administrator")
 	async def sudo(self, ctx, user: discord.Member=None, *, message=None):
 		if user == None:
@@ -185,9 +184,13 @@ class fun(commands.Cog):
 		elif message == None:
 			return await ctx.send(f"{self.config.forbidden} Specify what your message is.")
 			
-		webhook = await ctx.channel.create_webhook(name=user.name, avatar=user.avatar_url, reason=f"\"{ctx.author.name}\" Used the sudo command on \"{user.name}\"")
-		await webhook.send(message)
-		await webhook.delete()
+		webhook = await ctx.channel.webhooks()
+		webhook = discord.utils.get(webhook, name="Numix")
+
+		if webhook is None:
+			webhook = await ctx.channel.create_webhook(name="Numix")
+
+		await webhook.send(message, username=user.name, avatar_url=user.avatar_url)
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!embed <title> <description> [footer] [icon]", aliases=["em"], description="Use this command to create an Embed.")
 	@permission("administrator")
