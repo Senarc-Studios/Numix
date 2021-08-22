@@ -150,6 +150,10 @@ class admin(commands.Cog):
 				collection.update_one({ "_id": int(ctx.guild.id) }, { "$set": { "_id": int(ctx.guild.id), "suggestions": True } })
 				return await ctx.send(embed=embed)
 
+			elif collection.count_documents({ "_id": int(ctx.guild.id), "suggesions": False }) == 1 and collection.count_documents({ "_id": int(ctx.guild.id), "suggestions": True }) == 1:
+				collection.insert_one({ "_id": int(ctx.guild.id), "suggestions": True })
+				return await ctx.send(embed=embed)
+
 		elif option == "disable":
 			collection = self.db1.DataBase_1.settings
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} The Suggestions module spam has been disabled for guild id `{ctx.guild.id}`.", colour=242424)
