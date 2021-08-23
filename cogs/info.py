@@ -772,7 +772,7 @@ class general(commands.Cog):
 			await ctx.send("Please specify a search term!")
 		else:
 			try:
-				wiki_embed = discord.Embed(title=f"Wiki for {text}", description=f'{wikipedia.summary(word, sentences=2)}', color=242424)
+				wiki_embed = discord.Embed(title=f"Wiki for {text}", description=f'{wikipedia.summary(text, sentences=2)}', color=242424)
 			except:
 				wiki_embed = discord.Embed(title="Error while getting wiki", description="", color=242424)
 			await ctx.send(embed=wiki_embed)
