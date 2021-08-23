@@ -47,7 +47,7 @@ class Leveling(commands.Cog):
 
 		if author_data[f"GLOBAL_XP"] >= int((50 * (author_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * author_data[f"GLOBAL_LEVEL"])):
 			await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id, f"GLOBAL_XP": 0, f"GLOBAL_LEVEL": author_data["GLOBAL_LEVEL"] + 1 } })
-
+		print(level.find_one({"_id": message.author.id}))
 		self.cooldown.append(message.author.id)
 		time.sleep(1.2)
 		self.cooldown.remove(message.author.id)
