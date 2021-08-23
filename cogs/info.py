@@ -381,22 +381,34 @@ class general(commands.Cog):
 		GLOBAL_FORMULA = int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
 		GLOBAL_BAR = int(( -(GLOBAL_FORMULA)/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
 		GLOBAL_RANKING = leveling.find().sort("TOTAL_XP", -1)
-
 		GUILD_FORMULA = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
 		GUILD_BAR = int(( -(GUILD_FORMULA)/(200*((1/2) * user_data[f"{ctx.guild.id}_LEVEL"])))*20)
 		GUILD_RANKING = leveling.find().sort(f"{ctx.guild.id}_TOTAL_XP", -1)
+		rank_no = 1
+		
 
-		embed = discord.Embed(timestamp=ctx.message.created_at)
-		embed.set_author(name=f"{user.name}'s Rank", icon_url=user.avatar_url)
-		embed.add_field(name="Level:", value=f"{user_data[f'{ctx.guild.id}_LEVEL']}")
-		embed.add_field(name="XP:", value=f"`{user_data[f'{ctx.guild.id}_XP']}xp`")
-		embed.add_field(name="Progress Bar:", value=GUILD_BAR * "<:blue_box:854277153809760277>" + (20-GUILD_BAR) * "<:Box:854277154032582658>", inline=False)
-		embed.add_field(name="Global Level:", value=f"{user_data[f'GLOBAL_LEVEL']}")
-		embed.add_field(name="Global XP:", value=f"`{user_data[f'GLOBAL_XP']}xp`")
-		embed.add_field(name="Global Progress Bar:", value=GLOBAL_BAR * "<:blue_box:854277153809760277>" + (20-GLOBAL_BAR) * "<:Box:854277154032582658>", inline=False)
-		embed.set_thumbnail(url=user.avatar_url)
-		embed.set_footer(text="Numix", icon_url=self.config.logo)
-		await ctx.send(embed=embed)
+		user = ctx.author
+		username = ctx.author.name + "#" + ctx.author.discriminator
+		currentxp = user_data[f'{ctx.guild.id}_XP']
+		lastxp = 0
+		nextxp = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
+		current_level = user_data[f'{ctx.guild.id}_LEVEL']
+		current_rank = rank_no
+		background = None
+		image = await canvacord.rankcard(user=user, username=username, currentxp=currentxp, lastxp=lastxp, nextxp=nextxp, level=current_level, rank=current_rank, background=background)
+		file = discord.File(filename="rankcard.png", fp=image)
+		await ctx.send(file=file)
+		# embed = discord.Embed(timestamp=ctx.message.created_at)
+		# embed.set_author(name=f"{user.name}'s Rank", icon_url=user.avatar_url)
+		# embed.add_field(name="Level:", value=f"{user_data[f'{ctx.guild.id}_LEVEL']}")
+		# embed.add_field(name="XP:", value=f"`{user_data[f'{ctx.guild.id}_XP']}xp`")
+		# embed.add_field(name="Progress Bar:", value=GUILD_BAR * "<:blue_box:854277153809760277>" + (20-GUILD_BAR) * "<:Box:854277154032582658>", inline=False)
+		# embed.add_field(name="Global Level:", value=f"{user_data[f'GLOBAL_LEVEL']}")
+		# embed.add_field(name="Global XP:", value=f"`{user_data[f'GLOBAL_XP']}xp`")
+		# embed.add_field(name="Global Progress Bar:", value=GLOBAL_BAR * "<:blue_box:854277153809760277>" + (20-GLOBAL_BAR) * "<:Box:854277154032582658>", inline=False)
+		# embed.set_thumbnail(url=user.avatar_url)
+		# embed.set_footer(text="Numix", icon_url=self.config.logo)
+		# await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!leaderboard [type]", description="Shows leaderboard of specified type.", aliases=["lb", "board", "rankings"])
 	async def leaderboard(self, ctx, type=None):
@@ -412,7 +424,7 @@ class general(commands.Cog):
 					i += 1
 				except:
 					pass
-				if 1 == 11:
+				if i == 11:
 					break
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
@@ -429,7 +441,7 @@ class general(commands.Cog):
 					i += 1
 				except:
 					pass
-				if 1 == 11:
+				if i == 11:
 					break
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)

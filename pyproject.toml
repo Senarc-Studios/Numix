@@ -39,7 +39,10 @@ nest-asyncio = "^1.5.1"
 slashify = "^1.0.1"
 quart = "^0.15.0"
 discordpy-slash = "^0.0.25"
-jishaku = "^2.0.0"
+jishaku = "^2.1.0"
+wikipedia = "^1.4.0"
+"dislash.py" = "^1.4.8"
+canvacord = "^0.2.73"
 [tool.poetry.dev-dependencies]
 
 [build-system]

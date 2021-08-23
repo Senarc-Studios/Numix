@@ -1,6 +1,7 @@
 from numix_imports import *
 import motor.motor_asyncio
 import discord
+import canvacord
 
 mongo_url = "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority"
 cluster = motor.motor_asyncio.AsyncIOMotorClient(mongo_url)
@@ -31,18 +32,19 @@ class Leveling(commands.Cog):
 			for greeting in mong_col.find({ "_id": int(message.guild.id) }):
 				toggle = greeting["level_message_toggle"]
 				greet = greeting["greeting"]
-				if "{" not in greet:
-					greet = greet
-				
-				else:
-					if "bot." in greet or "guild." in greet or "os." in greet or "self." in greet or "eval(" in greet:
-						return
-					else:
+				try:
+					if "{" not in greet:
 						greet = greet
-
+					else:
+						if "bot." in greet or "guild." in greet or "os." in greet or "self." in greet or "eval(" in greet:
+							return
+						else:
+							greet = greet
+				except:
+					pass
+				
 				if message.author.id in self.cooldown:
 					return
-
 				if message.content[2:].startswith("!") or message.content[1:].startswith("!") or message.content.startswith("!") or message.content[2:].startswith("?") or message.content[1:].startswith("?") or message.content.startswith("?") or message.content[2:].startswith(">") or message.content[1:].startswith(">") or message.content.startswith(">") or message.content[2:].startswith(".") or message.content[1:].startswith(".") or message.content.startswith(".") or message.content[2:].startswith("$") or message.content[1:].startswith("$") or message.content.startswith("$") or message.content.startswith("<@!"):
 					return
 
@@ -51,12 +53,10 @@ class Leveling(commands.Cog):
 
 				if message.guild.id == None:
 					return
-			
 				if await level.count_documents({ "_id": message.author.id }) == 0:
 					return await level.insert_one({ "_id": message.author.id, f"{message.guild.id}": "ENABLED", f"{message.guild.id}_XP": len(message.content), f"{message.guild.id}_LEVEL": 1, "GLOBAL_XP": len(message.content), "GLOBAL_LEVEL": 1, "TOTAL_XP": len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content) })
 				
 				author_data = await level.find_one({ "_id": message.author.id })
-
 				if await level.count_documents({ "_id": message.author.id, f"{message.guild.id}": "ENABLED" }) == 0:
 					return await level.update_one({ "_id": message.author.id }, { "$set": { "_id": message.author.id, f"{message.guild.id}": "ENABLED", f"{message.guild.id}_XP": len(message.content), f"{message.guild.id}_LEVEL": 1, "TOTAL_XP": author_data[f'TOTAL_XP'] + len(message.content), f"{message.guild.id}_TOTAL_XP": len(message.content)}})
 
