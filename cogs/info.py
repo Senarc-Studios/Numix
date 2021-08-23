@@ -291,7 +291,7 @@ class general(commands.Cog):
 
 		embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 		embed.set_author(name=f"Results for {username}", icon_url=ctx.author.avatar_url)
-		embed.add_field(name=f"UUID:", value=f"`{uuid}`")
+		embed.add_field(name=f"UUID:", value=f"{self.config.arrow} `{uuid}`")
 		embed.set_image(url=f"{url}")
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
@@ -529,8 +529,6 @@ class general(commands.Cog):
 		await asyncio.sleep(5)
 		
 		ping = (time.monotonic() - before) * 1000
-		
-		ram = self.process.memory_full_info().rss / 1024**2
 
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"[`Support`](https://numix.xyz/discord) • [`Invite`](https://numix.xyz/invite) • [`Vote`](https://top.gg/bot/744865990810271785)`\n\n<:dev:877394314433531947> **Developer:** {self.config.devs}\n<:version:877394315045924864> **Bot Version:** `{self.config.botversion}`\n<:speed:877394314781655061> **Ping:** `REST: {round(self.bot.latency * 1000)} | WS: {round(ping)}`\n<:commands:877400920705617921> **Loaded Commands:** `{len([x.name for x in self.bot.commands])}`\n<:folder:877402950077657218> **Lines of Code:** `Loading...`\n<:server:877394314651652127> **Servers:** `{len(self.bot.guilds)}`\n<:members:877398159368814623> **Total Members:** `{len(self.bot.users)}`", color=242424)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
