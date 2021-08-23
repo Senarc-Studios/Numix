@@ -480,21 +480,6 @@ class fun(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 		
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!wiki <word>", description="Searches wikipedia for the given word.", aliases=["wikipedia"])
-	async def wiki(self, ctx):
-		if text == None:
-			await ctx.send("Please specify a search term!")
-		else:
-			try:
-				r = requests.get(f'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={text}&format=json')
-				data = json.loads(r.text)
-				title = data['query']['search'][0]['title']
-				url = f'https://en.wikipedia.org/wiki/{title}'
-				wiki_embed = discord.Embed(title=f"Wiki for {text}", description=url, color=0x2F3136)
-			except:
-				wiki_embed = discord.Embed(title="Error while getting wiki", description="", color=0x2F3136)
-			await ctx.send(embed=wiki_embed)
-		
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!8ball <question>", description="Gives a random answer to your question.", name="8ball")
 	async def _8ball(self, ctx, *, question=None):
 		input = question
