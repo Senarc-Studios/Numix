@@ -765,5 +765,19 @@ class general(commands.Cog):
 		else:
 			return await ctx.send(f"{self.config.forbidden} User is not listening to any spotify track currently or have a custom status.")
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!wiki <word>", description="Searches wikipedia for the given word.", aliases=["wikipedia"])
+	async def wiki(self, ctx):
+		if text == None:
+			await ctx.send("Please specify a search term!")
+		else:
+			try:
+				r = requests.get(f'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={text}&format=json')
+				data = json.loads(r.text)
+				title = data['query']['search'][0]['title']
+				url = f'https://en.wikipedia.org/wiki/{title}'
+				wiki_embed = discord.Embed(title=f"Wiki for {text}", description=url, color=242424)
+			except:
+				wiki_embed = discord.Embed(title="Error while getting wiki", description="", color=242424)
+			await ctx.send(embed=wiki_embed)
 def setup(bot):
 	bot.add_cog(general(bot))
