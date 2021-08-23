@@ -766,7 +766,7 @@ class general(commands.Cog):
 			return await ctx.send(f"{self.config.forbidden} User is not listening to any spotify track currently or have a custom status.")
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!wiki <word>", description="Searches wikipedia for the given word.", aliases=["wikipedia"])
-	async def wiki(self, ctx, *, text):
+	async def wiki(self, ctx, *, text: str = None):
 		if text == None:
 			await ctx.send("Please specify a search term!")
 		else:
