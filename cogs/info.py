@@ -772,9 +772,11 @@ class general(commands.Cog):
 			await ctx.send("Please specify a search term!")
 		else:
 			try:
-				wiki_embed = discord.Embed(title=f"Wiki for {text}", description=f'{wikipedia.summary(text, sentences=2)}', color=242424)
+				result = wikipedia.page((wikipedia.search(f"{text}")[0]))
+				print(result.content)
+				page_embed = discord.Embed(title=result.title, description=f"{result.content[:1500]}...", color=0x2F3136)
+				await ctx.send(embed=page_embed, components=[Button(style=ButtonStyle.link ,label="View More", url=result.url)])
 			except:
-				wiki_embed = discord.Embed(title="Error while getting wiki", description="", color=242424)
-			await ctx.send(embed=wiki_embed)
+				await ctx.send("No results found!")
 def setup(bot):
 	bot.add_cog(general(bot))

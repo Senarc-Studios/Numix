@@ -32,3 +32,4 @@ from contextlib import redirect_stdout
 from discord.ext import commands, tasks
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from discord.ext.commands import has_permissions, MissingPermissions, errors
+from dislash import InteractionClient, ActionRow, Button, ButtonStyle
