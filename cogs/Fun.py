@@ -481,7 +481,7 @@ class fun(commands.Cog):
 		await ctx.send(embed=embed)
 		
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!wiki <word>", description="Searches wikipedia for the given word.", aliases=["wikipedia"])
-	async def roll(self, ctx):
+	async def wiki(self, ctx):
 		if text == None:
 			await ctx.send("Please specify a search term!")
 		else:
