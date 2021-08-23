@@ -431,9 +431,9 @@ class general(commands.Cog):
 
 		elif type == "global":
 			rankings = leveling.find().sort("TOTAL_XP", -1)
-			i = 1
+			i = 0
 			embed = discord.Embed(timestamp=ctx.message.created_at, title="Leaderboard:")
-			for x in rankings:
+			for x in rankings[0]:
 				try:
 					temp = discord.utils.get(self.bot.users, x["_id"])
 					tempxp = x[f"TOTAL_XP"]
@@ -441,7 +441,7 @@ class general(commands.Cog):
 					i += 1
 				except:
 					pass
-				if i == 11:
+				if i == 10:
 					break
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
