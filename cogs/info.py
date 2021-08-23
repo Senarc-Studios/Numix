@@ -2,6 +2,7 @@ from numix_imports import *
 from collections import OrderedDict, deque, Counter
 import motor.motor_asyncio
 import os
+import wikipedia
 
 config = default.get('./config.json')
 
@@ -771,11 +772,7 @@ class general(commands.Cog):
 			await ctx.send("Please specify a search term!")
 		else:
 			try:
-				r = requests.get(f'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch={text}&format=json')
-				data = json.loads(r.text)
-				title = data['query']['search'][0]['title']
-				url = f'https://en.wikipedia.org/wiki/{title}'
-				wiki_embed = discord.Embed(title=f"Wiki for {text}", description=url, color=242424)
+				wiki_embed = discord.Embed(title=f"Wiki for {text}", description=f'{wikipedia.summary(word, sentences=2)}', color=242424)
 			except:
 				wiki_embed = discord.Embed(title="Error while getting wiki", description="", color=242424)
 			await ctx.send(embed=wiki_embed)
