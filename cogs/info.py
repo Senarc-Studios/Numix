@@ -773,8 +773,8 @@ class general(commands.Cog):
 		else:
 			try:
 				result = wikipedia.page((wikipedia.search(f"{text}")[0]))
-				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{result.content[:1500]}...", color=242424)
-				embed.set_author(name=f"{result.title}", icon_url=ctx.author.avatar_url)
+				embed = discord.Embed(timestamp=ctx.message.created_at, title=f"{result.title}", description=f"{result.content[:1500]}...", color=242424)
+				embed.set_author(name="Wikipedia Search Result", icon_url=ctx.author.avatar_url)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed, components=[Button(style=ButtonStyle.link ,label="View More", url=result.url)])
 			except:
