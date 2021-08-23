@@ -754,7 +754,7 @@ class general(commands.Cog):
 		
 		embed.add_field(name='**Server-Side Info**', value=f"{self.config.arrow} **Nick:** `{user.nick}`\n{self.config.arrow} **In Voice:** {voice_state}\n{self.config.arrow} **Highest Role:** <@&{user.top_role.id}>\n{self.config.arrow} **Joined Date:** `{user.joined_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Joined Time:** `{user.joined_at.__format__('%H:%M:%S')}`", inline=False)
 		
-		embed.add_field(name='**Account-Side Info**', value=f"{self.config.arrow} **Numix Badges:** {badges(self, ctx.author.id)}\n{self.config.arrow} **Status:** {user.status}\n{self.config.arrow} **Game/Custom Status:** {game}\n{self.config.arrow} **On Mobile:** `{user.is_on_mobile()}`\n{self.config.arrow} **Bot User:** `{user.bot}`\n{self.config.arrow} **Account Creation Date:** `{user.created_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Account Creation Time:** `{user.created_at.__format__('%H:%M:%S')}`", inline=False)
+		embed.add_field(name='**Account-Side Info**', value=f"{self.config.arrow} **Numix Badges:** {badges(self, user.id)}\n{self.config.arrow} **Status:** {user.status}\n{self.config.arrow} **Game/Custom Status:** {game}\n{self.config.arrow} **On Mobile:** `{user.is_on_mobile()}`\n{self.config.arrow} **Bot User:** `{user.bot}`\n{self.config.arrow} **Account Creation Date:** `{user.created_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Account Creation Time:** `{user.created_at.__format__('%H:%M:%S')}`", inline=False)
 
 		embed.set_author(name=user.name, icon_url=user.avatar_url)
 		embed.set_footer(text='Numix', icon_url=self.config.logo)
