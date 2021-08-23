@@ -773,9 +773,10 @@ class general(commands.Cog):
 		else:
 			try:
 				result = wikipedia.page((wikipedia.search(f"{text}")[0]))
-				print(result.content)
-				page_embed = discord.Embed(title=result.title, description=f"{result.content[:1500]}...", color=0x2F3136)
-				await ctx.send(embed=page_embed, components=[Button(style=ButtonStyle.link ,label="View More", url=result.url)])
+				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{result.content[:1500]}...", color=242424)
+				embed.set_author(name=f"{result.title}", icon_url=ctx.author.avatar_url)
+				embed.set_footer(text="Numix", icon_url=self.config.logo)
+				await ctx.send(embed=embed, components=[Button(style=ButtonStyle.link ,label="View More", url=result.url)])
 			except:
 				await ctx.send("No results found!")
 def setup(bot):
