@@ -410,22 +410,27 @@ class general(commands.Cog):
 			return await ctx.send(f"{self.config.forbiden} {user.name} hasn't sent any messages yet.")
 
 		user_data = await leveling.find_one({ "_id": user.id })
-		GLOBAL_FORMULA = int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
-		GLOBAL_BAR = int(( -(GLOBAL_FORMULA)/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
-		GLOBAL_RANKING = leveling.find().sort("TOTAL_XP", -1)
 		GUILD_FORMULA = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
-		GUILD_BAR = int(( -(GUILD_FORMULA)/(200*((1/2) * user_data[f"{ctx.guild.id}_LEVEL"])))*20)
-		GUILD_RANKING = leveling.find().sort(f"{ctx.guild.id}_TOTAL_XP", -1)
-		rank_no = 1
-		
+		GUILD_XP = user_data[f'{ctx.guild.id}_XP']
+		member_list = []
+		xp_list = []
+		members = ctx.guild.members
+		for member in members:
+			if await leveling.count_documents({ "_id": member.id, f"{ctx.guild.id}": "ENABLED" }) == 1:
+				temp_user_data = await leveling.find_one({ "_id": user.id })
+				temp_GUILD_XP = temp_user_data[f'{ctx.guild.id}_XP']
+				member_list.append(member.id)
+				xp_list.append(temp_GUILD_XP)
 
+		xp_list, member_list = zip(*sorted(zip(xp_list, member_list)))
+		current_rank = member_list.index(user.id) + 1
 		user = ctx.author
 		username = ctx.author.name + "#" + ctx.author.discriminator
-		currentxp = user_data[f'{ctx.guild.id}_XP']
+		currentxp = GUILD_XP
 		lastxp = 0
-		nextxp = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
+		nextxp = GUILD_FORMULA
 		current_level = user_data[f'{ctx.guild.id}_LEVEL']
-		current_rank = rank_no
+		current_rank = current_rank
 		background = None
 		image = await canvacord.rankcard(user=user, username=username, currentxp=currentxp, lastxp=lastxp, nextxp=nextxp, level=current_level, rank=current_rank, background=background)
 		file = discord.File(filename="rankcard.png", fp=image)
