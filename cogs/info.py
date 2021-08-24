@@ -421,7 +421,7 @@ class general(commands.Cog):
 				temp_user_data = await leveling.find_one({ "_id": member.id })
 				temp_GUILD_LEVEL = temp_user_data[f'{ctx.guild.id}_LEVEL']
 				member_list.append(member.id)
-				level_list.append(temp_GUILD_XP)
+				level_list.append(temp_GUILD_LEVEL)
 
 		level_list, member_list = zip(*sorted(zip(level_list, member_list)))
 		for i in range(len(level_list)):
