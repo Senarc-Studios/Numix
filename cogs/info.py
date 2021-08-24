@@ -412,26 +412,29 @@ class general(commands.Cog):
 		user_data = await leveling.find_one({ "_id": user.id })
 		GUILD_FORMULA = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
 		GUILD_XP = user_data[f'{ctx.guild.id}_XP']
+		GUILD_LEVEL = user_data[f'{ctx.guild.id}_LEVEL']
 		member_list = []
-		xp_list = []
+		level_list = []
 		members = ctx.guild.members
 		for member in members:
 			if await leveling.count_documents({ "_id": member.id, f"{ctx.guild.id}": "ENABLED" }) == 1:
-				temp_user_data = await leveling.find_one({ "_id": user.id })
-				temp_GUILD_XP = temp_user_data[f'{ctx.guild.id}_XP']
+				temp_user_data = await leveling.find_one({ "_id": member.id })
+				temp_GUILD_LEVEL = temp_user_data[f'{ctx.guild.id}_LEVEL']
 				member_list.append(member.id)
-				xp_list.append(temp_GUILD_XP)
+				level_list.append(temp_GUILD_XP)
 
-		xp_list, member_list = zip(*sorted(zip(xp_list, member_list)))
-		current_rank = member_list.index(user.id) + 1
+		level_list, member_list = zip(*sorted(zip(level_list, member_list)))
+		for i in range(len(level_list)):
+			if level_list[i] == GUILD_LEVEL:
+				current_rank = i + 1
+				break
 		user = ctx.author
 		username = ctx.author.name + "#" + ctx.author.discriminator
 		currentxp = GUILD_XP
 		lastxp = 0
 		nextxp = GUILD_FORMULA
-		current_level = user_data[f'{ctx.guild.id}_LEVEL']
-		current_rank = current_rank
-		background = None
+		current_level = GUILD_LEVEL
+		background = "https://www.designsdesk.com/wp-content/uploads/2018/07/colorful-designs-1024x682.jpeg"
 		image = await canvacord.rankcard(user=user, username=username, currentxp=currentxp, lastxp=lastxp, nextxp=nextxp, level=current_level, rank=current_rank, background=background)
 		file = discord.File(filename="rankcard.png", fp=image)
 		await ctx.send(file=file)
@@ -450,22 +453,18 @@ class general(commands.Cog):
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!leaderboard [type]", description="Shows leaderboard of specified type.", aliases=["lb", "board", "rankings"])
 	async def leaderboard(self, ctx, type=None):
 		if type == None:
-			rankings = leveling.find().sort(f"{ctx.guild.id}_TOTAL_XP", -1)
-			i = 0
-			embed = discord.Embed(timestamp=ctx.message.created_at, title="Leaderboard:")
-			for x in json.load(rankings[0]):
-				try:
-					temp = ctx.guild.get_member(x["_id"])
-					tempxp = x[f"{ctx.guild.id}_TOTAL_XP"]
-					embed.add_field(name=f"{i}: {temp.name}", value=f"XP: `{tempxp}`", inline=False)
-					i += 1
-				except:
-					pass
-				if i == 10:
-					break
-			embed.set_footer(text="Numix", icon_url=self.config.logo)
-			await ctx.send(embed=embed)
+			member_list = []
+			xp_list = []
+			members = ctx.guild.members
+			for member in members:
+				if await leveling.count_documents({ "_id": member.id, f"{ctx.guild.id}": "ENABLED" }) == 1:
+					temp_user_data = await leveling.find_one({ "_id": member.id })
+					temp_GUILD_XP = temp_user_data[f'{ctx.guild.id}_XP']
+					member_list.append(member.id)
+					xp_list.append(temp_GUILD_XP)
 
+			xp_list, member_list = zip(*sorted(zip(xp_list, member_list)))
+			print(xp_list)
 		elif type == "global":
 			rankings = leveling.find().sort("TOTAL_XP", -1)
 			i = 0
