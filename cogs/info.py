@@ -431,7 +431,7 @@ class general(commands.Cog):
 				current_rank = i + 1
 				break
 		user = user
-		username = ctx.author.name + "#" + ctx.author.discriminator
+		username = user.name + "#" + user.discriminator
 		currentxp = GUILD_XP
 		lastxp = 0
 		nextxp = GUILD_FORMULA
