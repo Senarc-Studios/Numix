@@ -367,6 +367,38 @@ class general(commands.Cog):
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!grank [member]", description="Gets information of the user's global rank.", aliases=["globalrank", "global-rank", "global-level", "glevel", "gxp"])
+	async def grank(self, ctx, user: discord.Member=None):
+		if user is None:
+			user = ctx.message.author
+		
+		if await leveling.count_documents({ "_id": user.id, f"{ctx.guild.id}": "ENABLED" }) == 0:
+			if user.id == ctx.author.id:
+				return await ctx.send(f"{self.config.forbidden} Please send some message before checking your rank.")
+			return await ctx.send(f"{self.config.forbiden} {user.name} hasn't sent any messages yet.")
+
+		user_data = await leveling.find_one({ "_id": user.id })
+		GLOBAL_FORMULA = int((50 * (user_data[f"GLOBAL_LEVEL"] ** 2)) + (50 * user_data[f"GLOBAL_LEVEL"]))
+		GLOBAL_BAR = int(( -(GLOBAL_FORMULA)/(200*((1/2) * user_data[f"GLOBAL_LEVEL"])))*20)
+		GLOBAL_RANKING = leveling.find().sort("TOTAL_XP", -1)
+		GUILD_FORMULA = int((50 * (user_data[f"{ctx.guild.id}_LEVEL"] ** 2)) + (50 * user_data[f"{ctx.guild.id}_LEVEL"]))
+		GUILD_BAR = int(( -(GUILD_FORMULA)/(200*((1/2) * user_data[f"{ctx.guild.id}_LEVEL"])))*20)
+		GUILD_RANKING = leveling.find().sort(f"{ctx.guild.id}_TOTAL_XP", -1)
+		rank_no = 1
+		
+
+		user = ctx.author
+		username = ctx.author.name + "#" + ctx.author.discriminator
+		currentxp = user_data[f'GLOBAL_XP']
+		lastxp = 0
+		nextxp = GLOBAL_FORMULA
+		current_level = user_data[f'GLOBAL_LEVEL']
+		current_rank = rank_no
+		background = None
+		image = await canvacord.rankcard(user=user, username=username, currentxp=currentxp, lastxp=lastxp, nextxp=nextxp, level=current_level, rank=current_rank, background=background)
+		file = discord.File(filename="rankcard.png", fp=image)
+		await ctx.send(file=file)
+
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!rank [member]", description="Gets information of the user's rank.", aliases=["level", "xp"])
 	async def rank(self, ctx, user: discord.Member=None):
 		if user is None:
