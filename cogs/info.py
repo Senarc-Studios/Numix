@@ -424,17 +424,19 @@ class general(commands.Cog):
 				level_list.append(temp_GUILD_LEVEL)
 
 		level_list, member_list = zip(*sorted(zip(level_list, member_list)))
+		level_list = tuple(reversed(level_list))
+		member_list = tuple(reversed(member_list))
 		for i in range(len(level_list)):
 			if level_list[i] == GUILD_LEVEL:
 				current_rank = i + 1
 				break
-		user = ctx.author
+		user = user
 		username = ctx.author.name + "#" + ctx.author.discriminator
 		currentxp = GUILD_XP
 		lastxp = 0
 		nextxp = GUILD_FORMULA
 		current_level = GUILD_LEVEL
-		background = "https://www.designsdesk.com/wp-content/uploads/2018/07/colorful-designs-1024x682.jpeg"
+		background = None #"https://www.designsdesk.com/wp-content/uploads/2018/07/colorful-designs-1024x682.jpeg"
 		image = await canvacord.rankcard(user=user, username=username, currentxp=currentxp, lastxp=lastxp, nextxp=nextxp, level=current_level, rank=current_rank, background=background)
 		file = discord.File(filename="rankcard.png", fp=image)
 		await ctx.send(file=file)
@@ -459,12 +461,13 @@ class general(commands.Cog):
 			for member in members:
 				if await leveling.count_documents({ "_id": member.id, f"{ctx.guild.id}": "ENABLED" }) == 1:
 					temp_user_data = await leveling.find_one({ "_id": member.id })
-					temp_GUILD_XP = temp_user_data[f'{ctx.guild.id}_XP']
+					temp_GUILD_LEVEL = temp_user_data[f'{ctx.guild.id}_LEVEL']
 					member_list.append(member.id)
-					xp_list.append(temp_GUILD_XP)
+					level_list.append(temp_GUILD_LEVEL)
 
-			xp_list, member_list = zip(*sorted(zip(xp_list, member_list)))
-			print(xp_list)
+			level_list, member_list = zip(*sorted(zip(level_list, member_list)))
+			level_list = tuple(reversed(level_list))
+			member_list = tuple(reversed(member_list))
 		elif type == "global":
 			rankings = leveling.find().sort("TOTAL_XP", -1)
 			i = 0
