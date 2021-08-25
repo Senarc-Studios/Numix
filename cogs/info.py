@@ -414,20 +414,26 @@ class general(commands.Cog):
 		GUILD_XP = user_data[f'{ctx.guild.id}_XP']
 		GUILD_LEVEL = user_data[f'{ctx.guild.id}_LEVEL']
 		member_list = []
-		level_list = []
+		xp_list = []
+		def get_level_xp(level, xp):
+			total_xp = 0
+			for i in range(1, level):
+				total_xp += int((50 * (i ** 2)) + (50 * i))
+			return total_xp + xp
 		members = ctx.guild.members
 		for member in members:
 			if await leveling.count_documents({ "_id": member.id, f"{ctx.guild.id}": "ENABLED" }) == 1:
 				temp_user_data = await leveling.find_one({ "_id": member.id })
 				temp_GUILD_LEVEL = temp_user_data[f'{ctx.guild.id}_LEVEL']
 				member_list.append(member.id)
-				level_list.append(temp_GUILD_LEVEL)
 
-		level_list, member_list = zip(*sorted(zip(level_list, member_list)))
-		level_list = tuple(reversed(level_list))
+				xp_list.append(get_level_xp(temp_GUILD_LEVEL, temp_user_data[f'{ctx.guild.id}_XP']))
+
+		xp_list, member_list = zip(*sorted(zip(xp_list, member_list)))
+		xp_list = tuple(reversed(xp_list))
 		member_list = tuple(reversed(member_list))
-		for i in range(len(level_list)):
-			if level_list[i] == GUILD_LEVEL:
+		for i in range(len(xp_list)):
+			if xp_list[i] == get_level_xp(GUILD_LEVEL ,GUILD_XP):
 				current_rank = i + 1
 				break
 		user = user
@@ -457,17 +463,39 @@ class general(commands.Cog):
 		if type == None:
 			member_list = []
 			xp_list = []
+			def get_level_xp(level, xp):
+				total_xp = 0
+				for i in range(1, level):
+					total_xp += int((50 * (i ** 2)) + (50 * i))
+				return total_xp + xp
 			members = ctx.guild.members
 			for member in members:
 				if await leveling.count_documents({ "_id": member.id, f"{ctx.guild.id}": "ENABLED" }) == 1:
 					temp_user_data = await leveling.find_one({ "_id": member.id })
 					temp_GUILD_LEVEL = temp_user_data[f'{ctx.guild.id}_LEVEL']
 					member_list.append(member.id)
-					level_list.append(temp_GUILD_LEVEL)
 
-			level_list, member_list = zip(*sorted(zip(level_list, member_list)))
-			level_list = tuple(reversed(level_list))
+					xp_list.append(get_level_xp(temp_GUILD_LEVEL, temp_user_data[f'{ctx.guild.id}_XP']))
+
+			xp_list, member_list = zip(*sorted(zip(xp_list, member_list)))
+			xp_list = tuple(reversed(xp_list))
 			member_list = tuple(reversed(member_list))
+			dec = ""
+			for i in range(len(xp_list)):
+				user_data = await leveling.find_one({ "_id": member_list[i] })
+				GUILD_LEVEL = user_data[f'{ctx.guild.id}_LEVEL']
+				GUILD_XP = user_data[f'{ctx.guild.id}_XP']
+				for i in range(len(xp_list)):
+					if xp_list[i] ==  get_level_xp(GUILD_LEVEL ,GUILD_XP):
+						current_rank = i + 1
+						break
+				user = ctx.guild.get_member(member_list[i])
+				dec += f"**{current_rank}.** **{user}** \n**XP : `{get_level_xp(GUILD_LEVEL ,GUILD_XP)}`** \n**Level : {GUILD_LEVEL}**\n\n"
+				if i == 4:
+					break
+			embed = discord.Embed(description=dec, timestamp=ctx.message.created_at)
+			embed.set_author(name="Leaderboard" , icon_url=self.config.logo)
+			await ctx.send(embed=embed)
 		elif type == "global":
 			rankings = leveling.find().sort("TOTAL_XP", -1)
 			i = 0

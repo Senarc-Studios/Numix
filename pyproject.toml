@@ -43,6 +43,7 @@ jishaku = "^2.1.0"
 wikipedia = "^1.4.0"
 "dislash.py" = "^1.4.8"
 canvacord = "^0.2.73"
+easy-pil = "^0.0.9"
 [tool.poetry.dev-dependencies]
 
 [build-system]

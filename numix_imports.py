@@ -34,3 +34,4 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 from discord.ext.commands import has_permissions, MissingPermissions, errors
 from dislash import InteractionClient, ActionRow, Button, ButtonStyle
 import canvacord
+from easy_pil import Editor, Canvas, load_image_async, Font
