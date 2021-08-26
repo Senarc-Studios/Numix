@@ -41,7 +41,7 @@ class Debug(commands.Cog):
 			else:
 				string = content
 
-			channel = self.bot.fetch_channel(880307133839712356)
+			channel = await self.bot.fetch_channel(880307133839712356)
 
 			embed = discord.Embed(description=string, color=242424)
 			embed.set_author(name="Debug Mode", icon_url=self.config.logo)
