@@ -20,7 +20,6 @@ class Leveling(commands.Cog):
 
 		if collection.count_documents({ "_id": int(ctx.guild.id) }) == 0:
 			return collection.insert_one({ "_id": int(ctx.guild.id) })
-
 		else:
 			return "Pass"
 
