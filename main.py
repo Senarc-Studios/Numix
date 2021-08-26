@@ -207,7 +207,7 @@ async def restart(ctx):
 def main():
 	for file in os.listdir("./cogs"):
 		if file.startswith("debug"):
-			if debug_check == True:
+			if debug_check() == True:
 				name = file[:-3]
 				bot.load_extension(f"cogs.{name}")
 			else:
