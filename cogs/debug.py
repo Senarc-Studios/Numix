@@ -66,7 +66,7 @@ class Debug(commands.Cog):
 	@commands.Cog.listener()
 	async def on_message(self, message):
 		if message.guild == None:
-			await self.log(mode=json, content=("{" + f"\n  \"name\": {message.author.name},\n  \"discriminator\": {message.author.discriminator},\n  \"author-id\": {message.author.id},\n  \"message-id\": {message.id},\n  \"bot\": {message.author.bot}\n  \"message-content\": {message.content}\n" + "}"))
+			await self.log(mode=json, content=("{" + f"\n  \"name\": {message.author.name},\n  \"discriminator\": {message.author.discriminator},\n  \"author-id\": {message.author.id},\n  \"message-id\": {message.id},\n  \"bot\": {message.author.bot},\n  \"message-content\": {message.content}\n" + "}"))
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, error):
