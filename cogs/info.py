@@ -3,6 +3,7 @@ from collections import OrderedDict, deque, Counter
 import motor.motor_asyncio
 import os
 import wikipedia
+from disrank.generator import Generator
 
 config = default.get('./config.json')
 
@@ -177,7 +178,7 @@ class general(commands.Cog):
 		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
-
+	
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!suggest <suggestion>", description="Suggest something to the server.", aliases=["sugst"])
 	async def suggest(self, ctx, *, suggestion=None):
 		if suggestion == None:
@@ -401,6 +402,40 @@ class general(commands.Cog):
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!rank [member]", description="Gets information of the user's rank.", aliases=["level", "xp"])
 	async def rank(self, ctx, user: discord.Member=None):
+		async def make_rank_card(user, xp_need, xp_have, level, rank):
+			percentage = (xp_have * 100 ) / xp_need
+			def human_format(num):
+				num = float('{:.3g}'.format(num))
+				magnitude = 0
+				while abs(num) >= 1000:
+						magnitude += 1
+						num /= 1000.0
+				return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
+			## Rank card
+			background = Editor("assets/bg.png")
+			profile = await load_image_async(str(user.avatar_url))
+
+			profile = Editor(profile).resize((150, 150)).circle_image()
+
+			poppins = Font().poppins(size=40)
+			poppins_small = Font().poppins(size=30)
+
+			square = Canvas((500, 500), "#06FFBF")
+			square = Editor(square)
+			square.rotate(30, expand=True)
+
+			background.paste(square.image, (600, -250))
+			background.paste(profile.image, (30, 30))
+
+			background.rectangle((30, 220), width=650, height=40, fill="white", radius=20)
+			background.bar((30, 220), max_width=650, height=40, percentage=percentage ,fill="#FF56B2", radius=20)
+			background.text((200, 40), str(user), font=poppins, color="white")
+
+			background.rectangle((200, 100), width=350, height=2, fill="#17F3F6")
+			background.text((200, 130), f"Level : {level}" + f" RANK : {rank}", font=poppins_small, color="white")
+			background.text((500, 170), f"{xp_have}/{human_format(xp_need)}", font=poppins_small, color="white")
+			file = discord.File(fp=background.image_bytes, filename="card.png")
+			return file
 		if user is None:
 			user = ctx.message.author
 		
@@ -443,8 +478,10 @@ class general(commands.Cog):
 		nextxp = GUILD_FORMULA
 		current_level = GUILD_LEVEL
 		background = None #"https://www.designsdesk.com/wp-content/uploads/2018/07/colorful-designs-1024x682.jpeg"
-		image = await canvacord.rankcard(user=user, username=username, currentxp=currentxp, lastxp=lastxp, nextxp=nextxp, level=current_level, rank=current_rank, background=background)
-		file = discord.File(filename="rankcard.png", fp=image)
+		#image = await canvacord.rankcard(user=user, username=username, currentxp=currentxp, lastxp=lastxp, nextxp=nextxp, level=current_level, rank=current_rank, background=background)
+		
+		#file = discord.File(filename="rankcard.png", fp=image)
+		file = await make_rank_card(user, GUILD_FORMULA, GUILD_XP, current_level, current_rank)
 		await ctx.send(file=file)
 		# embed = discord.Embed(timestamp=ctx.message.created_at)
 		# embed.set_author(name=f"{user.name}'s Rank", icon_url=user.avatar_url)

@@ -137,7 +137,7 @@ class Image(commands.Cog):
 		await ctx.send(file=file)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!spank [user1] [user2]", description="spank")
-	async def spank(self, ctx, user1: discord.Member=None, , user2: discord.Member=None):
+	async def spank(self, ctx, user1: discord.Member=None, user2: discord.Member=None):
 		if user1 is None and user2 is None:
 			await ctx.send(f"{self.config.forbidden} You need to specify 2 user to spank.")
 			return
