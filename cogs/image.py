@@ -136,11 +136,15 @@ class Image(commands.Cog):
 		file = discord.File(filename="wanted.png", fp=image)
 		await ctx.send(file=file)
 
-	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!spank [user]", description="spank")
-	async def spank(self, ctx, user: discord.Member=None):
-		if user is None:
-			user = ctx.author
-		image = await canvacord.spank(user)
+	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!spank [user1] [user2]", description="spank")
+	async def spank(self, ctx, user1: discord.Member=None, , user2: discord.Member=None):
+		if user1 is None and user2 is None:
+			await ctx.send(f"{self.config.forbidden} You need to specify 2 user to spank.")
+			return
+		if user2 is None:
+			user2 = user1
+			user1 = ctx.author
+		image = await canvacord.spank(user1, user2)
 		file = discord.File(filename="spank.png", fp=image)
 		await ctx.send(file=file)
 
@@ -175,6 +179,6 @@ class Image(commands.Cog):
 		image = await canvacord.hitler(user)
 		file = discord.File(filename="hitler.png", fp=image)
 		await ctx.send(file=file)
-        
+
 def setup(bot):
 	bot.add_cog(Image(bot))
