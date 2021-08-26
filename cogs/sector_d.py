@@ -6,12 +6,60 @@ class SECTOR_D(commands.Cog):
 		self.config = default.get("./config.json")
 		self.db1 = MongoClient(self.config.db1)
 		print("\"Sector D\" Loaded")
+		self.MONGO = MongoClient(self.config.db1)
 
 	def authorize(self, ctx):
 		if ctx.author.id in self.config.owners:
 			return True
 		else:
 			return False
+
+	@commands.command(hidden=True)
+	async def debug(self, ctx, option):
+		self.authorize(ctx)
+		collection = self.MONGO.DataBase_1.assets
+		if option == "on+reboot":
+			for data in collection.find({ "_id": "debug" }):
+				if data["value"] == True:
+					return await ctx.send(f"{self.config.forbidden} Debug is already enabled.")
+
+				else:
+					await ctx.send(f"{self.config.success} Enabled Debug mode and restarting client.")
+					collection.update_one({ "_id": "debug" }, { "$set": { "_id": "debug", "value": True } })
+					os.system("ls -l; python3 main.py")
+					await self.bot.logout()
+
+		elif option == "on":
+			for data in collection.find({ "_id": "debug" }):
+				if data["value"] == True:
+					return await ctx.send(f"{self.config.forbidden} Debug is already enabled.")
+
+				else:
+					await ctx.send(f"{self.config.success} Enabled Debug mode.")
+					collection.update_one({ "_id": "debug" }, { "$set": { "_id": "debug", "value": True } })
+
+		elif option == "off+reboot":
+			for data in collection.find({ "_id": "debug" }):
+				if data["value"] == False:
+					return await ctx.send(f"{self.config.forbidden} Debug is not enabled.")
+
+				else:
+					await ctx.send(f"{self.config.success} Disabled Debug mode and restarting client.")
+					collection.update_one({ "_id": "debug" }, { "$set": { "_id": "debug", "value": False } })
+					os.system("ls -l; python3 main.py")
+					await self.bot.logout()
+
+		elif option == "off":
+			for data in collection.find({ "_id": "debug" }):
+				if data["value"] == False:
+					return await ctx.send(f"{self.config.forbidden} Debug is not enabled.")
+
+				else:
+					await ctx.send(f"{self.config.success} Disabled Debug mode.")
+					collection.update_one({ "_id": "debug" }, { "$set": { "_id": "debug", "value": False } })
+
+		else:
+			return
 
 	@commands.command(hidden=True)
 	async def gb(self, ctx, user: discord.Member, badge):

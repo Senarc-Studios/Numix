@@ -11,6 +11,11 @@ os.system('ls -l; python -m spacy download en')
 
 print("Bot Starting.")
 
+def debug_check():
+	collection = cluster.DataBase_1.assets
+	for data in collection.find({ "_id": "debug" }):
+		return data["value"]
+
 # Intents For Numix
 
 intents = discord.Intents.all()
@@ -198,19 +203,23 @@ async def restart(ctx):
 	os.system("ls -l; python3 main.py")
 	await bot.logout()
 
-# Read Cogs
+# main
+def main():
+	for file in os.listdir("./cogs"):
+		if file.startswith("debug"):
+			if debug_check == True:
+				name = file[:-3]
+				bot.load_extension(f"cogs.{name}")
+			else:
+				continue
 
-for file in os.listdir("./cogs"):
-	if file.endswith(".py"):
-		name = file[:-3]
-		bot.load_extension(f"cogs.{name}")
+		if file.endswith(".py"):
+			name = file[:-3]
+			bot.load_extension(f"cogs.{name}")
+	bot.load_extension("jishaku")
+	try:
+		bot.run(config.token, reconnect=True)
+	except Exception as e:
+		print(e)
 
-bot.load_extension("jishaku")
-
-
-# Run Bot
-
-try:
-	bot.run(config.token, reconnect=True)
-except Exception as e:
-	print(e)
+main()
