@@ -206,16 +206,18 @@ async def restart(ctx):
 # main
 def main():
 	for file in os.listdir("./cogs"):
-		if file.startswith("debug"):
-			if debug_check() == True:
+		try:
+			if file.startswith("debug"):
+				if debug_check() == True:
+					name = file[:-3]
+					bot.load_extension(f"cogs.{name}")
+				else:
+					continue
+			if file.endswith(".py"):
 				name = file[:-3]
 				bot.load_extension(f"cogs.{name}")
-			else:
-				continue
-
-		if file.endswith(".py"):
-			name = file[:-3]
-			bot.load_extension(f"cogs.{name}")
+		except Exception as e:
+			print(e)
 	bot.load_extension("jishaku")
 	try:
 		bot.run(config.token, reconnect=True)
