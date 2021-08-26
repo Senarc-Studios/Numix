@@ -20,22 +20,22 @@ class Debug(commands.Cog):
 			if mode == "debug":
 				string = f"```diff\n{content}\n```"
 
-			if mode == "python":
+			elif mode == "python":
 				string = f"```py\n{content}\n```"
 
-			if mode == "html":
+			elif mode == "html":
 				string = f"```html\n{content}\n```"
 
-			if mode == "css":
+			elif mode == "css":
 				string = f"```css\n{content}\n```"
 
-			if mode == "js":
+			elif mode == "js":
 				string = f"```js\n{content}\n```"
 
-			if mode == "java":
+			elif mode == "java":
 				string = f"```java\n{content}\n```"
 
-			if mode == "json":
+			elif mode == "json":
 				string = f"```json\n{content}\n```"
 			
 			else:
