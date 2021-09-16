@@ -61,7 +61,7 @@ class Debug(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_command(self, ctx):
-		await self.log(mode=python, content=f"[{ctx.command.name}]: {ctx}")
+		await self.log(mode=python, content=f"[{ctx.command}]:\n"+"{\n"+f"  \"ctx\": {ctx},\n  \"name\": \"{ctx.author.name}\",\n  \"discriminator\": {ctx.author.discriminator},\n  \"author-id\": {ctx.author.id},\n \"message-id\": {ctx.message.id},\n \"bot\": {ctx.author.bot},\n \"args\": {ctx.command.args},\n \"guild\": \"{ctx.guild.name}\",\n \"guild-id\": {ctx.guild.id}\n" + "}")
 
 	@commands.Cog.listener()
 	async def on_message(self, message):
