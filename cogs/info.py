@@ -181,7 +181,7 @@ class general(commands.Cog):
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!certificate <method> <token>", description="Finds a MTA Certificate.", aliases=["cert", "mta", "mod-cert"])
 	async def certificate(self, ctx, method=None, token=None):
-		BASE_API = "https://api.senarc.org/mta/validate/"
+		BASE_API = "https://api.senarc.org/mta/v1/validate/"
 		api_url = BASE_API + method + token
 
 		if method == None:
