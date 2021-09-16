@@ -70,7 +70,7 @@ class Debug(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, error):
-		await self.log(mode=python, content=f"[{ctx.command.name}]: {error}")
+		await self.log(mode=python, content=f"[{ctx.command}]: {error}")
 
 def setup(bot):
 	bot.add_cog(Debug(bot))
