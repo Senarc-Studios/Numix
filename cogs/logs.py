@@ -66,7 +66,7 @@ class Logs(commands.Cog):
 				log = get(guild.text_channels, id=int(logid))
 
 				log_message = discord.Embed(timestamp=member.joined_at, color=242424)
-				log_message.set_author(name=f"{member.name} Joined", icon_url=member.avatar_url)
+				log_message.set_author(name=f"{member.name} Joined", icon_url=member.display_avatar)
 				log_message.add_field(name="User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)")
 				log_message.add_field(name='Account Creation:', value=member.created_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
 				log_message.set_footer(text="Numix", icon_url=self.config.logo)
@@ -87,7 +87,7 @@ class Logs(commands.Cog):
 				log = get(guild.text_channels, id=logid)
 
 				log_message = discord.Embed(timestamp=datetime.datetime.utcnow(), color=242424)
-				log_message.set_author(name=f"{member.name} Left", icon_url=member.avatar_url)
+				log_message.set_author(name=f"{member.name} Left", icon_url=member.display_avatar)
 				log_message.add_field(name="User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)")
 				log_message.add_field(name='Account Creation:', value=member.created_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
 				log_message.add_field(name='Joined At:', value=member.joined_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
@@ -114,7 +114,7 @@ class Logs(commands.Cog):
 
 				else:
 					embed = discord.Embed(timestamp=datetime.datetime.utcnow(), description=f'**Message Author:** \n<@!{message.author.id}>(`{message.author.id}`) \n\n**Message Channel:**\n<#{message.channel.id}> \n\n**Message Content:**\n```{message.content.replace("`", "")}```', color=242424)
-					embed.set_author(name=f"Message Deleted", icon_url=message.author.avatar_url)
+					embed.set_author(name=f"Message Deleted", icon_url=message.author.display_avatar)
 					embed.set_footer(text='Numix', icon_url=self.config.logo)
 					await log.send(embed=embed)
 		except:
@@ -143,7 +143,7 @@ class Logs(commands.Cog):
 					before = a.content.replace("`", "")
 					after = b.content.replace("`", "")
 					embed = discord.Embed(timestamp=a.created_at, description=f'**Message Author:** \n<@!{a.author.id}>(`{a.author.id}`) \n\n**Message Channel:**\n<#{a.channel.id}> \n\n**Before Edit:**```{before}```\n\n**After Edit:**```{after}```', color=242424)
-					embed.set_author(name=f"Message Edited", icon_url=a.author.avatar_url)
+					embed.set_author(name=f"Message Edited", icon_url=a.author.display_avatar)
 					embed.set_footer(text='Numix', icon_url=self.config.logo)
 					await log.send(embed=embed)
 		except:

@@ -297,7 +297,7 @@ class moderation(commands.Cog, name='moderation'):
 					log = get(guild.text_channels, id=logid)
 
 					log_message = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-					log_message.set_author(name=f"{user.name} Banned", icon_url=user.avatar_url)
+					log_message.set_author(name=f"{user.name} Banned", icon_url=user.display_avatar)
 					log_message.add_field(name="User:", value=f"{user.name}#{user.discriminator}(`{user.id}`)", inline=False)
 					log_message.add_field(name="Moderator:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", inline=False)
 					log_message.add_field(name='Account Creation:', value=user.created_at.__format__('%A, %d. %B %Y on %H:%M:%S'), inline=False)
@@ -376,7 +376,7 @@ class moderation(commands.Cog, name='moderation'):
 					guild = ctx.guild
 					log = get(guild.text_channels, id=logid)	
 					log_message = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-					log_message.set_author(name=f"{user.name} Kicked", icon_url=user.avatar_url)
+					log_message.set_author(name=f"{user.name} Kicked", icon_url=user.display_avatar)
 					log_message.add_field(name="User:", value=f"{user.name}#{user.discriminator} {user.id}`)", inline=False)
 					log_message.add_field(name="Moderator:", value=f"{ctx.author.name} {ctx.author.discriminator}(`{ctx.author.id}`)", inline=False)
 					log_message.add_field(name='Account Creation:', value=user.created_at.strftime("%A, %d. %B %Y on %H:%M:%S"), inline=False)
@@ -400,7 +400,7 @@ class moderation(commands.Cog, name='moderation'):
 			warns = json.load(data["users"][user.id])
 
 			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-			embed.set_author(name=f"{user.name}'s Infractions", icon_url=user.avatar_url)
+			embed.set_author(name=f"{user.name}'s Infractions", icon_url=user.display_avatar)
 			embed.add_field(name="Warn Count:", value=f"`{warn_count}`")
 
 			for warn_ids in warns:

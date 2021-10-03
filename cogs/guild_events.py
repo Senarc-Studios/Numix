@@ -34,7 +34,7 @@ class Guild_Events(commands.Cog):
 			responses = [f"{member.name} Joined!", f"Welcome {member.name}!", f"Hey {member.name}!", f"New Member!"]
 
 			embed = discord.Embed(color=242424, description=f"Looks like someone new joined, Welcome {member.name}! We hope you have a nice stay! Make sure you read the rules.")
-			embed.set_author(name=random.choices(responses), icon_url=member.avatar_url)
+			embed.set_author(name=random.choices(responses), icon_url=member.display_avatar)
 			embed.set_image(url="https://media.giphy.com/media/8PyTvI5EOu9LbAm8uS/giphy.gif")
 			embed.set_footer(f"{MEMBER_COUNT}", icon_url=member.guild.icon_url)
 			channel.send(embed=embed)
@@ -59,7 +59,7 @@ class Guild_Events(commands.Cog):
 			responses = [f"{member.name} Left", f"Bye {member.name}", f"We lost {member.name}", f"Someone Left"]
 
 			embed = discord.Embed(color=242424, description=f"Looks like someone left us, Bye {member.name},  We hope you come back! Sad to see you leave.")
-			embed.set_author(name=random.choice(responses), icon_url=member.avatar_url)
+			embed.set_author(name=random.choice(responses), icon_url=member.display_avatar)
 			embed.set_image(url="https://media.giphy.com/media/8PyTvI5EOu9LbAm8uS/giphy.gif")
 			embed.set_footer(f"{MEMBER_COUNT}", icon_url=member.guild.icon_url)
 			channel.send(embed=embed)

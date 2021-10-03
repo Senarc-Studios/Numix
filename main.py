@@ -38,7 +38,6 @@ def prefix(bot, message):
 
 bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
-inter_client = InteractionClient(bot)
 
 async def is_owner(ctx, user: discord.User):
 	dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
@@ -47,7 +46,6 @@ async def is_owner(ctx, user: discord.User):
 	else:
 		await ctx.send(f"{config.forbidden} You can't use that command.")
 		return False
-
 
 @bot.command(hidden=True, aliases=["pull", "git-pull", "update"])
 async def fetch(ctx):

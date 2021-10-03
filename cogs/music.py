@@ -213,7 +213,7 @@ class Song:
 
 	def create_embed(self):
 		embed = discord.Embed(color=242424)
-		embed.set_author(name="Playing", icon_url=self.requester.avatar_url)
+		embed.set_author(name="Playing", icon_url=self.requester.display_avatar)
 		embed.add_field(name="Song:", value=f"[{self.source.title}]({self.source.url}) by [{self.source.uploader}]({self.source.uploader_url})")
 		embed.add_field(name='Duration:', value=f"`{self.source.duration}`", inline=False)
 		embed.add_field(name='Requested by:', value=self.requester.mention, inline=False)

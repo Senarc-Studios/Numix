@@ -156,7 +156,7 @@ class economy(commands.Cog):
 			await member.send(embed=em)
 
 			e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-			e.set_author(name=f'{member.name}\'s Account', icon_url=member.avatar_url)
+			e.set_author(name=f'{member.name}\'s Account', icon_url=member.display_avatar)
 			e.add_field(name="Wallet:", value=f"$100", inline=False)
 			e.add_field(name="Bank Ballance:", value=f"$0", inline=False)
 			e.add_field(name="Bank Transactions:", value=f"`0`", inline=False)
@@ -170,7 +170,7 @@ class economy(commands.Cog):
 			bank_transactions = bank_account["transactions"]
 
 			e = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-			e.set_author(name=f'{member.name}\'s Account', icon_url=member.avatar_url)
+			e.set_author(name=f'{member.name}\'s Account', icon_url=member.display_avatar)
 			e.add_field(name="Wallet:", value=f"${money}", inline=False)
 			e.add_field(name="Bank Ballance:", value=f"${bank_ballance}", inline=False)
 			e.add_field(name="Bank Transactions:", value=f"`{bank_transactions}`", inline=False)
@@ -195,7 +195,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(323, 1512))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Clerk and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -211,7 +211,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(100, 500))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Plumber and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -227,7 +227,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(100, 1000))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Doctor and the patient was paid you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -243,7 +243,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(1000, 1500))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Lumberjack and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -259,7 +259,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(1000, 1500))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Developer and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -275,7 +275,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(100, 800))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Slave and the boss was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -291,7 +291,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(180, 1000))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Teacher and the Principle was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -307,7 +307,7 @@ class economy(commands.Cog):
 			sallary = round(random.randint(10, 1000))
 						
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You worked as a Advertiser and the company was generous enough to give you ${sallary} for your sallary. You can work again in 15 seconds.", color=242424)
-			embed.set_author(name="Work", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Work", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 			total_money = int(wallet["bal"] + sallary)
@@ -337,7 +337,7 @@ class economy(commands.Cog):
 
 		await self.eco.update_one({ "_id": id }, { "$set": { "bal": earned_money } })
 		e = discord.Embed(timestamp=ctx.message.created_at, description=f"You got **${random_drop}**\n\nYou can get your daily cash in the next 24 hours.", color=242424)
-		e.set_author(name="Daily Cash", icon_url=ctx.author.avatar_url)
+		e.set_author(name="Daily Cash", icon_url=ctx.author.display_avatar)
 		e.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=e)
 
@@ -359,7 +359,7 @@ class economy(commands.Cog):
 
 		await self.eco.update_one({ "_id": id }, { "$set": { "bal": earned_money } })
 		e = discord.Embed(timestamp=ctx.message.created_at, description=f"You got **${random_drop}**\n\nYou can get your daily cash in the next 30 days.", color=242424)
-		e.set_author(name="Monthly Cash", icon_url=ctx.author.avatar_url)
+		e.set_author(name="Monthly Cash", icon_url=ctx.author.display_avatar)
 		e.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=e)
 		
@@ -546,7 +546,7 @@ class economy(commands.Cog):
 		print(response)
 
 		e = discord.Embed(timestamp=ctx.message.created_at, description="If you did not send the money, you can contact the **Numix Fraud Deparment**.", color=242424)
-		e.set_author(name="Money Sent", icon_url=account_owner.avatar_url)
+		e.set_author(name="Money Sent", icon_url=account_owner.display_avatar)
 		e.add_field(name="Ammount of Money Sent:", value=f"${money}", inline=False)
 		e.add_field(name="Recipient:", value=f"{recipient_user.name}#{recipient_user.discriminator}(`{recipient_user.id}`)", inline=False)
 		e.add_field(name="Transaction ID:", value=f"`{transaction_id}`", inline=False)
@@ -554,7 +554,7 @@ class economy(commands.Cog):
 		await account_owner.send(embed=e)
 
 		em = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-		em.set_author(name="Money Received", icon_url=recipient_user.avatar_url)
+		em.set_author(name="Money Received", icon_url=recipient_user.display_avatar)
 		em.add_field(name="Ammount of Money Received:", value=f"${money}", inline=False)
 		em.add_field(name="Sent by:", value=f"{account_owner.name}#{account_owner.discriminator}(`{account_owner.id}`)", inline=False)
 		em.add_field(name="Transaction ID:", value=f"`{transaction_id_1}`", inline=False)

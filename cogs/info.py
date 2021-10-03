@@ -186,14 +186,14 @@ class general(commands.Cog):
 
 		if method == None:
 			embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-			embed.set_author(name="MTA Validation", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="MTA Validation", icon_url=ctx.author.display_avatar)
 			embed.add_field("Methods:", value=f"{self.config.arrow} ID `n!certificate id <id>`\n{self.config.arrow} Guild Certificate Token `n!certificate guild <token>`\n{self.config.arrow} User Certificate Token `n!certificate user <token>`")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=embed)
 
 		elif token == None:
 			embed = discord.Embed(timestamp=ctx.message.created_at, description="Please provide a ID/Token to search.", colour=242424)
-			embed.set_author(name="MTA Validation", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="MTA Validation", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			return await ctx.send(embed=embed)
 
@@ -206,7 +206,7 @@ class general(commands.Cog):
 				elif res.json()['type'] == "Guild":
 					json = res.json()
 					embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.avatar_url)
+					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.display_avatar)
 					embed.add_field(name="Token:", value=f"{self.config.arrow} `{json['token']}`")
 					embed.add_field(name="Type:", value=f"{self.config.arrow} `{json['type']}`")
 					embed.add_field(name="ID:", value=f"{self.config.arrow} `{json['_id']}`")
@@ -219,7 +219,7 @@ class general(commands.Cog):
 				elif res.json()['type'] == "User":
 					json = res.json()
 					embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.avatar_url)
+					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.display_avatar)
 					embed.add_field(name="Token:", value=f"{self.config.arrow} `{json['token']}`")
 					embed.add_field(name="Type:", value=f"{self.config.arrow} `{json['type']}`")
 					embed.add_field(name="User:", value=f"{self.config.arrow} {json['discord']}(`{json['_id']}`)")
@@ -242,7 +242,7 @@ class general(commands.Cog):
 				else:
 					embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
 					embed.add_field(name="Token:", value=f"{self.config.arrow} `{json['token']}`")
-					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.avatar_url)
+					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.display_avatar)
 					embed.add_field(name="ID:", value=f"{self.config.arrow} `{json['_id']}`")
 					embed.add_field(name="Type:", value=f"{self.config.arrow} `{json['type']}`")
 					embed.add_field(name="Owner:", value=f"{self.config.arrow} {json['owner']}(`{json['owner-id']}`)")
@@ -263,7 +263,7 @@ class general(commands.Cog):
 
 				else:
 					embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.avatar_url)
+					embed.set_author(name="MTA Certificate Information", icon_url=ctx.author.display_avatar)
 					embed.add_field(name="Token:", value=f"{self.config.arrow} `{json['token']}`")
 					embed.add_field(name="Type:", value=f"{self.config.arrow} `{json['type']}`")
 					embed.add_field(name="User:", value=f"{self.config.arrow} {json['discord']}(`{json['_id']}`)")
@@ -299,7 +299,7 @@ class general(commands.Cog):
 
 			channel = discord.utils.get(ctx.guild.text_channels, id=channel)
 			embed = discord.Embed(timestamp=ctx.message.created_at, description=f"{self.config.arrow} **User:** {ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)\n{self.config.arrow} **Suggestion:**\n```\n{suggestion}\n```", colour=242424)
-			embed.set_author(name="New Suggesion", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="New Suggesion", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await channel.send(embed=embed)
 
@@ -312,7 +312,7 @@ class general(commands.Cog):
 			if collection.count_documents({ "_id": option.id }) == 0:
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.display_avatar)
 				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} No bio set.", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -321,7 +321,7 @@ class general(commands.Cog):
 			for data in collection.find({ "_id": int(option.id) }):
 				bio = data["bio"]
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.display_avatar)
 				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} {bio}", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -336,7 +336,7 @@ class general(commands.Cog):
 			if collection.count_documents({ "_id": option.id }) == 0:
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.display_avatar)
 				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} No bio set.", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -345,7 +345,7 @@ class general(commands.Cog):
 			for data in collection.find({ "_id": int(option.id) }):
 				bio = data["bio"]
 				embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.avatar_url)
+				embed.set_author(name=f"{option.name}'s Profile", icon_url=option.display_avatar)
 				embed.add_field(name="Numix Badges", value=badges(self, option.id))
 				embed.add_field(name="Bio", value=f"{self.config.arrow} {bio}", inline=False)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -363,7 +363,7 @@ class general(commands.Cog):
 				collection.insert_one({ "_id": int(ctx.author.id), "bio": bio })
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Your bio has been updated from `No bio set.` to `{bio}`", colour=242424)
-				embed.set_author(name="Bio Updated", icon_url=ctx.author.avatar_url)
+				embed.set_author(name="Bio Updated", icon_url=ctx.author.display_avatar)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
 			
@@ -373,7 +373,7 @@ class general(commands.Cog):
 					old_bio = data["bio"]
 
 					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Your bio has been updated from `{old_bio}` to `{bio}`", colour=242424)
-					embed.set_author(name="Bio Updated", icon_url=ctx.author.avatar_url)
+					embed.set_author(name="Bio Updated", icon_url=ctx.author.display_avatar)
 					embed.set_footer(text="Numix", icon_url=self.config.logo)
 					await ctx.send(embed=embed)
 
@@ -391,7 +391,7 @@ class general(commands.Cog):
 			history += name['name']+"\n"
 
 		embed = discord.Embed(timestamp=ctx.message.created_at, colour=242424)
-		embed.set_author(name=f"Results for {username}", icon_url=ctx.author.avatar_url)
+		embed.set_author(name=f"Results for {username}", icon_url=ctx.author.display_avatar)
 		embed.add_field(name=f"UUID:", value=f"{self.config.arrow} `{uuid}`")
 		embed.set_image(url=f"{url}")
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
@@ -415,7 +415,7 @@ class general(commands.Cog):
 				continue
 
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-		embed.set_author(name="Emoji Query", icon_url=ctx.author.avatar_url)
+		embed.set_author(name="Emoji Query", icon_url=ctx.author.display_avatar)
 		for i in emoji_tags:
 			for a in emojis:
 				embed.add_field(name=f"{a}", value=i, inline=False)
@@ -512,7 +512,7 @@ class general(commands.Cog):
 				return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 			## Rank card
 			background = Editor("assets/bg.png")
-			profile = await load_image_async(str(user.avatar_url))
+			profile = await load_image_async(str(user.display_avatar))
 
 			profile = Editor(profile).resize((150, 150)).circle_image()
 
@@ -583,14 +583,14 @@ class general(commands.Cog):
 		file = await make_rank_card(user, GUILD_FORMULA, GUILD_XP, current_level, current_rank)
 		await ctx.send(file=file)
 		# embed = discord.Embed(timestamp=ctx.message.created_at)
-		# embed.set_author(name=f"{user.name}'s Rank", icon_url=user.avatar_url)
+		# embed.set_author(name=f"{user.name}'s Rank", icon_url=user.display_avatar)
 		# embed.add_field(name="Level:", value=f"{user_data[f'{ctx.guild.id}_LEVEL']}")
 		# embed.add_field(name="XP:", value=f"`{user_data[f'{ctx.guild.id}_XP']}xp`")
 		# embed.add_field(name="Progress Bar:", value=GUILD_BAR * "<:blue_box:854277153809760277>" + (20-GUILD_BAR) * "<:Box:854277154032582658>", inline=False)
 		# embed.add_field(name="Global Level:", value=f"{user_data[f'GLOBAL_LEVEL']}")
 		# embed.add_field(name="Global XP:", value=f"`{user_data[f'GLOBAL_XP']}xp`")
 		# embed.add_field(name="Global Progress Bar:", value=GLOBAL_BAR * "<:blue_box:854277153809760277>" + (20-GLOBAL_BAR) * "<:Box:854277154032582658>", inline=False)
-		# embed.set_thumbnail(url=user.avatar_url)
+		# embed.set_thumbnail(url=user.display_avatar)
 		# embed.set_footer(text="Numix", icon_url=self.config.logo)
 		# await ctx.send(embed=embed)
 
@@ -697,11 +697,11 @@ class general(commands.Cog):
 		ReportChannel = self.bot.get_channel(MONGO_GUILD_SETTINGS["report"])
 		channel = ctx.message.channel
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-		embed.set_author(name="Member Reported", icon_url=ctx.author.avatar_url)
+		embed.set_author(name="Member Reported", icon_url=ctx.author.display_avatar)
 		embed.add_field(name="Reported User:", value=f"{member.name}#{member.discriminator}(`{member.id}`)", inline = False)
 		embed.add_field(name="Reported By:", value=f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", inline = False)
 		embed.add_field(name="Reason:", value=f"{reason}", inline = False)
-		embed.set_thumbnail(url=member.avatar_url)
+		embed.set_thumbnail(url=member.display_avatar)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 
 		if member is None:
@@ -718,7 +718,7 @@ class general(commands.Cog):
 			member = ctx.message.author
 		else:
 			pass
-		a = member.avatar_url
+		a = member.display_avatar
 		embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
 		embed.set_author(name=f"{member.name}#{member.discriminator}'s avatar", icon_url=f"{a}")
 		embed.set_image(url=f"{a}")
@@ -959,7 +959,7 @@ class general(commands.Cog):
 		
 		embed.add_field(name='**Account-Side Info**', value=f"{self.config.arrow} **Numix Badges:** {badges(self, user.id)}\n{self.config.arrow} **Status:** {user.status}\n{self.config.arrow} **Game/Custom Status:** {game}\n{self.config.arrow} **On Mobile:** `{user.is_on_mobile()}`\n{self.config.arrow} **Bot User:** `{user.bot}`\n{self.config.arrow} **Account Creation Date:** `{user.created_at.__format__('%A, %d. %B %Y')}`\n{self.config.arrow} **Account Creation Time:** `{user.created_at.__format__('%H:%M:%S')}`", inline=False)
 
-		embed.set_author(name=user.name, icon_url=user.avatar_url)
+		embed.set_author(name=user.name, icon_url=user.display_avatar)
 		embed.set_footer(text='Numix', icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 
@@ -973,7 +973,7 @@ class general(commands.Cog):
 
 		elif game == "Straming":
 			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-			embed.set_author(name=f"{member} is Streaming on twitch", icon_url=member.avatar_url)
+			embed.set_author(name=f"{member} is Streaming on twitch", icon_url=member.display_avatar)
 			embed.add_field(name="Stream Title:", value=f"{game.title}")
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			await ctx.send(embed=embed)
@@ -989,7 +989,7 @@ class general(commands.Cog):
 			try:
 				result = wikipedia.page((wikipedia.search(f"{text}")[0]))
 				embed = discord.Embed(timestamp=ctx.message.created_at, title=f"{result.title}", description=f"{result.content[:1500]}...", color=242424)
-				embed.set_author(name="Wikipedia Search Result", icon_url=ctx.author.avatar_url)
+				embed.set_author(name="Wikipedia Search Result", icon_url=ctx.author.display_avatar)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed, components=[Button(style=ButtonStyle.link ,label="View More", url=result.url)])
 			except:

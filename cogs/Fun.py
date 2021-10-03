@@ -190,7 +190,7 @@ class fun(commands.Cog):
 		if webhook is None:
 			webhook = await ctx.channel.create_webhook(name="Numix")
 
-		await webhook.send(message, username=user.name, avatar_url=user.avatar_url)
+		await webhook.send(message, username=user.name, avatar_url=user.display_avatar)
 
 	@commands.command(cls=CustomCommand, perms="ADMINISTRATOR", syntax="n!embed <title> <description> [footer] [icon]", aliases=["em"], description="Use this command to create an Embed.")
 	@permission("administrator")
@@ -256,7 +256,7 @@ class fun(commands.Cog):
 			cat = cat[0]['url']
 			#agee = str(cat['url'])
 			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-			embed.set_author(name="Cat", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Cat", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
@@ -287,7 +287,7 @@ class fun(commands.Cog):
 			cat = cat[0]['url']
 			#agee = str(cat['url'])
 			embed = discord.Embed(timestamp=ctx.message.created_at, color=242424)
-			embed.set_author(name="Dog", icon_url=ctx.author.avatar_url)
+			embed.set_author(name="Dog", icon_url=ctx.author.display_avatar)
 			embed.set_footer(text="Numix", icon_url=self.config.logo)
 			embed.set_image(url=f"{cat}")
 			await ctx.send(embed=embed)
@@ -337,7 +337,7 @@ class fun(commands.Cog):
 				#embed.add_field(name='Song',value=f'{music}', inline=True)
 				embed.set_footer(
 					text=f'Requested By: {ctx.author.name}',
-					icon_url=f'{ctx.author.avatar_url}')
+					icon_url=f'{ctx.author.display_avatar}')
 				await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, hidden=True, aliases=["who-crypt", "who-nucrypt", "whos-key"])
@@ -358,7 +358,7 @@ class fun(commands.Cog):
 				time = key['Time']
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Decrypted Text:**\n{text}\n\n**Author:**\n{author_discord}\n\n**Server:**\n{server_discord}\n\n**Date:**\n{date}\n\n**Time:**\n{time}", color=242424)
-				embed.set_author(name="Whocrypt Information", icon_url=ctx.author.avatar_url)
+				embed.set_author(name="Whocrypt Information", icon_url=ctx.author.display_avatar)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await ctx.send(embed=embed)
 				if text is None:
@@ -402,7 +402,7 @@ class fun(commands.Cog):
 					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*", "whocrypt_author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "whocrypt_server": f"{ctx.guild.name}(`{ctx.guild.id}`)", "Date": str(Today), "Time": ctx.message.created_at.__format__('%H:%M:%S') })
 
 					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
-					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.avatar_url)
+					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.display_avatar)
 					embed.set_footer(text="Numix", icon_url=self.config.logo)
 					await Author.send(embed=embed)
 					await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
@@ -424,7 +424,7 @@ class fun(commands.Cog):
 					collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*", "whocrypt_author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "whocrypt_server": f"{ctx.guild.name}(`{ctx.guild.id}`)", "Date": str(Today), "Time": ctx.message.created_at.__format__('%H:%M:%S') })
 
 					embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
-					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.avatar_url)
+					embed.set_author(name=f"Anonymously Encrypted", icon_url=ctx.author.display_avatar)
 					embed.set_footer(text="Numix", icon_url=self.config.logo)
 					await Author.send(embed=embed)
 					await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
@@ -444,7 +444,7 @@ class fun(commands.Cog):
 				collection.insert_one({ "_id": f"{key_in_plain_text}", "decrypted": f"{text}", "author": f"*Anonymous*", "server": f"*Anonymous*", "whocrypt_author": f"{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", "whocrypt_server": f"{ctx.guild.name}(`{ctx.guild.id}`)", "Date": str(Today), "Time": ctx.message.created_at.__format__('%H:%M:%S') })
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"You can **Nu-Decrypt** to get the plain text.\n**Key:** `{key_in_plain_text}`", color=242424)
-				embed.set_author(name=f"Encrypted", icon_url=ctx.author.avatar_url)
+				embed.set_author(name=f"Encrypted", icon_url=ctx.author.display_avatar)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await Author.send(embed=embed)
 				await ctx.send(f"{self.config.success} Encrypted Text and Sent Key in DMs.")
@@ -465,7 +465,7 @@ class fun(commands.Cog):
 				server_discord = key['server']
 
 				embed = discord.Embed(timestamp=ctx.message.created_at, description=f"**Decrypted Text:**\n{text}\n\n**Author:**\n{author_discord}\n\n**Server:**\n{server_discord}", color=242424)
-				embed.set_author(name="Decrypted", icon_url=ctx.author.avatar_url)
+				embed.set_author(name="Decrypted", icon_url=ctx.author.display_avatar)
 				embed.set_footer(text="Numix", icon_url=self.config.logo)
 				await Author.send(embed=embed)
 				await ctx.send(f"{self.config.success} Your key has been decrypted and sent in DMs.")
@@ -476,7 +476,7 @@ class fun(commands.Cog):
 	async def roll(self, ctx):
 		dice = ["1", "2", "3", "4", "5", "6"]
 		embed = discord.Embed(timestamp=ctx.message.created_at, description=f"Dice has been rolled. The number is **{random.choice(dice)}**.", color=242424)
-		embed.set_author(name="Rolled a Dice", icon_url=ctx.author.avatar_url)
+		embed.set_author(name="Rolled a Dice", icon_url=ctx.author.display_avatar)
 		embed.set_footer(text="Numix", icon_url=self.config.logo)
 		await ctx.send(embed=embed)
 		
