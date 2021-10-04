@@ -36,7 +36,7 @@ def prefix(bot, message):
 		prefix=x["prefix"]
 	return commands.when_mentioned_or(prefix)(bot, message)
 
-bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
+bot = commands.AutoShardedBot(command_prefix=prefix, slash_interactions=True, intents=intents)
 bot.remove_command("help")
 
 async def is_owner(ctx, user: discord.User):
