@@ -218,7 +218,7 @@ def main():
 			print(e)
 	bot.load_extension("jishaku")
 	try:
-		bot.run(config.token, reconnect=True)
+		bot.run(config.token)
 	except Exception as e:
 		print(e)
 
