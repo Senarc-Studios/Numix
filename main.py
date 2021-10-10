@@ -60,7 +60,7 @@ async def fetch(ctx):
 
 # Eval
 
-@bot.command(name='e', hidden=True, aliases=["eval"])
+@bot.command(name='e', slash_interaction=False, hidden=True, aliases=["eval"])
 @commands.is_owner()
 async def _e(ctx, *, body=None):
 	if ctx.author.id not in config.owners:
