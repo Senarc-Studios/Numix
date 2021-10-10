@@ -216,7 +216,7 @@ def main():
 				bot.load_extension(f"cogs.{name}")
 		except Exception as e:
 			print(e)
-	bot.load_extension("jishaku")
+	#bot.load_extension("jishaku")
 	try:
 		bot.run(config.token)
 	except Exception as e:
