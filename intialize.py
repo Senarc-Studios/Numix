@@ -42,6 +42,35 @@ def reset_database():
 	import pymongo
 	from pymongo import MongoClient
 
-	MongoClient(utils.get_data(file="config", variable="db1"))
+	new_databases = ["Moderation", "DataBase_1", "Economy"]
+	moderation_collections = ["warns"]
+	db1_collections = ["Leveling", "assets", "filter", "interactions", "nucrypt", "nukeban", "nukekick", "prefixes", "profiles", "settings", "assets", "interactions"]
+	economy_collections = ["bank", "credentials", "money", "transaction_logs"]
+
+	mongo_client =  MongoClient(utils.get_data(file="config", variable="db1"))
+	db_list = mongo_client.database_names()
+	for database in db_list:
+		mongo_client.drop_database(database)
+
+	for db in new_databases:
+		print(mongo_client[db])
+
+	for collection in db1_collections:
+		db = mongo_client["DataBase_1"]
+		print(db[collection])
+
+	for collection in economy_collections:
+		db = mongo_client["Economy"]
+		print(db[collection])
+
+	for collection in moderation_collections:
+		db = mongo_client["Moderation"]
+		print(db[collection])
+
+	db = mongo_client["DataBase_1"]	
+	db["assets"].insert_one({"_id": "badges", "premium_users": [], "partnered_users": [], "verified_users": [], "beta_testers": []})
+	db["assets"].insert_one({"_id": "debug", "value": True})
+	db["interactions"].insert_one({"_id": "all", "uses": 0})
+	print("\n\nDatabase and bot fully initialized.")
 
 main()
