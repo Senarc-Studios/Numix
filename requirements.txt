@@ -18,7 +18,6 @@ oauthlib
 pyyaml
 pynite
 Pillow
-lavalink
 brawlstars
 aioconsole
 cachetools
@@ -30,9 +29,8 @@ flask-discord
 psutil
 profanityfilter
 nest_asyncio
-discord.py
-google-assistant-sdk[samples]
 dblpy
 html2text
 jishaku
 apscheduler
+cool-utils

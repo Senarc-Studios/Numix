@@ -1,3 +1,34 @@
+"""
+BSD 3-Clause License
+
+Copyright (c) 2021-present, BenitzCoding
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
 from numix_imports import *
 from collections import OrderedDict, deque, Counter
 import motor.motor_asyncio
@@ -173,11 +204,21 @@ class general(commands.Cog):
 		self.bot = bot
 		self.config = config
 		self.process = psutil.Process(os.getpid())
-		self.mongo_moderation_url = f"{self.config.mongo1}Moderation{self.config.mongo2}"
+		self.mongo_moderation_url = f"{self.config.db1}"
 		self.moderation_db = MongoClient(self.mongo_moderation_url)
-		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
+		self.mongo_DB1_url = f"{self.config.db1}"
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		print('"Info" cog loaded')
+
+	# If you remove this command or modify it,
+	# and get caught you might face some legal
+	# consequence via the Licensing.
+	@commands.command(cls=CustomCommand, description="Shows the source of the Discord Bot.", aliases=["src", "source-code"])
+	async def source(self, ctx):
+		embed = discord.Embed(timestamp=ctx.message.created_at, description="This is the bot's original source is from Numix that is made by `BenitzCoding#1317`.\nhttps://github.com/BenitzCoding/Numix", colour=242424)
+		embed.set_author(name="Bot Source", icon_url=self.config.logo)
+		embed.set_footer(name="Numix Source", icon_url=self.config.logo)
+		await ctx.send(embed=embed)
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!certificate <method> <token>", description="Finds a MTA Certificate.", aliases=["cert", "mta", "mod-cert"])
 	async def certificate(self, ctx, method=None, token=None):
@@ -691,7 +732,7 @@ class general(commands.Cog):
 
 	@commands.command(cls=CustomCommand, perms="@everyone", syntax="n!report <member> <reason>", description="Reports a user to the staff members", name="report")
 	async def report(self, ctx, member: discord.Member = None, *, reason = None):
-		cluster = MongoClient(f"{self.config.mongo1}DataBase_1{self.config.mongo2}")
+		cluster = MongoClient(f"{self.config.db1}")
 		collection = cluster.DataBase_1.settings
 		MONGO_GUILD_SETTINGS = collection.find_one({ "_id": member.guild.id })
 		ReportChannel = self.bot.get_channel(MONGO_GUILD_SETTINGS["report"])

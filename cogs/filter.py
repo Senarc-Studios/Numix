@@ -5,9 +5,9 @@ class Filter(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = default.get("./config.json")
-		self.mongo_moderation_url = f"{self.config.mongo1}Moderation{self.config.mongo2}"
+		self.mongo_moderation_url = f"{self.config.db1}"
 		self.moderation_db = MongoClient(self.mongo_moderation_url)
-		self.mongo_DB1_url = f"{self.config.mongo1}DataBase_1{self.config.mongo2}"
+		self.mongo_DB1_url = f"{self.config.db1}"
 		self.db1 = MongoClient(self.mongo_DB1_url)
 		self.pf = ProfanityFilter()
 		print('"Filter" cog loaded')
@@ -40,12 +40,9 @@ class Filter(commands.Cog):
 				user = message.author
 				blocked_invites = ["discord.gg", "discord.com/invite"]
 				blocked_links = [".qp", ".cp", ".gp", ".pq", "http://", "https://", "www.", ".com", ".net", ".tk", ".uk", ".un", ".gov", ".us", ".cf", ".ml", ".bn", ".in", ".tech", ".bot", ".nu", ".gg", ".chat", ".xyz", ".ga", ".gp", ".org", ".eu", ".name", ".me", ".nl", ".tv", ".info", ".biz", ".cc", ".mobi", ".actor", ".academy", ".agency", ".accountant", ".ws", ".garden", ".cafe", ".ceo", ".care", ".art"]
-				blocked_words = ["anal", "anus", "arse", "ass", "ballsack", "bastard", "bdsm", "bitch", "bimbo", "blow job", "blowjob", "blue waffle", "boob", "booobs", "breasts", "booty call", "boner", "bondage", "bullshit", "busty", "butthole", "cawk", "chink", "clit", "cnut", "cock", "cokmuncher", "cowgirl", "crap", "crotch", "cum", "cunt", "damn", "dick", "dildo", "dink", "deepthroat", "deep throat", "dog style", "doggie style", "doggy style", "doosh", "douche", "duche", "ejaculate", "ejaculating", "ejaculation", "ejakulate", "erotic", "erotism", "fag", "fatass", "femdom", "fingering", "footjob", "foot job", "fuck", "fcuk", "fingerfuck", "fistfuck", "fook", "fooker", "fuk", "gangbang", "gang bang", "gaysex", "handjob", "hand job", "hentai", "hooker", "hoer", "homo", "horny", "incest", "jackoff", "jack off", "jerkoff", "jerk off", "jizz", "masturbate", "mofo", "mothafuck", "motherfuck", "milf", "muff", "nigga", "nigger", "nipple", "nob", "numbnuts", "nutsack", "nude", "orgy", "orgasm", "panty", "panties", "penis", "porn", "pussy", "pussies", "rape", "raping", "rapist", "rectum", "retard", "rimming", "sadist", "sadism", "scrotum", "sex", "semen", "shemale", "she male", "shit", "slut", "spunk", "strip club", "stripclub", "tit", "threesome", "three some", "throating", "twat", "viagra", "vagina", "wank", "whore", "whoar", "xxx", "f**k", "fuk", "fuc", "fuck", "f*ck", "bitch", "b*tch", "n*gga", "ni**a", "nigga", "vegina", "fag", "f*g", "dick", "d*ck", "penis", "porn", "xnxx", "xxnx", "xxx", "sex", "s*x", "hentai", "henti", "pxrn", "p*rn", "a$$", "cunt", "c*nt", "boob", "tits", "cock", "f u c k", "s h i t", "b i t c h", "h e n t a i", "p o r n", "d!ck"]
-
+				
 				# Checks active filters
 				filter = self.db1.DataBase_1.filter
-
-				#profanity_pre = predict([f"{message.content}"])
 
 				for modules in filter.find({ "_id": f"{message.guild.id}" }):
 					invite_filter = modules["Invite"]

@@ -1,32 +1,13 @@
 {
-    "owners": [
-        529499034495483926, 764123180691750933
-    ],
     "token": "NzQ0ODY1OTkwODEwMjcxNzg1.Xzpcgw.3izcuNNTQJFf94kUKWFYA_3TsF8",
     "botversion": "1.2.1 (CI12211004)",
-    "devs": "`Benitz Original#1317` and `RohitTechZone#4756`",
-    "logo": "https://cdn.discordapp.com/avatars/744865990810271785/d4da704d65f395fbb51122d70f7731f6.png?size=1024",
-	"supportserver": "https://numix.xyz/discord",
     "alexflipnote_api": "nice_token_you_got_here",
     "ref_buttons": "[`Support`](https://numix.xyz/discord) • [`Invite`](https://numix.xyz/invite) • [`Vote`](https://top.gg/bot/744865990810271785)",
-    "success": "<:S:792611551726796800>",
-    "forbidden": "<:F:795909145760104480>",
-    "arrow": "<:right_arrow:877884586678419507>",
-    "premium": "<:premium:877857164260180008>",
-    "verified": "<:verified:877850058345820171>",
-    "partnered": "<:partner:877857985404239892>",
-    "beta_tester": "<:beta_tester:877859239564034068>",
-    "developer": "<:dev:877394314433531947>",
+    "premium": ":diamond_shape_with_a_dot_inside:",
+    "verified": ":heavy_check_mark:",
+    "partnered": ":handshake:",
+    "beta_tester": ":joystick:",
+    "developer": ":desktop:",
     "success_img": "https://cdn.discordapp.com/emojis/792611551726796800.png?v=1",
-    "forbidden_img": "https://cdn.discordapp.com/emojis/780326063120318465.png?v=1",
-    "mongo1": "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/",
-    "mongo2": "?retryWrites=true&w=majority",
-	"db1": "mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority",
-    "discordrep_api_token": "D-REP.0DRYPKZPTZ.Q3GIV3Z986V910H3Y6GIM.O29TTXJEJP7ZPGGRLRUCSH41Z",
-    "break_bank_limit": [
-        727365670395838626
-    ],
-    "ads": [
-        738356303595831416, 729189625754550352, 755662384751968286
-    ]
+    "forbidden_img": "https://cdn.discordapp.com/emojis/780326063120318465.png?v=1"
 }

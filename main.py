@@ -1,15 +1,48 @@
+"""
+BSD 3-Clause License
+
+Copyright (c) 2021-present, BenitzCoding
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
 import os
 from numix_imports import *
 import discord
 from discord.ext import commands
+import logging
 
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='[%H:%M:%S]: ')
 cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
 collection = cluster.DataBase_1.prefixes
 
 os.system('ls -l; pip install profanity-filter')
 os.system('ls -l; python -m spacy download en')
 
-print("Bot Starting.")
+logging.info("Starting Numix.")
 
 def debug_check():
 	collection = cluster.DataBase_1.assets
@@ -36,12 +69,12 @@ def prefix(bot, message):
 		prefix=x["prefix"]
 	return commands.when_mentioned_or(prefix)(bot, message)
 
-bot = commands.AutoShardedBot(command_prefix=prefix, slash_interactions=True, intents=intents)
+bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
 bot.remove_command("help")
 
 async def is_owner(ctx, user: discord.User):
 	dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
-	if user.id in dev:  # Implement your own conditions here
+	if user.id in dev:
 		return True
 	else:
 		await ctx.send(f"{config.forbidden} You can't use that command.")
@@ -60,7 +93,7 @@ async def fetch(ctx):
 
 # Eval
 
-@bot.command(name='e', slash_interaction=False, hidden=True, aliases=["eval"])
+@bot.command(name='e', hidden=True, aliases=["eval"])
 @commands.is_owner()
 async def _e(ctx, *, body=None):
 	if ctx.author.id not in config.owners:
@@ -214,9 +247,11 @@ def main():
 			if file.endswith(".py"):
 				name = file[:-3]
 				bot.load_extension(f"cogs.{name}")
+				logging.info(f"Loaded '{name}' cog.")
 		except Exception as e:
 			print(e)
-	#bot.load_extension("jishaku")
+	bot.load_extension("jishaku")
+	logging.info(f"Loaded '{name}' cog.")
 	try:
 		bot.run(config.token)
 	except Exception as e:

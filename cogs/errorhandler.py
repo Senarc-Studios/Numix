@@ -4,6 +4,9 @@ import sys
 import traceback
 import datetime
 import os
+import logging
+
+logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='[%H:%M:%S]: ')
 
 # Define Cogs
 
@@ -36,13 +39,13 @@ class ErrorHandler(commands.Cog):
 
 		else:
 			e = "`"
-			webhook = DiscordWebhook(url="https://ptb.discord.com/api/webhooks/827098788295606283/MdIajYdY98zaEM8DrygakRceR0XBQimMIBdU4kOJq4ogCo3Ur7TgwsJc85dnkkgsjTgP")
+			webhook = DiscordWebhook(url=self.config.error_webhook)
 			embed = DiscordEmbed(title="An Error has occurred", description=f"Error:\n {e}{e}{e}Ignoring exception in command {ctx.command}:\n{type(err), err, err.__traceback__}{e}{e}{e}\n\n**Server:**\n{ctx.guild.name}(`{ctx.guild.id}`)\n\n**Command Author:**\n{ctx.author.name}#{ctx.author.discriminator}(`{ctx.author.id}`)", color=242424)
 			embed.set_thumbnail(url=config.logo)
 			embed.set_footer(text="Numix Developers", icon_url=config.logo)
 			webhook.add_embed(embed)
 			response = webhook.execute()
-			print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+			logging.error('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
 			traceback.print_exception(type(err), err, err.__traceback__, file=sys.stderr)
 
 
