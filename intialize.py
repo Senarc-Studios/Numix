@@ -74,3 +74,4 @@ def reset_database():
 	print("\n\nDatabase and bot fully initialized.")
 
 main()
+reset_database()
