@@ -3,9 +3,10 @@ Numix is a Discord Bot that can do things like play Music, Moderate on servers, 
 This used to be a public bot but it died due to infrequent development and unpopularity, so now it's open-source so that others can self-host it for all their needs.
 
 ## Badges
-[![Discord](https://discordapp.com/api/guilds/791553406266245121/widget.json)](https://discord.gg/RBRuXQgeR5)
 [![Version](https://i.ibb.co/5rN93Yg/version-1-2-1.png)](https://forthebadge.com)
 [![User Friendly](https://i.ibb.co/W6nt7Fs/user-friendly.png)](https://forthebadge.com)
+<br>
+[![Discord](https://discordapp.com/api/guilds/791553406266245121/embed.png)](https://discord.gg/RBRuXQgeR5)
 
 ## Instructions
 Run the `initialize.py` file to get the bot ready.
