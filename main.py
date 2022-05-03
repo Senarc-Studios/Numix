@@ -82,9 +82,9 @@ class Numix(commands.AutoSharededBot):
 bot = Numix()
 bot.remove_command("help")
 
-async def is_owner(ctx, user: discord.User):
+async def is_owner(ctx):
 	dev = [727365670395838626, 529499034495483926, 709310923130667012, 526711399137673232]
-	if user.id in dev:
+	if ctx.author.id in dev:
 		return True
 	else:
 		await ctx.send(f"{config.forbidden} You can't use that command.")
@@ -104,7 +104,7 @@ async def fetch(ctx):
 # Eval
 
 @bot.command(name='e', hidden=True, aliases=["eval"])
-@commands.is_owner()
+@commands.check(is_owner)
 async def _e(ctx, *, body=None):
 	if ctx.author.id not in config.owners:
 		return await ctx.send(f"{config.forbidden} **`ERROR 401`**")
@@ -201,7 +201,7 @@ def get_syntax_error(e):
 # Load Cog
 
 @bot.command(hidden=True)
-@commands.is_owner()
+@is_owner()
 async def load(ctx, *, name: str):
 	try:
 		bot.load_extension(f"cogs.{name}")
@@ -212,7 +212,7 @@ async def load(ctx, *, name: str):
 # Unload Cog
 
 @bot.command(hidden=True)
-@commands.is_owner()
+@is_owner()
 async def unload(ctx, *, name: str):
 	try:
 		bot.unload_extension(f"cogs.{name}")
@@ -223,7 +223,7 @@ async def unload(ctx, *, name: str):
 # Reload Cog
 
 @bot.command(hidden=True)
-@commands.is_owner()
+@is_owner()
 async def reload(ctx, *, name: str):
 	if name == "all":
 		await ctx.send("**All** Cogs are reloaded.")
@@ -238,7 +238,7 @@ async def reload(ctx, *, name: str):
 	await ctx.send(f'Cog "**`{name}`**" has been reloaded.')
 
 @bot.command(hidden=True)
-@commands.is_owner()
+@is_owner()
 async def restart(ctx):
 	await ctx.send(f"{config.success} Performing Complete Restart on Numix.")
 	os.system("ls -l; python3 main.py")
@@ -257,11 +257,11 @@ def main():
 			if file.endswith(".py"):
 				name = file[:-3]
 				bot.load_extension(f"cogs.{name}")
-				logging.info(f"Loaded '{name}' cog.")
+				Terminal.display(f"Loaded '{name}' cog.")
 		except Exception as e:
 			print(e)
 	bot.load_extension("jishaku")
-	logging.info(f"Loaded '{name}' cog.")
+	Terminal.display(f"Loaded '{name}' cog.")
 	try:
 		bot.run(config.token)
 	except Exception as e:
