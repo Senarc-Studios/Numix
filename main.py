@@ -30,24 +30,25 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 import os
-from numix_imports import *
 import discord
-from discord.ext import commands
-import logging
 
-logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='[%H:%M:%S]: ')
-cluster = MongoClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
-collection = cluster.DataBase_1.prefixes
+import motor.motor_asyncio
+
+from numix_imports import *
+from cool_utils import Terminal
+from discord.ext import commands
+
+cluster = motor.motor_asyncio.AsyncIOMotorClient('mongodb+srv://Benitz:4mWMn7ety6HrIRIx@numix.dksdu.mongodb.net/DataBase_1?retryWrites=true&w=majority')
+collection = cluster['DataBase_1']['prefixes']
 
 os.system('ls -l; pip install profanity-filter')
 os.system('ls -l; python -m spacy download en')
 
-logging.info("Starting Numix.")
+Terminal.display("Numix Starting...")
 
-def debug_check():
-	collection = cluster.DataBase_1.assets
-	for data in collection.find({ "_id": "debug" }):
-		return data["value"]
+async def debug_check():
+	collection = cluster['DataBase_1']['assets']
+	return await collection.find_one({ "_id": "debug" })
 
 # Intents For Numix
 
@@ -60,13 +61,12 @@ config = default.get("config.json")
 
 # Bot Decorator
 
-def prefix(bot, message):
+async def prefix(bot, message):
 	global client
 	if not message.guild:
 		return commands.when_mentioned_or("n!")(bot, message)
 	prefix = "n!"
-	for x in collection.find({"_id":message.guild.id}):
-		prefix=x["prefix"]
+	prefix = await collection.find_one({"_id":message.guild.id})["prefix"]
 	return commands.when_mentioned_or(prefix)(bot, message)
 
 bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
