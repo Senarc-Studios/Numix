@@ -64,5 +64,5 @@ class Interactions(commands.Cog):
 					embed.set_footer(text="Numix Data Sector", icon_url=self.config.logo)
 					await channel.send(embed=embed)
 
-def setup(bot):
-	bot.add_cog(Interactions(bot))
+async def setup(bot):
+	await bot.add_cog(Interactions(bot))

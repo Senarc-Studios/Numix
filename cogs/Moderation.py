@@ -466,5 +466,5 @@ class moderation(commands.Cog, name='moderation'):
 	"""
 
 
-def setup(bot):
-	bot.add_cog(moderation(bot))
+async def setup(bot):
+	await bot.add_cog(moderation(bot))

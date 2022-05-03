@@ -48,7 +48,7 @@ Terminal.display("Numix Starting...")
 
 async def debug_check():
 	collection = cluster['DataBase_1']['assets']
-	return await collection.find_one({ "_id": "debug" })
+	return await collection.find_one({ "_id": "debug" })['value']
 
 # Intents For Numix
 
@@ -61,7 +61,7 @@ config = default.get("config.json")
 
 # Bot Decorator
 
-async def prefix(bot, message):
+async def get_prefix(bot, message):
 	global client
 	if not message.guild:
 		return commands.when_mentioned_or("n!")(bot, message)
@@ -70,8 +70,9 @@ async def prefix(bot, message):
 	return commands.when_mentioned_or(prefix)(bot, message)
 
 class Numix(commands.AutoSharededBot):
-	def __init__(self):
-		super().__init__(command_prefix=asyncio.run(self.get_prefix), intents=intents)
+	async def __init__(self):
+		super().__init__(command_prefix=await get_prefix, intents=intents)
+		self.debug = await debug_check()
 
 	async def start(self, *args, **kwargs):
 		await super().start(*args, **kwargs)
@@ -79,7 +80,7 @@ class Numix(commands.AutoSharededBot):
 	async def close(self):
 		await super().close()
 
-bot = Numix()
+bot = asyncio.run(Numix())
 bot.remove_command("help")
 
 async def is_owner(ctx):

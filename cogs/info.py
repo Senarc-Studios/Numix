@@ -1035,5 +1035,5 @@ class general(commands.Cog):
 				await ctx.send(embed=embed, components=[Button(style=ButtonStyle.link ,label="View More", url=result.url)])
 			except:
 				await ctx.send("No results found!")
-def setup(bot):
-	bot.add_cog(general(bot))
+async def setup(bot):
+	await bot.add_cog(general(bot))

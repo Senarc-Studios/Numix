@@ -997,5 +997,5 @@ class admin(commands.Cog):
 		else:
 			return await self.notify_premium(ctx)
 
-def setup(bot):
-	bot.add_cog(admin(bot))
+async def setup(bot):
+	await bot.add_cog(admin(bot))

@@ -175,5 +175,5 @@ class AntiNuker(commands.Cog):
 			return
 		await self.register_and_nukerdelete_check(channel.guild, channel)
 
-def setup(bot):
-	bot.add_cog(AntiNuker(bot))
+async def setup(bot):
+	await bot.add_cog(AntiNuker(bot))

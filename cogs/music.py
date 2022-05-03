@@ -569,5 +569,5 @@ class music(commands.Cog):
 				raise commands.CommandError(f'{config.forbidden} Already in a voice channel.')
 
 
-def setup(bot):
-	bot.add_cog(music(bot))
+async def setup(bot):
+	await bot.add_cog(music(bot))

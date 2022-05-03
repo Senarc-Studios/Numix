@@ -108,5 +108,5 @@ class Debug(commands.Cog):
 	async def on_command_error(self, ctx, error):
 		await self.log(mode=python, content=f"[{ctx.command}]: {error}")
 
-def setup(bot):
-	bot.add_cog(Debug(bot))
+async def setup(bot):
+	await bot.add_cog(Debug(bot))

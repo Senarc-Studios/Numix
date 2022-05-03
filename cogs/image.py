@@ -211,5 +211,5 @@ class Image(commands.Cog):
 		file = discord.File(filename="hitler.png", fp=image)
 		await ctx.send(file=file)
 
-def setup(bot):
-	bot.add_cog(Image(bot))
+async def setup(bot):
+	await bot.add_cog(Image(bot))

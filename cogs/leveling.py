@@ -113,5 +113,5 @@ class Leveling(commands.Cog):
 			mong_col.update_one({ "_id": int(message.guild.id) }, { "$set": { "_id": int(message.guild.id), "level_message_toggle": "enabled", "greeting": None } })
 		
 
-def setup(bot):
-	bot.add_cog(Leveling(bot))
+async def setup(bot):
+	await bot.add_cog(Leveling(bot))

@@ -54,7 +54,7 @@ class AutoRole(commands.Cog):
 						role = discord.utils.get(member.guild.roles, id=roles)
 						await member.add_roles(role, reason="Auto-Role")
 				else:
-					return					
+					return
 
-def setup(bot):
-	bot.add_cog(AutoRole(bot))
+async def setup(bot):
+	await bot.add_cog(AutoRole(bot))

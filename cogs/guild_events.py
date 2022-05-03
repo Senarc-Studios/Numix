@@ -66,5 +66,5 @@ class Guild_Events(commands.Cog):
 		except:
 			pass
 
-def setup(bot):
-	bot.add_cog(Guild_Events(bot))
+async def setup(bot):
+	await bot.add_cog(Guild_Events(bot))

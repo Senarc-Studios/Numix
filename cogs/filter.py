@@ -120,5 +120,5 @@ class Filter(commands.Cog):
 			else:
 				return
 
-def setup(bot):
-	bot.add_cog(Filter(bot))
+async def setup(bot):
+	await bot.add_cog(Filter(bot))

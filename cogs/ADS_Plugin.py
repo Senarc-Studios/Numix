@@ -69,5 +69,5 @@ class ADS_Plugin(commands.Cog):
 				await log.send(f":no_entry_sign: Blocked Server by **Anti-Dummy Server** Module, **Server_Name:** {guild.name}, **Server_ID:** {guild.id}")
 		await ctx.send("ADS Script Ended.")
 
-def setup(bot):
-	bot.add_cog(ADS_Plugin(bot))
+async def setup(bot):
+	await bot.add_cog(ADS_Plugin(bot))

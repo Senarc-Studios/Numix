@@ -155,5 +155,5 @@ class SECTOR_D(commands.Cog):
 		except:
 			return await ctx.send(f"{self.config.forbidden} Unable to message user.")
 
-def setup(bot):
-	bot.add_cog(SECTOR_D(bot))
+async def setup(bot):
+	await bot.add_cog(SECTOR_D(bot))
