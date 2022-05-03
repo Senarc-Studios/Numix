@@ -69,7 +69,17 @@ async def prefix(bot, message):
 	prefix = await collection.find_one({"_id":message.guild.id})["prefix"]
 	return commands.when_mentioned_or(prefix)(bot, message)
 
-bot = commands.AutoShardedBot(command_prefix=prefix, intents=intents)
+class Numix(commands.AutoSharededBot):
+	def __init__(self):
+		super().__init__(command_prefix=asyncio.run(self.get_prefix), intents=intents)
+
+	async def start(self, *args, **kwargs):
+		await super().start(*args, **kwargs)
+
+	async def close(self):
+		await super().close()
+
+bot = Numix()
 bot.remove_command("help")
 
 async def is_owner(ctx, user: discord.User):
