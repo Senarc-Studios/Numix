@@ -99,6 +99,7 @@ class Numix(commands.AutoSharededBot):
 					Terminal.display(f"\"{name}\" Cog Loaded.")
 				except Exception as error:
 					Terminal.warn(f"Loading \"{name}\" cog threw: {error}")
+		await bot.load_extension(f"jishaku")
 
 		self.loop.create_task(sync_application(self))
 
