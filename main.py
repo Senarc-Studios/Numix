@@ -269,25 +269,9 @@ async def restart(ctx):
 
 # main
 def main():
-	for file in os.listdir("./cogs"):
-		try:
-			if file.startswith("debug"):
-				if debug_check() == True:
-					name = file[:-3]
-					bot.load_extension(f"cogs.{name}")
-				else:
-					continue
-			if file.endswith(".py"):
-				name = file[:-3]
-				bot.load_extension(f"cogs.{name}")
-				Terminal.display(f"Loaded '{name}' cog.")
-		except Exception as e:
-			print(e)
-	bot.load_extension("jishaku")
-	Terminal.display(f"Loaded '{name}' cog.")
 	try:
 		bot.run(config.token)
 	except Exception as e:
-		print(e)
+		Terminal.error(f"Error thrown when starting bot: {e}")
 
 main()
