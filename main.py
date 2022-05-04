@@ -69,6 +69,10 @@ async def get_prefix(bot, message):
 	prefix = await collection.find_one({"_id":message.guild.id})["prefix"]
 	return commands.when_mentioned_or(prefix)(bot, message)
 
+async def sync_application(self):
+	await self.tree.sync()
+	Terminal.display("Application Commands synced successfully.")
+
 class Numix(commands.AutoSharededBot):
 	async def __init__(self):
 		super().__init__(command_prefix=await get_prefix, intents=intents)
@@ -79,6 +83,24 @@ class Numix(commands.AutoSharededBot):
 
 	async def close(self):
 		await super().close()
+
+	async def setup_hook(self):
+		for filename in os.listdir("./cogs"):
+			if filename.startswith("debug"):
+				if self.debug:
+					name = filename[:-3]
+					await bot.load_extension(f"cogs.{name}")
+				else:
+					continue
+			if filename.endswith(".py"):
+				name = filename[:-3]
+				try:
+					await bot.load_extension(f"cogs.{name}")
+					Terminal.display(f"\"{name}\" Cog Loaded.")
+				except Exception as error:
+					Terminal.warn(f"Loading \"{name}\" cog threw: {error}")
+
+		self.loop.create_task(sync_application(self))
 
 bot = asyncio.run(Numix())
 bot.remove_command("help")
@@ -202,7 +224,7 @@ def get_syntax_error(e):
 # Load Cog
 
 @bot.command(hidden=True)
-@is_owner()
+@commands.check(is_owner)
 async def load(ctx, *, name: str):
 	try:
 		bot.load_extension(f"cogs.{name}")
@@ -213,7 +235,7 @@ async def load(ctx, *, name: str):
 # Unload Cog
 
 @bot.command(hidden=True)
-@is_owner()
+@commands.check(is_owner)
 async def unload(ctx, *, name: str):
 	try:
 		bot.unload_extension(f"cogs.{name}")
@@ -224,7 +246,7 @@ async def unload(ctx, *, name: str):
 # Reload Cog
 
 @bot.command(hidden=True)
-@is_owner()
+@commands.check(is_owner)
 async def reload(ctx, *, name: str):
 	if name == "all":
 		await ctx.send("**All** Cogs are reloaded.")
@@ -239,7 +261,7 @@ async def reload(ctx, *, name: str):
 	await ctx.send(f'Cog "**`{name}`**" has been reloaded.')
 
 @bot.command(hidden=True)
-@is_owner()
+@commands.check(is_owner)
 async def restart(ctx):
 	await ctx.send(f"{config.success} Performing Complete Restart on Numix.")
 	os.system("ls -l; python3 main.py")
