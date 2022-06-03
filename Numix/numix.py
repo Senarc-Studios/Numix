@@ -36,6 +36,11 @@ def _await(function):
 	help = "Resets the database"
 )
 @click.argument(
+	"-t",
+	"--token",
+	help = "Sets the bot token"
+)
+@click.argument(
 	"-m",
 	"--mongo-url",
 	help = "Stores the mongo url"
@@ -51,7 +56,7 @@ def _await(function):
 	help = "Stores the Core Guild (Discord Server) id"
 )
 @click.pass_context
-def setup(ctx, debug: bool, reset_db: bool, mongo_url: str, owner: str, core_guild: str):
+def setup(ctx, debug: bool, reset_db: bool, token: str, mongo_url: str, owner: str, core_guild: str):
 	if reset_db:
 		for database in _await(AsyncIOMotorClient(mongo_url).list_databases()):
 			click.echo(f"[DEBUG]: Deleting `{database}` database...") if debug else None
@@ -77,7 +82,14 @@ def setup(ctx, debug: bool, reset_db: bool, mongo_url: str, owner: str, core_gui
 			{
 				"_id": "setup",
 				"owner": int(owner),
-				"core_guild": int(core_guild)
+				"core_guild": int(core_guild),
+				"token": token
+			}
+		) if token is not None else AsyncIOMotorClient(mongo_url)["numix"]["config"].insert_one(
+			{
+				"_id": "setup",
+				"owner": int(owner),
+				"core_guild": int(core_guild),
 			}
 		)
 	)
