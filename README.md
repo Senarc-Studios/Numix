@@ -17,7 +17,7 @@ After you finish initializing the bot with that command, You will have to launch
 ```sh
 $ python launcher.py
 ```
-Once you launch it, if you restart the bot or do anything **never** Initialize the bot, it will delete all the data in the database and config file.
+Once you launch it, if you restart the bot or do anything **never** Initialise the bot, it will delete all the data in the database and config file.
 
 ## Note
 Any claims of owning the source of the discord bot's code is not advised, the source command shouldn't be removed, if the source command or other copyright get's removed you might face legal issues.
