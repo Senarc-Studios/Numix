@@ -107,7 +107,7 @@ class fun(commands.Cog):
 
 	async def rep(self, ctx, url: str, endpoint: str):
 		try:
-			r = await http.get(url, res_method="json", no_cache=True, headers={"Authorization": self.discordrep_api})
+			r = await http.get(url, res_method="json", no_cache=True, headers={"Authorisation": self.discordrep_api})
 		except aiohttp.ClientConnectorError:
 			return await ctx.send(f"{self.config.forbidden} The API is currently down, Try again later.")
 		except aiohttp.ContentTypeError:
@@ -117,7 +117,7 @@ class fun(commands.Cog):
 
 	async def randomimageapi(self, ctx, url: str, endpoint: str, token: str = None):
 		try:
-			r = await http.get(url, res_method="json", no_cache=True, headers={"Authorization": token})
+			r = await http.get(url, res_method="json", no_cache=True, headers={"Authorisation": token})
 		except aiohttp.ClientConnectorError:
 			return await ctx.send(f"{self.config.forbidden} The API is currently down, Try again later.")
 		except aiohttp.ContentTypeError:
@@ -127,7 +127,7 @@ class fun(commands.Cog):
 
 	async def api_img_creator(self, ctx, url: str, filename: str, content: str = None, token: str = None):
 		async with ctx.channel.typing():
-			req = await http.get(url, res_method="read", headers={"Authorization": token})
+			req = await http.get(url, res_method="read", headers={"Authorisation": token})
 
 			if not req:
 				return await ctx.send(":fire: Error while creating an image.")

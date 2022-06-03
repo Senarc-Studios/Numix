@@ -1,3 +1,0 @@
-language = "python3"
-onBoot = "pip3 install -r requirements.txt"
-run = "python3 main.py"
